@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ExampleEndpointClass {
 
-    @GetMapping("/hello")
-    @ResponseBody
-    public String sayHello(){
-        return "hello";
-    }
+  @GetMapping("/hello")
+  @ResponseBody
+  public String sayHello() {
+    return "hello";
+  }
 }

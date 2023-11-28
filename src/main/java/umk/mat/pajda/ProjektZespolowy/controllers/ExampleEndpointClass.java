@@ -17,4 +17,5 @@ public class ExampleEndpointClass {
     public String sayHello() {
         return "hello";
     }
+
 }

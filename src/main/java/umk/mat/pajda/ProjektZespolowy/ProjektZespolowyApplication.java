@@ -12,9 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				" Backend API Documentation ",
 		version = "v0.1"))
 public class ProjektZespolowyApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(ProjektZespolowyApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(ProjektZespolowyApplication.class, args);
+  }
 }

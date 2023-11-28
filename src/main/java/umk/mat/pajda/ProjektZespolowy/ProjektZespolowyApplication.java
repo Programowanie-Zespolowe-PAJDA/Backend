@@ -11,9 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		description = "An application that allows the waiter to receive tips electronically and assess his skills. Backend API Documentation ",
 		version = "v0.1"))
 public class ProjektZespolowyApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(ProjektZespolowyApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(ProjektZespolowyApplication.class, args);
+  }
 }

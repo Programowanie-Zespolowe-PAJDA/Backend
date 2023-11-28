@@ -9,7 +9,9 @@ public class ExampleEndpointClass {
 
   @GetMapping("/hello")
   @ResponseBody
-  public String sayHello() {
+  public String sayHello()
+  {
+    
     return "hello";
   }
 }

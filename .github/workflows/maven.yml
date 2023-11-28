@@ -19,10 +19,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build 
-      run: mvn -B package --file pom.xml
-    - name: Tests run
-      run: mvn test
+    - name: Build and run tests
+      run: mvn clean install
     - name: Formatting check
       run: mvn spotless:check
     - name: Linting check

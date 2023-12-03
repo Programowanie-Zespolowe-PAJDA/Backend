@@ -1,4 +1,7 @@
-FROM eclipse-temurin:17-jdk-alpine
-VOLUME /tmp
-COPY target/enapiwek.jar.original app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+FROM maven:3.8.5-eclipse-temurin-17-alpine
+WORKDIR /app
+COPY pom.xml .
+COPY . .
+RUN mvn package
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","target/enapiwek.jar"]

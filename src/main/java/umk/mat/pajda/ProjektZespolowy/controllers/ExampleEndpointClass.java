@@ -18,4 +18,22 @@ public class ExampleEndpointClass {
   public String sayHello() {
     return "hello";
   }
+
+  @GetMapping("/admin")
+  @ResponseBody
+  @Operation(
+      summary = "Get \"admin\" message",
+      description = "Returns admin when you role is ADMIN")
+  public String sayAdmin() {
+    return "admin";
+  }
+
+  @GetMapping("/authenticated")
+  @ResponseBody
+  @Operation(
+      summary = "Get \"authenticated\" message",
+      description = "Returns authenticated when you are authenticated")
+  public String sayAuthenticated() {
+    return "authenticated";
+  }
 }

@@ -111,11 +111,6 @@
 					</image>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.github.ulisesbocchio</groupId>
-				<artifactId>jasypt-maven-plugin</artifactId>
-				<version>3.0.3</version>
-			</plugin>
 		</plugins>
 	</build>
 

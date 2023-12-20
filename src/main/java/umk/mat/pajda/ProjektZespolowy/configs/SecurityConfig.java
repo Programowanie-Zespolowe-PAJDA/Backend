@@ -17,11 +17,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-  @Value("${admin_password}")
-  private String adminPassword;
-
-  @Value("${user_password}")
+  @Value("${USER_PASSWORD}")
   private String userPassword;
+
+  @Value("${ADMIN_PASSWORD}")
+  private String adminPassword;
 
   @Bean
   public UserDetailsService userDetailsService() {

@@ -1,5 +1,10 @@
 # Backend:
 backend as part of team programming<br>
+To gain access to the application, add environment variables:
+Example in intelije: 
+1. Open Run/Debug Configurations
+2. Click alt + e, to add field for enviroment variables
+3. add variables:<br> ADMIN_PASSWORD=6fzESmWQptYV; USER_PASSWORD=vYjhpLpM9Bdm
 
 Users for testing:<br><br>
 **USER**<br>
@@ -27,4 +32,3 @@ Users for testing:<br><br>
 **mvn spotless:apply** - Apply code formatting<br>
 **mvn validate** - Linting check <br>
 **mvn clean install** - Build and run tests <br>
-**mvn jasypt:encrypt-value -Djasypt.encryptor.password=6jURGwGr6dBA -Djasypt.plugin.value={password}** - This command gives you encrypted text that you can use as an environment variable, etc. Example: password=ENC({encrypted text})

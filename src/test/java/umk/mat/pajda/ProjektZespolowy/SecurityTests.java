@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(properties = {"ADMIN_PASSWORD=test_admin", "USER_PASSWORD=test_user"})
 class SecurityConfigTest {
 
   @Autowired private MockMvc mockMvc;

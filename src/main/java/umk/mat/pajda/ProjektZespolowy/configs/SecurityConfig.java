@@ -2,9 +2,9 @@ package umk.mat.pajda.ProjektZespolowy.configs;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,16 +17,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-  // default value is user if env variable is not found
-  @Value("${USER_PASSWORD:user}")
   private String userPassword;
 
-  // default value is admin if env variable is not found
-  @Value("${ADMIN_PASSWORD:admin}")
   private String adminPassword;
 
   @Bean
+  @Profile("!tests")
   public UserDetailsService userDetailsService() {
+    userPassword = System.getenv("USER_PASSWORD");
+    adminPassword = System.getenv("ADMIN_PASSWORD");
     UserDetails user =
         User.builder()
             .username("user")

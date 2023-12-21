@@ -17,11 +17,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-  //default value is user if env variable is not found
+  // default value is user if env variable is not found
   @Value("${USER_PASSWORD:user}")
   private String userPassword;
 
-  //default value is admin if env variable is not found
+  // default value is admin if env variable is not found
   @Value("${ADMIN_PASSWORD:admin}")
   private String adminPassword;
 

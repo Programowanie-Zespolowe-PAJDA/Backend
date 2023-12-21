@@ -4,6 +4,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,19 +17,26 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+  private String userPassword;
+
+  private String adminPassword;
+
   @Bean
+  @Profile("!tests")
   public UserDetailsService userDetailsService() {
+    userPassword = System.getenv("USER_PASSWORD");
+    adminPassword = System.getenv("ADMIN_PASSWORD");
     UserDetails user =
         User.builder()
             .username("user")
-            .password(passwordEncoder().encode("user"))
+            .password(passwordEncoder().encode(userPassword))
             .roles("USER")
             .build();
 
     UserDetails admin =
         User.builder()
             .username("admin")
-            .password(passwordEncoder().encode("admin"))
+            .password(passwordEncoder().encode(adminPassword))
             .roles("ADMIN")
             .build();
 

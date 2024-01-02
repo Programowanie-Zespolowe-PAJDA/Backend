@@ -20,6 +20,12 @@ Users for testing:<br><br>
 **/logout** - (for everyone) logout page <br>
 
 
+**/review/add** - add a review <br>
+**/review/patch** - mod a review <br>
+**/review/del** - delete a review <br>
+**/review/read** - get all reviews <br>
+**/review/read/{id}** - get a review <br>
+
 
 ## Commands:
 **mvn spotless:check** - Formatter check <br>

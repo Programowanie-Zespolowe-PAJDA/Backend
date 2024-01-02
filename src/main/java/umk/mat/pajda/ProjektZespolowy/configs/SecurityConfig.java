@@ -58,18 +58,19 @@ public class SecurityConfig {
         .formLogin(withDefaults());
     return http.build();
   }
- /*
-  @Bean
-  public SecurityFilterChain reviewFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeRequests(authorize ->
-                            authorize.antMatchers("/review/**").permitAll()
-                    .anyRequest().authenticated()
-                                   );
-    return http.build();
-  }
- */
 
-    //Temporary solution
+  /*
+   @Bean
+   public SecurityFilterChain reviewFilterChain(HttpSecurity http) throws Exception {
+     http.authorizeRequests(authorize ->
+                             authorize.antMatchers("/review/**").permitAll()
+                     .anyRequest().authenticated()
+                                    );
+     return http.build();
+   }
+  */
+
+  // Temporary solution
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) -> web.ignoring().requestMatchers("/review/**");

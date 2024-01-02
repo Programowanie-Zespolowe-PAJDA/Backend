@@ -1,11 +1,10 @@
 package umk.mat.pajda.ProjektZespolowy.DTO;
 
-
-import jakarta.persistence.Entity;
-import lombok.*;
-
 import java.time.LocalDateTime;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Setter
 @Getter
@@ -13,18 +12,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReviewDTO {
 
+  private Integer id;
 
-    private Integer id;
+  private Integer rating;
 
-    private Integer rating;
+  private String comment;
 
-    private String comment;
+  private LocalDateTime reviewTimeStamp;
 
-    private LocalDateTime reviewTimeStamp;
+  private String clientName;
 
-    private String clientName;
+  private String hashRevID;
 
-    private String hashRevID;
-
-    private Integer kellnerID;
+  private Integer kellnerID;
 }

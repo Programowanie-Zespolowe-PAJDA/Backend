@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewDTO;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
+// TODO - if CrossOrigin is fixed remove CrossOrigin annotation
+
 @CrossOrigin
 @RequestMapping("/review")
 @RestController
 @Tag(
-    name = "Opinion Endpoints",
-    description = "Controller for handling requests related to adding/del/patch/read opinion")
+    name = "Review Endpoints",
+    description = "Controller for handling requests related to add/del/patch/read reviews")
 public class ReviewDataController {
 
   private final ReviewService reviewService;
@@ -33,8 +35,8 @@ public class ReviewDataController {
     this.reviewService = reviewService;
   }
 
-  // TODO - validate if monetary transaction happened , validate if there were only one request in
-  // 30-60 min
+  // TODO - validate if monetary transaction happened
+  // TODO - validate if there were only one request in 30-60 min
   @PostMapping("/add")
   @Operation(
       summary = "POST - Add \"new Review\"",
@@ -43,19 +45,19 @@ public class ReviewDataController {
     if (reviewService.addReview(reviewDTO)) {
       return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
     } else {
-      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("adding failed");
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
     }
   }
 
   @PatchMapping("/patch")
   @Operation(
       summary = "PATCH - modify \"Review\"",
-      description = "Following endpoint modify a Review")
+      description = "Following endpoint modifies a Review")
   public ResponseEntity<String> modReview(@RequestBody ReviewDTO reviewDTO) {
     if (reviewService.patchSelectReview(reviewDTO)) {
       return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
     } else {
-      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("modifying failed");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
     }
   }
 
@@ -71,6 +73,7 @@ public class ReviewDataController {
     }
   }
 
+  // TODO - make it so it restricted to one kellner
   @GetMapping("/read")
   @Operation(
       summary = "Get - get all \"Review\"",
@@ -79,9 +82,17 @@ public class ReviewDataController {
     return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews());
   }
 
+  // TODO - make it so it restricted to one kellner
   @GetMapping("/read/{id}")
-  @Operation(summary = "Get - get \"Review\"", description = "Following endpoint returns a Review")
+  @Operation(
+      summary = "Get - get \"Review\"",
+      description = "Following endpoint returns a Review of id")
   public ResponseEntity<ReviewDTO> readReview(@PathVariable int id) {
-    return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReview(id));
+    ReviewDTO ret = reviewService.getReview(id);
+    if (ret != null) {
+      return ResponseEntity.status(HttpStatus.OK).body(ret);
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
   }
 }

@@ -1,9 +1,11 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewDTO;
+import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 
@@ -20,23 +22,34 @@ public class ReviewService {
   }
 
   public Boolean addReview(ReviewDTO reviewDTO) {
-    reviewRepository.save(reviewConverter.createEntity(reviewDTO));
+    try {
+      reviewRepository.save(reviewConverter.createEntity(reviewDTO));
+    } catch (Exception e) {
+      return false;
+    }
     return true;
   }
 
-  // TODO - make it so it restricted to one kellner
+
   public List<ReviewDTO> getAllReviews() {
     return reviewConverter.createDTO(reviewRepository.findAll());
   }
 
   public ReviewDTO getReview(int id) {
-    return reviewConverter.createDTO(reviewRepository.findById((long) id).get());
+    Review ret = null;
+    try {
+      ret = reviewRepository.findById((long) id).get();
+    } catch (NoSuchElementException e) {
+      return null;
+    }
+
+    return reviewConverter.createDTO(ret);
   }
 
   public Boolean deleteSelectReview(int id) {
     try {
       reviewRepository.deleteById((long) id);
-    } catch (IndexOutOfBoundsException e) {
+    } catch (Exception e) {
       return false;
     }
     return true;
@@ -45,7 +58,7 @@ public class ReviewService {
   public Boolean patchSelectReview(ReviewDTO reviewDTO) {
     try {
       reviewRepository.save(reviewConverter.createEntity(reviewDTO));
-    } catch (IndexOutOfBoundsException e) {
+    } catch (Exception e) {
       return false;
     }
     return true;

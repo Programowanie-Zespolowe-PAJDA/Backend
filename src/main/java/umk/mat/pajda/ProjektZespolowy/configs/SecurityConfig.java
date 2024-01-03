@@ -70,7 +70,7 @@ public class SecurityConfig {
    }
   */
 
-  // Temporary solution
+  // TODO - fix spring boot for review endpoints remove Temporary solution
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) -> web.ignoring().requestMatchers("/review/**");

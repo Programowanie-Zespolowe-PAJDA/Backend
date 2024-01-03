@@ -30,7 +30,6 @@ public class ReviewService {
     return true;
   }
 
-
   public List<ReviewDTO> getAllReviews() {
     return reviewConverter.createDTO(reviewRepository.findAll());
   }

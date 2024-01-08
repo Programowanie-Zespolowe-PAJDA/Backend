@@ -59,18 +59,7 @@ public class SecurityConfig {
     return http.build();
   }
 
-  /*
-   @Bean
-   public SecurityFilterChain reviewFilterChain(HttpSecurity http) throws Exception {
-     http.authorizeRequests(authorize ->
-                             authorize.antMatchers("/review/**").permitAll()
-                     .anyRequest().authenticated()
-                                    );
-     return http.build();
-   }
-  */
-
-  // TODO - fix spring boot for review endpoints remove Temporary solution
+  // TODO - fix spring security for review endpoints remove Temporary solution
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) -> web.ignoring().requestMatchers("/review/**");

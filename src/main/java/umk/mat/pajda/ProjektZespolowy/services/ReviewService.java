@@ -23,6 +23,7 @@ public class ReviewService {
 
   public Boolean addReview(ReviewDTO reviewDTO) {
     try {
+      reviewDTO.setId(0);
       reviewRepository.save(reviewConverter.createEntity(reviewDTO));
     } catch (Exception e) {
       return false;

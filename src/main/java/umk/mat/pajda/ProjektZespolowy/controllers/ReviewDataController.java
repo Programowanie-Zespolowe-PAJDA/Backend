@@ -54,8 +54,12 @@ public class ReviewDataController {
       summary = "PATCH - modify \"Review\"",
       description = "Following endpoint modifies a Review")
   public ResponseEntity<String> modReview(@RequestBody ReviewDTO reviewDTO) {
-    if (reviewService.patchSelectReview(reviewDTO)) {
-      return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
+    if (reviewService.getReview(reviewDTO.getId()) != null) {
+      if (reviewService.patchSelectReview(reviewDTO)) {
+        return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
+      } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
+      }
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
     }

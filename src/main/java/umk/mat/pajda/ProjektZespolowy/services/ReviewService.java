@@ -32,13 +32,13 @@ public class ReviewService {
   }
 
   public List<ReviewDTO> getAllReviews() {
-    return reviewConverter.createDTO(reviewRepository.findAll());
+    return reviewConverter.createReviewDTOList(reviewRepository.findAll());
   }
 
   public ReviewDTO getReview(int id) {
     Review ret = null;
     try {
-      ret = reviewRepository.findById((long) id).get();
+      ret = reviewRepository.findById(id).get();
     } catch (NoSuchElementException e) {
       return null;
     }
@@ -48,7 +48,7 @@ public class ReviewService {
 
   public Boolean deleteSelectReview(int id) {
     try {
-      reviewRepository.deleteById((long) id);
+      reviewRepository.deleteById(id);
     } catch (Exception e) {
       return false;
     }

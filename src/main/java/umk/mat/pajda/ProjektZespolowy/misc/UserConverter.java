@@ -1,81 +1,76 @@
 package umk.mat.pajda.ProjektZespolowy.misc;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
-import umk.mat.pajda.ProjektZespolowy.entity.Review;
-import umk.mat.pajda.ProjektZespolowy.entity.User;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
+import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
+import umk.mat.pajda.ProjektZespolowy.entity.User;
 
 @Component
 public class UserConverter {
 
-    private ReviewConverter reviewConverter;
-    private TipConverter tipConverter;
+  private ReviewConverter reviewConverter;
+  private TipConverter tipConverter;
 
-    public UserConverter(){
+  public UserConverter() {}
 
-    }
+  public UserDTO createDTO(User user) {
+    UserDTO userDTO = new UserDTO();
 
-    public UserDTO createDTO(User user) {
-        UserDTO userDTO = new UserDTO();
+    userDTO.setId(user.getId());
 
-        userDTO.setId(user.getId());
+    userDTO.setName(user.getName());
+    userDTO.setMail(user.getMail());
 
-        userDTO.setName(user.getName());
-        userDTO.setMail(user.getMail());
+    userDTO.setSurname(user.getSurname());
+    userDTO.setPassword(user.getPassword());
 
-        userDTO.setSurname(user.getSurname());
-        userDTO.setPassword(user.getPassword());
+    userDTO.setLocation(user.getLocation());
 
-        userDTO.setLocation(user.getLocation());
+    userDTO.setTipDTOList(tipConverter.createTipDTOList(user.getTipList()));
+    userDTO.setReviewDTOList(reviewConverter.createReviewDTOList(user.getReviewList()));
 
-        userDTO.setTipDTOList(tipConverter.createTipDTOList(user.getTipList()));
-        userDTO.setReviewDTOList(reviewConverter.createReviewDTOList(user.getReviewList()));
+    return userDTO;
+  }
 
-        return userDTO;
-    }
+  public User createEntity(UserDTO userDTO) {
+    User user = new User();
 
-    public User createEntity(UserDTO userDTO) {
-        User user = new User();
+    user.setId(userDTO.getId());
 
-        user.setId(userDTO.getId());
+    user.setName(userDTO.getName());
+    user.setMail(userDTO.getMail());
 
-        user.setName(userDTO.getName());
-        user.setMail(userDTO.getMail());
+    user.setSurname(userDTO.getSurname());
+    user.setPassword(userDTO.getPassword());
 
-        user.setSurname(userDTO.getSurname());
-        user.setPassword(userDTO.getPassword());
+    user.setLocation(userDTO.getLocation());
 
-        user.setLocation(userDTO.getLocation());
+    user.setTipList(userDTO.getTipDTOList().stream().map(tipConverter::createEntity).toList());
+    user.setReviewList(
+        userDTO.getReviewDTOList().stream().map(reviewConverter::createEntity).toList());
 
-        user.setTipList(userDTO.getTipDTOList().stream().map(tipConverter::createEntity).toList());
-        user.setReviewList(userDTO.getReviewDTOList().stream().map(reviewConverter::createEntity).toList());
+    return user;
+  }
 
-        return user;
-    }
+  public List<UserDTO> createUserDTOList(List<User> list) {
+    List<UserDTO> listDTO = list.stream().map(this::createDTO).collect(Collectors.toList());
+    return listDTO;
+  }
 
-    public List<UserDTO> createUserDTOList(List<User> list) {
-        List<UserDTO> listDTO = list.stream().map(this::createDTO).collect(Collectors.toList());
-        return listDTO;
-    }
+  public ReviewConverter getReviewConverter() {
+    return reviewConverter;
+  }
 
-    public ReviewConverter getReviewConverter() {
-        return reviewConverter;
-    }
+  public void setReviewConverter(ReviewConverter reviewConverter) {
+    this.reviewConverter = reviewConverter;
+  }
 
-    public void setReviewConverter(ReviewConverter reviewConverter) {
-        this.reviewConverter = reviewConverter;
-    }
+  public TipConverter getTipConverter() {
+    return tipConverter;
+  }
 
-    public TipConverter getTipConverter() {
-        return tipConverter;
-    }
-
-    public void setTipConverter(TipConverter tipConverter) {
-        this.tipConverter = tipConverter;
-    }
+  public void setTipConverter(TipConverter tipConverter) {
+    this.tipConverter = tipConverter;
+  }
 }

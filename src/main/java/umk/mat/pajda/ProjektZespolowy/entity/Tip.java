@@ -3,9 +3,8 @@ package umk.mat.pajda.ProjektZespolowy.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Setter
@@ -14,24 +13,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Tip {
 
-    @Id
-    @GeneratedValue
-    @NotNull
-    private Integer id;
+  @Id @GeneratedValue @NotNull private Integer id;
 
+  private String currency;
 
-    private String currency;
+  @NotNull private Float amount;
 
-    @NotNull
-    private Float amount;
+  @FutureOrPresent private LocalDateTime paymentTime;
 
-    @FutureOrPresent
-    private LocalDateTime paymentTime;
+  private String paidWith;
 
-    private String paidWith;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
-    private User user;
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
+  private User user;
 }

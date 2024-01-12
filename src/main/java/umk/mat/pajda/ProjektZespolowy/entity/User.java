@@ -4,41 +4,35 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-
-import java.time.LocalDateTime;
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue
-    @NotNull
-    private Integer id;
+  @Id @GeneratedValue @NotNull private Integer id;
 
-    @Size(max=30)
-    private String name;
+  @Size(max = 30)
+  private String name;
 
-    @Size(max=30)
-    private String surname;
+  @Size(max = 30)
+  private String surname;
 
-    @Size(max=30)
-    private String password;
+  @Size(max = 30)
+  private String password;
 
-    @Email
-    private String mail;
+  @Email private String mail;
 
-    private String location;
+  private String location;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<Tip> tipList;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+  private List<Tip> tipList;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<Review> reviewList;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+  private List<Review> reviewList;
 }

@@ -3,12 +3,11 @@ package umk.mat.pajda.ProjektZespolowy.DTO;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -16,20 +15,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TipDTO {
 
-    @NotNull
-    @Positive
-    private Integer id;
+  @NotNull @Positive private Integer id;
 
-    private String currency;
+  private String currency;
 
-    @NotNull
-    private Float amount;
+  @NotNull private Float amount;
 
-    @FutureOrPresent
-    private LocalDateTime paymentTime;
+  @FutureOrPresent private LocalDateTime paymentTime;
 
-    private String paidWith;
+  private String paidWith;
 
-    @NotNull
-    private UserDTO user;
+  @NotNull private UserDTO user;
 }

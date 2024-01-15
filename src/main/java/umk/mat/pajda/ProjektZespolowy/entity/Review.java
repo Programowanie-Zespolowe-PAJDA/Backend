@@ -22,7 +22,7 @@ public class Review {
   @Size(min = 0, max = 10)
   private Integer rating;
 
-  @Size(max = 300)
+  @Size(max = 1500)
   private String comment;
 
   @FutureOrPresent private LocalDateTime reviewTimeStamp;

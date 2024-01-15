@@ -3,9 +3,11 @@ package umk.mat.pajda.ProjektZespolowy.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.*;
+import umk.mat.pajda.ProjektZespolowy.validators.PatternPassword;
 
 @Entity
 @Setter
@@ -17,13 +19,16 @@ public class User {
 
   @Id @GeneratedValue @NotNull private Integer id;
 
-  @Size(max = 30)
+  @Size(min = 2, max = 30)
+  @Pattern(regexp = "^[A-ZĄĆĘŁŃÓŚŹŻ][a-zząćęłńóśźż]*$")
   private String name;
 
-  @Size(max = 30)
+  @Size(min = 2, max = 30)
+  @Pattern(regexp = "^[A-ZĄĆĘŁŃÓŚŹŻ][a-zząćęłńóśźż]*+(?:[- ]?[A-ZĄĆĘŁŃÓŚŹŻ][a-zząćęłńóśźż]*)?$")
   private String surname;
 
-  @Size(max = 30)
+  @Size(min = 8, max = 30)
+  @PatternPassword
   private String password;
 
   @Email private String mail;

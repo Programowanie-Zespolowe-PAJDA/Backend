@@ -26,7 +26,7 @@ public class TipConverter {
     tipDTO.setCurrency(tip.getCurrency());
     tipDTO.setAmount(tip.getAmount());
 
-    tipDTO.setPaymentTime(tip.getPaymentTime());
+    tipDTO.setCreatedAt(tip.getPaymentTime());
     tipDTO.setPaidWith(tip.getPaidWith());
 
     tipDTO.setUser(userConverter.createDTO(tip.getUser()));
@@ -42,7 +42,7 @@ public class TipConverter {
     tip.setCurrency(tipDTO.getCurrency());
     tip.setAmount(tipDTO.getAmount());
 
-    tip.setPaymentTime(tipDTO.getPaymentTime());
+    tip.setPaymentTime(tipDTO.getCreatedAt());
     tip.setPaidWith(tipDTO.getPaidWith());
 
     tip.setUser(userConverter.createEntity(tipDTO.getUser()));

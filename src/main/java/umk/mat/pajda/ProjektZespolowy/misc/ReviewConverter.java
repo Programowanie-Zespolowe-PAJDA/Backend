@@ -18,31 +18,30 @@ public class ReviewConverter {
     userConverter.setReviewConverter(this);
   }
 
-  public ReviewDTO createDTO(Review source) {
-    ReviewDTO res = new ReviewDTO();
-    res.setId(source.getId());
-    res.setRating(source.getRating());
-    res.setComment(source.getComment());
+  public ReviewDTO createDTO(Review review) {
+    ReviewDTO reviewDTO = new ReviewDTO();
+    reviewDTO.setId(review.getId());
+    reviewDTO.setRating(review.getRating());
+    reviewDTO.setComment(review.getComment());
 
-    // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    res.setReviewTimeStamp(source.getReviewTimeStamp());
-    res.setUser(userConverter.createDTO(source.getUser()));
-    res.setClientName(source.getClientName());
-    res.setHashRevID(source.getHashRevID());
+    reviewDTO.setReviewTimeStamp(review.getReviewTimeStamp());
+    reviewDTO.setUser(userConverter.createDTO(review.getUser()));
+    reviewDTO.setClientName(review.getClientName());
+    reviewDTO.setHashRevID(review.getHashRevID());
 
-    return res;
+    return reviewDTO;
   }
 
-  public Review createEntity(ReviewDTO source) {
-    Review res = new Review();
-    res.setId(source.getId());
-    res.setRating(source.getRating());
-    res.setComment(source.getComment());
-    res.setReviewTimeStamp(source.getReviewTimeStamp());
-    res.setUser(userConverter.createEntity(source.getUser()));
-    res.setClientName(source.getClientName());
-    res.setHashRevID(source.getHashRevID());
-    return res;
+  public Review createEntity(ReviewDTO reviewDTO) {
+    Review review = new Review();
+    review.setId(reviewDTO.getId());
+    review.setRating(reviewDTO.getRating());
+    review.setComment(reviewDTO.getComment());
+    review.setReviewTimeStamp(reviewDTO.getReviewTimeStamp());
+    review.setUser(userConverter.createEntity(reviewDTO.getUser()));
+    review.setClientName(reviewDTO.getClientName());
+    review.setHashRevID(reviewDTO.getHashRevID());
+    return review;
   }
 
   public List<ReviewDTO> createReviewDTOList(List<Review> list) {

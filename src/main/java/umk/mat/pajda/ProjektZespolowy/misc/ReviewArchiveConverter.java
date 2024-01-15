@@ -16,29 +16,29 @@ public class ReviewArchiveConverter {
     this.userConverter = userConverter;
   }
 
-  public ReviewArchiveDTO createDTO(ReviewArchive source) {
-    ReviewArchiveDTO res = new ReviewArchiveDTO();
-    res.setId(source.getId());
-    res.setRating(source.getRating());
-    res.setComment(source.getComment());
-    // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    res.setReviewTimeStamp(source.getReviewTimeStamp());
-    res.setUser(userConverter.createDTO(source.getUser()));
-    res.setClientName(source.getClientName());
-    res.setHashRevID(source.getHashRevID());
-    return res;
+  public ReviewArchiveDTO createDTO(ReviewArchive reviewArchive) {
+    ReviewArchiveDTO reviewArchiveDTO = new ReviewArchiveDTO();
+    reviewArchiveDTO.setId(reviewArchive.getId());
+    reviewArchiveDTO.setRating(reviewArchive.getRating());
+    reviewArchiveDTO.setComment(reviewArchive.getComment());
+
+    reviewArchiveDTO.setReviewTimeStamp(reviewArchive.getReviewTimeStamp());
+    reviewArchiveDTO.setUser(userConverter.createDTO(reviewArchive.getUser()));
+    reviewArchiveDTO.setClientName(reviewArchive.getClientName());
+    reviewArchiveDTO.setHashRevID(reviewArchive.getHashRevID());
+    return reviewArchiveDTO;
   }
 
-  public ReviewArchive createEntity(ReviewArchiveDTO source) {
-    ReviewArchive res = new ReviewArchive();
-    res.setId(source.getId());
-    res.setRating(source.getRating());
-    res.setComment(source.getComment());
-    res.setReviewTimeStamp(source.getReviewTimeStamp());
-    res.setUser(userConverter.createEntity(source.getUser()));
-    res.setClientName(source.getClientName());
-    res.setHashRevID(source.getHashRevID());
-    return res;
+  public ReviewArchive createEntity(ReviewArchiveDTO reviewArchiveDTO) {
+    ReviewArchive reviewArchive = new ReviewArchive();
+    reviewArchive.setId(reviewArchiveDTO.getId());
+    reviewArchive.setRating(reviewArchiveDTO.getRating());
+    reviewArchive.setComment(reviewArchiveDTO.getComment());
+    reviewArchive.setReviewTimeStamp(reviewArchiveDTO.getReviewTimeStamp());
+    reviewArchive.setUser(userConverter.createEntity(reviewArchiveDTO.getUser()));
+    reviewArchive.setClientName(reviewArchiveDTO.getClientName());
+    reviewArchive.setHashRevID(reviewArchiveDTO.getHashRevID());
+    return reviewArchive;
   }
 
   public List<ReviewArchiveDTO> createReviewArchiveDTOList(List<ReviewArchive> list) {

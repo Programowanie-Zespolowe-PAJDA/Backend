@@ -16,15 +16,15 @@ public class UserDTO {
 
   @NotNull @Positive private Integer id;
 
-  @Size(max = 30)
+  @Size(min = 2, max = 30)
   @Pattern(regexp = "^[A-ZĄĆĘŁŃÓŚŹŻ][a-zząćęłńóśźż]*$")
   private String name;
 
-  @Size(max = 30)
+  @Size(min = 2, max = 30)
   @Pattern(regexp = "^[A-ZĄĆĘŁŃÓŚŹŻ][a-zząćęłńóśźż]*+(?:[- ]?[A-ZĄĆĘŁŃÓŚŹŻ][a-zząćęłńóśźż]*)?$")
   private String surname;
 
-  @Size(max = 30)
+  @Size(min = 8, max = 30)
   @PatternPassword
   private String password;
 

@@ -21,7 +21,7 @@ public class TipDTO {
 
   @NotNull private Float amount;
 
-  @FutureOrPresent private LocalDateTime paymentTime;
+  @FutureOrPresent private LocalDateTime createdAt;
 
   private String paidWith;
 

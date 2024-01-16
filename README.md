@@ -32,6 +32,11 @@ Users for testing:<br><br>
 **/review/read** - get all reviews <br>
 **/review/read/{id}** - get a review <br>
 
+**/user/add** - add a user <br>
+**/user/patch** - mod a user <br>
+**/user/del** - delete a user <br>
+**/user/get** - get all user <br>
+**/user/get/{id}** - get a user <br>
 
 ## Commands:
 **mvn spotless:check** - Formatter check <br>

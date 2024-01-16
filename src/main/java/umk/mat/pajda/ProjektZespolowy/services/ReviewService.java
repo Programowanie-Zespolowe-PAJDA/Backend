@@ -36,14 +36,14 @@ public class ReviewService {
   }
 
   public ReviewDTO getReview(int id) {
-    Review ret = null;
+    Review returnData = null;
     try {
-      ret = reviewRepository.findById(id).get();
+      returnData = reviewRepository.findById(id).get();
     } catch (NoSuchElementException e) {
       return null;
     }
 
-    return reviewConverter.createDTO(ret);
+    return reviewConverter.createDTO(returnData);
   }
 
   public Boolean deleteSelectReview(int id) {

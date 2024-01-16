@@ -4,7 +4,7 @@ To gain access to the application, add environment variables:
 Example in intelije: 
 1. Open Run/Debug Configurations
 2. Click alt + e, to add field for enviroment variables
-3. add variables:<br> ADMIN_PASSWORD=6fzESmWQptYV; USER_PASSWORD=vYjhpLpM9Bdm
+3. add variables:<br> ADMIN_PASSWORD=6fzESmWQptYV;USER_PASSWORD=vYjhpLpM9Bdm;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;DATABASE_DRIVER=org.postgresql.Driver
 
 Users for testing:<br><br>
 **USER**<br>

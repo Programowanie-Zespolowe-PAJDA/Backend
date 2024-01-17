@@ -19,53 +19,53 @@ class SecurityConfigTest {
   @Autowired private MockMvc mockMvc;
 
   @Test
-  void testUnauthenticatedAccessToHello() throws Exception {
+  void shouldIsOkWhenUnauthenticatedAccessToHelloTest() throws Exception {
     mockMvc.perform(get("/hello")).andExpect(status().isOk());
   }
 
   @Test
-  void testUnauthenticatedAccessToAuthenticated() throws Exception {
+  void shouldIsFoundWhenUnauthenticatedAccessToAuthenticatedTest() throws Exception {
     mockMvc.perform(get("/authenticated")).andExpect(status().isFound());
   }
 
   @Test
-  void testUnauthenticatedAccessToAdmin() throws Exception {
+  void shouldIsFoundWhenUnauthenticatedAccessToAdminTest() throws Exception {
     mockMvc.perform(get("/admin")).andExpect(status().isFound());
   }
 
   @Test
   @WithMockUser(roles = "USER")
-  void testAuthenticatedAccessToHello() throws Exception {
+  void shouldIsOkWhenAuthenticatedAccessToHelloTest() throws Exception {
     mockMvc.perform(get("/hello")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "USER")
-  void testAuthenticatedAccessToAuthenticated() throws Exception {
+  void shouldIsOkWhenAuthenticatedAccessToAuthenticatedTest() throws Exception {
     mockMvc.perform(get("/authenticated")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "USER")
-  void testAuthenticatedAccessToAdmin() throws Exception {
+  void shouldIsForbiddenWhenAuthenticatedAccessToAdminTest() throws Exception {
     mockMvc.perform(get("/admin")).andExpect(status().isForbidden());
   }
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  void testAdminAccessToHello() throws Exception {
+  void shouldIsOkWhenAdminAccessToHelloTest() throws Exception {
     mockMvc.perform(get("/hello")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  void testAdminAccessToAuthenticated() throws Exception {
+  void shouldIsOkWhenAdminAccessToAuthenticatedTest() throws Exception {
     mockMvc.perform(get("/authenticated")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  void testAdminAccessToAdmin() throws Exception {
+  void shouldIsOkWhenAdminAccessToAdminTest() throws Exception {
     mockMvc.perform(get("/admin")).andExpect(status().isOk());
   }
 }

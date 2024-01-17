@@ -23,27 +23,27 @@ public class PatternPasswordValidatorTest {
   }
 
   @Test
-  public void noUppercaseTest() {
+  public void shouldFailWhenNoUppercaseTest() {
     Assertions.assertFalse(patternPasswordValidator.isValid("n1!", mock));
   }
 
   @Test
-  public void noLowercaseTest() {
+  public void shouldFailWhenNoLowercaseTest() {
     Assertions.assertFalse(patternPasswordValidator.isValid("N1!", mock));
   }
 
   @Test
-  public void noDigitTest() {
+  public void shouldFailWhenNoDigitTest() {
     Assertions.assertFalse(patternPasswordValidator.isValid("Nn!", mock));
   }
 
   @Test
-  public void noSpecialCharacterTest() {
+  public void shouldFailWhenNoSpecialCharacterTest() {
     Assertions.assertFalse(patternPasswordValidator.isValid("Nn1", mock));
   }
 
   @Test
-  public void succesPatternTest() {
+  public void shouldSuccessTest() {
     Assertions.assertTrue(patternPasswordValidator.isValid("Nn1!", mock));
   }
 }

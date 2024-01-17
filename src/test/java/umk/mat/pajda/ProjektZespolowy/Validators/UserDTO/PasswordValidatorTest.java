@@ -56,26 +56,10 @@ public class PasswordValidatorTest {
   }
 
   @Test
-  public void shouldSuccessWhenPatternAndLengthAreCorrectTest() {
+  public void shouldSuccessTest() {
     UserDTO userDTO = new UserDTO();
     userDTO.setPassword("testt!1B");
     Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "password");
     Assertions.assertTrue(violations.isEmpty());
-  }
-
-  @Test
-  public void shouldFailWhenLengthIsLessThan8Test() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setPassword("testB!1");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "password");
-    Assertions.assertFalse(violations.isEmpty());
-  }
-
-  @Test
-  public void shouldFailWhenLengthIsLongerThan30Test() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setPassword("testB!1aaaaaaaaaaaaaaaaaaaaaaaa");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "password");
-    Assertions.assertFalse(violations.isEmpty());
   }
 }

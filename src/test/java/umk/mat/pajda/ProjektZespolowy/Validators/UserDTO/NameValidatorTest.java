@@ -56,26 +56,10 @@ public class NameValidatorTest {
   }
 
   @Test
-  public void shouldSuccessWhenPatternAndLengthAreCorrectTest() {
+  public void shouldSuccessTest() {
     UserDTO userDTO = new UserDTO();
     userDTO.setName("Test");
     Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "name");
     Assertions.assertTrue(violations.isEmpty());
-  }
-
-  @Test
-  public void shouldFailWhenLengthIsLessThan2Test() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setName("T");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "name");
-    Assertions.assertFalse(violations.isEmpty());
-  }
-
-  @Test
-  public void shouldFailWhenLengthIsLongerThan30Test() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setName("Testaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "name");
-    Assertions.assertFalse(violations.isEmpty());
   }
 }

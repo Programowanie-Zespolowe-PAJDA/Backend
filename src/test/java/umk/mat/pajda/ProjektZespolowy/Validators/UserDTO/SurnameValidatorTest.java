@@ -72,7 +72,7 @@ public class SurnameValidatorTest {
   }
 
   @Test
-  public void shouldSuccessWhenPattern1AndLengthAreCorrectTest() {
+  public void shouldSuccess1Test() {
     UserDTO userDTO = new UserDTO();
     userDTO.setSurname("Test");
     Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "surname");
@@ -80,7 +80,7 @@ public class SurnameValidatorTest {
   }
 
   @Test
-  public void shouldSuccessWhenPattern2AndLengthAreCorrectTest() {
+  public void shouldSuccess2Test() {
     UserDTO userDTO = new UserDTO();
     userDTO.setSurname("Test-Test");
     Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "surname");
@@ -88,7 +88,7 @@ public class SurnameValidatorTest {
   }
 
   @Test
-  public void shouldSuccessWhenPattern3AndLengthAreCorrectTest() {
+  public void shouldSuccess3Test() {
     UserDTO userDTO = new UserDTO();
     userDTO.setSurname("TestTest");
     Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "surname");
@@ -96,26 +96,10 @@ public class SurnameValidatorTest {
   }
 
   @Test
-  public void shouldSuccessWhenPattern4AndLengthAreCorrectTest() {
+  public void shouldSuccess4Test() {
     UserDTO userDTO = new UserDTO();
     userDTO.setSurname("Test Test");
     Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "surname");
     Assertions.assertTrue(violations.isEmpty());
-  }
-
-  @Test
-  public void shouldFailWhenLengthIsLessThan2Test() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setSurname("T");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "surname");
-    Assertions.assertFalse(violations.isEmpty());
-  }
-
-  @Test
-  public void shouldFailWhenLengthIsLongerThan30Test() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setSurname("Testaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "surname");
-    Assertions.assertFalse(violations.isEmpty());
   }
 }

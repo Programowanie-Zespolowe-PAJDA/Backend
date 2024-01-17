@@ -18,7 +18,7 @@ public class ReviewDTO {
 
   @NotNull @Positive private Integer id;
 
-  @Size(min = 0, max = 10)
+  @Size(max = 10)
   private Integer rating;
 
   @Size(max = 1500)

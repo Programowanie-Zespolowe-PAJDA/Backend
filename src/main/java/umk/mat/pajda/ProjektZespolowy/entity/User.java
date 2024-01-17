@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.*;
-import umk.mat.pajda.ProjektZespolowy.validators.PatternPassword;
 
 @Entity
 @Setter
@@ -28,7 +27,7 @@ public class User {
   private String surname;
 
   @Size(min = 8, max = 30)
-  @PatternPassword
+  @Pattern(regexp = "^(?=.*[a-ząćęłńóśźż])(?=.*[A-ZĄĆĘŁŃÓŚŹŻ])(?=.*\\d)(?=.*[!@#$%^&*]).*$")
   private String password;
 
   @Email private String mail;

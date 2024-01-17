@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import umk.mat.pajda.ProjektZespolowy.validators.PatternPassword;
 
 @Setter
 @Getter
@@ -25,7 +24,7 @@ public class UserDTO {
   private String surname;
 
   @Size(min = 8, max = 30)
-  @PatternPassword
+  @Pattern(regexp = "^(?=.*[a-ząćęłńóśźż])(?=.*[A-ZĄĆĘŁŃÓŚŹŻ])(?=.*\\d)(?=.*[!@#$%^&*]).*$")
   private String password;
 
   @Email private String mail;

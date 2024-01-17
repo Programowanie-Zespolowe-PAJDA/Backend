@@ -2,6 +2,8 @@ package umk.mat.pajda.ProjektZespolowy.services;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
@@ -11,6 +13,8 @@ import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Service
 public class UserService {
+
+  private final Logger logger = LoggerFactory.getLogger(UserService.class);
   private final UserConverter userConverter;
   private final UserRepository userRepository;
 
@@ -25,6 +29,7 @@ public class UserService {
       userDTO.setId(0);
       userRepository.save(userConverter.createEntity(userDTO));
     } catch (Exception e) {
+      logger.error("addUser", e);
       return false;
     }
     return true;
@@ -39,6 +44,7 @@ public class UserService {
     try {
       returnData = userRepository.findById(id).get();
     } catch (NoSuchElementException e) {
+      logger.error("getUser", e);
       return null;
     }
 
@@ -49,6 +55,7 @@ public class UserService {
     try {
       userRepository.deleteById(id);
     } catch (Exception e) {
+      logger.error("deleteSelectedUser", e);
       return false;
     }
     return true;
@@ -58,6 +65,7 @@ public class UserService {
     try {
       userRepository.save(userConverter.createEntity(userDTO));
     } catch (Exception e) {
+      logger.error("patchSelectedUser", e);
       return false;
     }
     return true;

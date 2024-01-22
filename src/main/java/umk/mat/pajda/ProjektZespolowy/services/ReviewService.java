@@ -26,6 +26,7 @@ public class ReviewService {
 
   public Boolean addReview(ReviewDTO reviewDTO) {
     try {
+      reviewDTO.setId(null);
       reviewRepository.save(reviewConverter.createEntity(reviewDTO));
     } catch (Exception e) {
       logger.error("addReview", e);
@@ -44,6 +45,9 @@ public class ReviewService {
       review = reviewRepository.findById(id).get();
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
+      return null;
+    }
+    if (review == null) {
       return null;
     }
 

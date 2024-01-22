@@ -24,7 +24,11 @@ public class UserController {
 
   @PostMapping("/add")
   @Operation(summary = "POST - Add \"new User\"", description = "Following endpoint adds new User")
-  public ResponseEntity<String> addNewReview(@RequestBody UserDTO userDTO) {
+  public ResponseEntity<String> addNewUser(UserDTO userDTO) {
+    if (userService.getUser(userDTO.getName()) != null) {
+      return ResponseEntity.status(HttpStatus.FOUND).body("adding failed - already exist");
+    }
+
     if (userService.addUser(userDTO)) {
       return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
     } else {
@@ -36,13 +40,13 @@ public class UserController {
   @Operation(
       summary = "PATCH - modify \"User\"",
       description = "Following endpoint modifies a User")
-  public ResponseEntity<String> modReview(@RequestBody UserDTO userDTO) {
-    if (userService.getUser(userDTO.getId()) != null) {
-      if (userService.patchSelectedUser(userDTO)) {
-        return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
-      } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
-      }
+  public ResponseEntity<String> modUser(@RequestBody UserDTO userDTO) {
+    if (userService.getUser(userDTO.getId()) == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
+    }
+
+    if (userService.patchSelectedUser(userDTO)) {
+      return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
     }
@@ -52,7 +56,7 @@ public class UserController {
   @Operation(
       summary = "DELETE - delete \"User\"",
       description = "Following endpoint deletes a User of id")
-  public ResponseEntity<String> delReview(@PathVariable int id) {
+  public ResponseEntity<String> delUser(@PathVariable int id) {
     if (userService.deleteSelectedUser(id)) {
       return ResponseEntity.status(HttpStatus.OK).body("delete successful");
     } else {
@@ -62,7 +66,7 @@ public class UserController {
 
   @GetMapping("/get")
   @Operation(summary = "Get - get all \"User\"", description = "Following endpoint returns a User")
-  public ResponseEntity<List<UserDTO>> readReview() {
+  public ResponseEntity<List<UserDTO>> readUser() {
     return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers());
   }
 
@@ -70,10 +74,10 @@ public class UserController {
   @Operation(
       summary = "Get - get \"User\"",
       description = "Following endpoint returns a User of id")
-  public ResponseEntity<UserDTO> readReview(@PathVariable int id) {
-    UserDTO ret = userService.getUser(id);
-    if (ret != null) {
-      return ResponseEntity.status(HttpStatus.OK).body(ret);
+  public ResponseEntity<UserDTO> readUser(@PathVariable int id) {
+    UserDTO returnData = userService.getUser(id);
+    if (returnData != null) {
+      return ResponseEntity.status(HttpStatus.OK).body(returnData);
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }

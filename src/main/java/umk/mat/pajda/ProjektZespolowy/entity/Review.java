@@ -1,7 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -9,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 @Entity
 @Setter
@@ -17,15 +17,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Review {
 
-  @Id @GeneratedValue private Integer id;
+  @Id @GeneratedValue @NotNull private Integer id;
 
-  @Size(max = 10)
+  @Range(min = 0, max = 10)
   private Integer rating;
 
   @Size(max = 1500)
   private String comment;
 
-  @FutureOrPresent private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
   @Size(max = 30)
   private String clientName;

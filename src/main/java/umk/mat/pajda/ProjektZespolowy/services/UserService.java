@@ -26,7 +26,7 @@ public class UserService {
 
   public boolean addUser(UserDTO userDTO) {
     try {
-      userDTO.setId(0);
+      userDTO.setId(null);
       userRepository.save(userConverter.createEntity(userDTO));
     } catch (Exception e) {
       logger.error("addUser", e);
@@ -44,7 +44,25 @@ public class UserService {
     try {
       returnData = userRepository.findById(id).get();
     } catch (NoSuchElementException e) {
-      logger.error("getUser", e);
+      logger.error("getUser(int)", e);
+      return null;
+    }
+    if (returnData == null) {
+      return null;
+    }
+
+    return userConverter.createDTO(returnData);
+  }
+
+  public UserDTO getUser(String name) {
+    User returnData = null;
+    try {
+      returnData = userRepository.findByName(name);
+    } catch (NoSuchElementException e) {
+      logger.error("getUser(String)", e);
+      return null;
+    }
+    if (returnData == null) {
       return null;
     }
 

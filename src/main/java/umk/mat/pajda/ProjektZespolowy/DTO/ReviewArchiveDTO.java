@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
 import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 
@@ -20,7 +21,8 @@ public class ReviewArchiveDTO {
 
   private Integer id;
 
-  @Size(
+  @Range(
+      min = 0,
       max = 10,
       groups = {CreatingEntityGroup.class, EditingEntityGroup.class})
   private Integer rating;

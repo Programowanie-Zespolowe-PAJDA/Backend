@@ -16,7 +16,8 @@ import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewDTO {
+public class ReviewArchiveDTO {
+
   private Integer id;
 
   @Size(

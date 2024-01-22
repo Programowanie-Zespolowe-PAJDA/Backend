@@ -3,34 +3,25 @@ package umk.mat.pajda.ProjektZespolowy.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Review {
+public class Tip {
 
   @Id @GeneratedValue private Integer id;
 
-  @Size(max = 10)
-  private Integer rating;
+  private String currency;
 
-  @Size(max = 1500)
-  private String comment;
+  @NotNull private Float amount;
 
   @FutureOrPresent private LocalDateTime createdAt;
 
-  @Size(max = 30)
-  private String clientName;
-
-  @NotNull private String hashRevID;
+  private String paidWith;
 
   @NotNull
   @ManyToOne

@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewDTO;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 
 // TODO - if CrossOrigin is fixed remove CrossOrigin annotation
 
@@ -41,7 +45,12 @@ public class ReviewDataController {
   @Operation(
       summary = "POST - Add \"new Review\"",
       description = "Following endpoint adds new Review")
-  public ResponseEntity<String> addNewReview(@RequestBody ReviewDTO reviewDTO) {
+  public ResponseEntity<String> addNewReview(
+      @Validated(CreatingEntityGroup.class) @RequestBody ReviewDTO reviewDTO,
+      BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity.badRequest().body("Validation failed: " + bindingResult.getAllErrors());
+    }
     if (reviewService.addReview(reviewDTO)) {
       return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
     } else {
@@ -53,7 +62,12 @@ public class ReviewDataController {
   @Operation(
       summary = "PATCH - modify \"Review\"",
       description = "Following endpoint modifies a Review")
-  public ResponseEntity<String> modReview(@RequestBody ReviewDTO reviewDTO) {
+  public ResponseEntity<String> modReview(
+      @Validated(EditingEntityGroup.class) @RequestBody ReviewDTO reviewDTO,
+      BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity.badRequest().body("Validation failed: " + bindingResult.getAllErrors());
+    }
     if (reviewService.getReview(reviewDTO.getId()) != null) {
       if (reviewService.patchSelectReview(reviewDTO)) {
         return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
@@ -92,9 +106,9 @@ public class ReviewDataController {
       summary = "Get - get \"Review\"",
       description = "Following endpoint returns a Review of id")
   public ResponseEntity<ReviewDTO> readReview(@PathVariable int id) {
-    ReviewDTO ret = reviewService.getReview(id);
-    if (ret != null) {
-      return ResponseEntity.status(HttpStatus.OK).body(ret);
+    ReviewDTO reviewDTO = reviewService.getReview(id);
+    if (reviewDTO != null) {
+      return ResponseEntity.status(HttpStatus.OK).body(reviewDTO);
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }

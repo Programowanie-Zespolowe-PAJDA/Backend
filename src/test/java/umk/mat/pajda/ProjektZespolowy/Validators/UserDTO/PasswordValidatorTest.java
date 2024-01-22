@@ -5,6 +5,7 @@ import java.util.Set;
 import org.junit.jupiter.api.*;
 import org.springframework.test.context.ActiveProfiles;
 import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
 
 @ActiveProfiles("tests")
 public class PasswordValidatorTest {
@@ -27,7 +28,8 @@ public class PasswordValidatorTest {
   public void shouldFailWhenNoUppercaseTest() {
     UserDTO userDTO = new UserDTO();
     userDTO.setPassword("testt1!t");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "password");
+    Set<ConstraintViolation<UserDTO>> violations =
+        validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -35,7 +37,8 @@ public class PasswordValidatorTest {
   public void shouldFailWhenNoLowercaseTest() {
     UserDTO userDTO = new UserDTO();
     userDTO.setPassword("BBBBB1!B");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "password");
+    Set<ConstraintViolation<UserDTO>> violations =
+        validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -43,7 +46,8 @@ public class PasswordValidatorTest {
   public void shouldFailWhenNoDigitTest() {
     UserDTO userDTO = new UserDTO();
     userDTO.setPassword("testtt!B");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "password");
+    Set<ConstraintViolation<UserDTO>> violations =
+        validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -51,7 +55,8 @@ public class PasswordValidatorTest {
   public void shouldFailWhenNoSpecialCharacterTest() {
     UserDTO userDTO = new UserDTO();
     userDTO.setPassword("testtt1B");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "password");
+    Set<ConstraintViolation<UserDTO>> violations =
+        validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -59,7 +64,8 @@ public class PasswordValidatorTest {
   public void shouldSuccessTest() {
     UserDTO userDTO = new UserDTO();
     userDTO.setPassword("testt!1B");
-    Set<ConstraintViolation<UserDTO>> violations = validator.validateProperty(userDTO, "password");
+    Set<ConstraintViolation<UserDTO>> violations =
+        validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
     Assertions.assertTrue(violations.isEmpty());
   }
 }

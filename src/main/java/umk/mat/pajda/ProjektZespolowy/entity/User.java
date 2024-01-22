@@ -2,7 +2,6 @@ package umk.mat.pajda.ProjektZespolowy.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -16,7 +15,7 @@ import lombok.*;
 @Table(name = "users")
 public class User {
 
-  @Id @GeneratedValue @NotNull private Integer id;
+  @Id @GeneratedValue private Integer id;
 
   @Size(min = 2, max = 30)
   @Pattern(regexp = "^[A-ZĄĆĘŁŃÓŚŹŻ][a-zząćęłńóśźż]*$")

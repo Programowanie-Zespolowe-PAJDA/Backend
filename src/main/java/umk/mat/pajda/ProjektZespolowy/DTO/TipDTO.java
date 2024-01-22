@@ -8,22 +8,27 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TipDTO {
-
-  @NotNull @Positive private Integer id;
+  private Integer id;
 
   private String currency;
 
-  @NotNull private Float amount;
-
-  @FutureOrPresent private LocalDateTime createdAt;
+  @NotNull(groups = {CreatingEntityGroup.class, EditingEntityGroup.class})
+  private Float amount;
 
   private String paidWith;
 
-  @NotNull private UserDTO user;
+  @NotNull(groups = CreatingEntityGroup.class)
+  @Positive(groups = CreatingEntityGroup.class)
+  private Integer userId;
+
+  @FutureOrPresent(groups = EditingEntityGroup.class)
+  private LocalDateTime createdAt;
 }

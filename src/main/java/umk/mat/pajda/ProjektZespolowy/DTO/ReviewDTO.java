@@ -9,27 +9,38 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewDTO {
+  private Integer id;
 
-  @NotNull @Positive private Integer id;
-
-  @Size(max = 10)
+  @Size(
+      max = 10,
+      groups = {CreatingEntityGroup.class, EditingEntityGroup.class})
   private Integer rating;
 
-  @Size(max = 1500)
+  @Size(
+      max = 1500,
+      groups = {CreatingEntityGroup.class, EditingEntityGroup.class})
   private String comment;
 
-  @FutureOrPresent private LocalDateTime reviewTimeStamp;
-
-  @Size(max = 30)
+  @Size(
+      max = 30,
+      groups = {CreatingEntityGroup.class, EditingEntityGroup.class})
   private String clientName;
 
-  @NotNull private String hashRevID;
+  @NotNull(groups = {CreatingEntityGroup.class})
+  private String hashRevID;
 
-  @NotNull private UserDTO user;
+  @NotNull(groups = {CreatingEntityGroup.class})
+  @Positive(groups = {CreatingEntityGroup.class})
+  private Integer userID;
+
+  @FutureOrPresent(groups = {EditingEntityGroup.class})
+  private LocalDateTime createdAt;
 }

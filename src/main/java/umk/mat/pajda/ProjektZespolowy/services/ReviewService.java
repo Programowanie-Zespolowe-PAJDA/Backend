@@ -23,7 +23,6 @@ public class ReviewService {
 
   public Boolean addReview(ReviewDTO reviewDTO) {
     try {
-      reviewDTO.setId(0);
       reviewRepository.save(reviewConverter.createEntity(reviewDTO));
     } catch (Exception e) {
       return false;
@@ -36,14 +35,14 @@ public class ReviewService {
   }
 
   public ReviewDTO getReview(int id) {
-    Review ret = null;
+    Review review = null;
     try {
-      ret = reviewRepository.findById(id).get();
+      review = reviewRepository.findById(id).get();
     } catch (NoSuchElementException e) {
       return null;
     }
 
-    return reviewConverter.createDTO(ret);
+    return reviewConverter.createDTO(review);
   }
 
   public Boolean deleteSelectReview(int id) {
@@ -57,7 +56,11 @@ public class ReviewService {
 
   public Boolean patchSelectReview(ReviewDTO reviewDTO) {
     try {
-      reviewRepository.save(reviewConverter.createEntity(reviewDTO));
+      Review review = reviewRepository.findById(reviewDTO.getId()).get();
+      review.setClientName(reviewDTO.getClientName());
+      review.setComment(reviewDTO.getComment());
+      review.setRating(reviewDTO.getRating());
+      reviewRepository.save(review);
     } catch (Exception e) {
       return false;
     }

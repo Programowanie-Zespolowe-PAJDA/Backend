@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Review {
 
-  @Id @GeneratedValue @NotNull private Integer id;
+  @Id @GeneratedValue private Integer id;
 
   @Size(max = 10)
   private Integer rating;
@@ -25,7 +25,7 @@ public class Review {
   @Size(max = 1500)
   private String comment;
 
-  @FutureOrPresent private LocalDateTime reviewTimeStamp;
+  @FutureOrPresent private LocalDateTime createdAt;
 
   @Size(max = 30)
   private String clientName;

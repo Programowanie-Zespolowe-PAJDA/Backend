@@ -13,13 +13,13 @@ import lombok.*;
 @AllArgsConstructor
 public class Tip {
 
-  @Id @GeneratedValue @NotNull private Integer id;
+  @Id @GeneratedValue private Integer id;
 
   private String currency;
 
   @NotNull private Float amount;
 
-  @FutureOrPresent private LocalDateTime paymentTime;
+  @FutureOrPresent private LocalDateTime createdAt;
 
   private String paidWith;
 

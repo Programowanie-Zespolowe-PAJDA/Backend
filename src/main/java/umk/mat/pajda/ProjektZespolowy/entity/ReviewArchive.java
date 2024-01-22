@@ -14,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 public class ReviewArchive {
 
-  @Id @GeneratedValue @NotNull private Integer id;
+  @Id @GeneratedValue private Integer id;
 
   @Size(max = 10)
   private Integer rating;
@@ -22,7 +22,7 @@ public class ReviewArchive {
   @Size(max = 1500)
   private String comment;
 
-  @PastOrPresent private LocalDateTime reviewTimeStamp;
+  @PastOrPresent private LocalDateTime createdAt;
 
   @Size(max = 30)
   private String clientName;

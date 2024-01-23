@@ -14,13 +14,13 @@ public class UserConverter {
   @Autowired private PasswordEncoder passwordEncoder;
 
   public UserDTO createDTO(User user) {
-    UserDTO usesrDTO = new UserDTO();
-    usesrDTO.setId(user.getId());
-    usesrDTO.setName(user.getName());
-    usesrDTO.setMail(user.getMail());
-    usesrDTO.setSurname(user.getSurname());
-    usesrDTO.setLocation(user.getLocation());
-    return usesrDTO;
+    UserDTO userDTO = new UserDTO();
+    userDTO.setId(user.getId());
+    userDTO.setName(user.getName());
+    userDTO.setMail(user.getMail());
+    userDTO.setSurname(user.getSurname());
+    userDTO.setLocation(user.getLocation());
+    return userDTO;
   }
 
   public User createEntity(UserDTO userDTO) {

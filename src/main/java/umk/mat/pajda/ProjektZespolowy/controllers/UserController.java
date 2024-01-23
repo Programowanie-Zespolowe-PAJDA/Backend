@@ -5,9 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
 import umk.mat.pajda.ProjektZespolowy.services.UserService;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
+import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 
 @RequestMapping("/user")
 @RestController
@@ -24,7 +28,13 @@ public class UserController {
 
   @PostMapping("/add")
   @Operation(summary = "POST - Add \"new User\"", description = "Following endpoint adds new User")
-  public ResponseEntity<String> addNewUser(UserDTO userDTO) {
+  public ResponseEntity<String> addNewUser(
+      @Validated(CreatingEntityGroup.class) @RequestBody UserDTO userDTO) {
+    if (!(userDTO.getPassword().equals(userDTO.getRetypedPassword()))) {
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+          .body("adding failed - passwords don't match");
+    }
+
     if (userService.getUser(userDTO.getName()) != null) {
       return ResponseEntity.status(HttpStatus.FOUND).body("adding failed - already exist");
     }
@@ -40,9 +50,19 @@ public class UserController {
   @Operation(
       summary = "PATCH - modify \"User\"",
       description = "Following endpoint modifies a User")
-  public ResponseEntity<String> modUser(@RequestBody UserDTO userDTO) {
+  public ResponseEntity<String> modUser(
+      @Validated(EditingEntityGroup.class) @RequestBody UserDTO userDTO,
+      BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity.badRequest().body("Validation failed: " + bindingResult.getAllErrors());
+    }
+    if (!(userDTO.getPassword().equals(userDTO.getRetypedPassword()))) {
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+          .body("adding failed - passwords don't match");
+    }
+
     if (userService.getUser(userDTO.getId()) == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed - no user with such id");
     }
 
     if (userService.patchSelectedUser(userDTO)) {

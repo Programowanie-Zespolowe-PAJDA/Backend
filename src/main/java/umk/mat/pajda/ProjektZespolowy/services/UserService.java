@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
@@ -17,6 +18,7 @@ public class UserService {
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
   private final UserConverter userConverter;
   private final UserRepository userRepository;
+  @Autowired private PasswordEncoder passwordEncoder;
 
   @Autowired
   public UserService(UserConverter userConverter, UserRepository userRepository) {
@@ -81,7 +83,13 @@ public class UserService {
 
   public boolean patchSelectedUser(UserDTO userDTO) {
     try {
-      userRepository.save(userConverter.createEntity(userDTO));
+      User user = userRepository.findById(userDTO.getId()).get();
+      user.setName(userDTO.getName());
+      user.setMail(userDTO.getMail());
+      user.setSurname(userDTO.getSurname());
+      user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+      user.setLocation(userDTO.getLocation());
+      userRepository.save(user);
     } catch (Exception e) {
       logger.error("patchSelectedUser", e);
       return false;

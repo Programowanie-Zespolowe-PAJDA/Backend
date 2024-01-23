@@ -6,5 +6,6 @@ import umk.mat.pajda.ProjektZespolowy.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-  User findByName(String name);
+    User findByName(String name);
+    User findByMail(String mail);
 }

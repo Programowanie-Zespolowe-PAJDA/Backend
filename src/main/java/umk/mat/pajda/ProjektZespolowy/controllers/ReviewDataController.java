@@ -70,7 +70,8 @@ public class ReviewDataController {
     }
 
     if (reviewService.getReview(reviewDTO.getId()) == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed - no review with such id");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("modifying failed - no review with such id");
     }
 
     if (reviewService.patchSelectReview(reviewDTO)) {

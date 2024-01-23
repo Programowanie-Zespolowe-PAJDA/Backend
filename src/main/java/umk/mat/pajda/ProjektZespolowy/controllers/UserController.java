@@ -62,7 +62,8 @@ public class UserController {
     }
 
     if (userService.getUser(userDTO.getId()) == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed - no user with such id");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("modifying failed - no user with such id");
     }
 
     if (userService.patchSelectedUser(userDTO)) {

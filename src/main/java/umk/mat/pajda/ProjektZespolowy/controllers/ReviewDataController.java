@@ -68,12 +68,14 @@ public class ReviewDataController {
     if (bindingResult.hasErrors()) {
       return ResponseEntity.badRequest().body("Validation failed: " + bindingResult.getAllErrors());
     }
-    if (reviewService.getReview(reviewDTO.getId()) != null) {
-      if (reviewService.patchSelectReview(reviewDTO)) {
-        return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
-      } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
-      }
+
+    if (reviewService.getReview(reviewDTO.getId()) == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("modifying failed - no review with such id");
+    }
+
+    if (reviewService.patchSelectReview(reviewDTO)) {
+      return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
     }

@@ -21,6 +21,7 @@ public class ReviewConverter {
 
   public ReviewDTO createDTO(Review review) {
     ReviewDTO reviewDTO = new ReviewDTO();
+    reviewDTO.setId(review.getId());
     reviewDTO.setCreatedAt(review.getCreatedAt());
     reviewDTO.setRating(review.getRating());
     reviewDTO.setComment(review.getComment());
@@ -30,9 +31,11 @@ public class ReviewConverter {
 
   public Review createEntity(ReviewDTO reviewDTO) {
     Review review = new Review();
+    review.setId(reviewDTO.getId());
     review.setRating(reviewDTO.getRating());
     review.setComment(reviewDTO.getComment());
     review.setCreatedAt(LocalDateTime.now());
+    // TODO - add checks because of optional from .get()
     review.setUser(userRepository.findById(reviewDTO.getUserID()).get());
     review.setClientName(reviewDTO.getClientName());
     review.setHashRevID(reviewDTO.getHashRevID());

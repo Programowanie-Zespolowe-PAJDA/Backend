@@ -66,7 +66,8 @@ public class ReviewDataController {
       @Validated(EditingEntityGroup.class) @RequestBody ReviewDTO reviewDTO,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
-      return ResponseEntity.badRequest().body("Validation failed: " + bindingResult.getAllErrors());
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+          .body("Validation failed: " + bindingResult.getAllErrors());
     }
     if (reviewService.getReview(reviewDTO.getId()) != null) {
       if (reviewService.patchSelectReview(reviewDTO)) {

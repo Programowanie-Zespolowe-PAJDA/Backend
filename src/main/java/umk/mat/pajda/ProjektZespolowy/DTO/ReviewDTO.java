@@ -1,6 +1,5 @@
 package umk.mat.pajda.ProjektZespolowy.DTO;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -9,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
 import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 
@@ -19,7 +19,8 @@ import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 public class ReviewDTO {
   private Integer id;
 
-  @Size(
+  @Range(
+      min = 0,
       max = 10,
       groups = {CreatingEntityGroup.class, EditingEntityGroup.class})
   private Integer rating;
@@ -41,6 +42,5 @@ public class ReviewDTO {
   @Positive(groups = {CreatingEntityGroup.class})
   private Integer userID;
 
-  @FutureOrPresent(groups = {EditingEntityGroup.class})
   private LocalDateTime createdAt;
 }

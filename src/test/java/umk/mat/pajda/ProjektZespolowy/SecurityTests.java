@@ -24,13 +24,13 @@ class SecurityConfigTest {
   }
 
   @Test
-  void shouldIsFoundWhenUnauthenticatedAccessToAuthenticatedTest() throws Exception {
-    mockMvc.perform(get("/authenticated")).andExpect(status().isFound());
+  void shouldIsForbiddenWhenUnauthenticatedAccessToAuthenticatedTest() throws Exception {
+    mockMvc.perform(get("/authenticated")).andExpect(status().isForbidden());
   }
 
   @Test
-  void shouldIsFoundWhenUnauthenticatedAccessToAdminTest() throws Exception {
-    mockMvc.perform(get("/admin")).andExpect(status().isFound());
+  void shouldIsForbiddenWhenUnauthenticatedAccessToAdminTest() throws Exception {
+    mockMvc.perform(get("/admin")).andExpect(status().isForbidden());
   }
 
   @Test

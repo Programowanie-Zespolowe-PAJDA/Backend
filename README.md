@@ -4,20 +4,25 @@ To gain access to the application, add environment variables:
 Example in intelije: 
 1. Open Run/Debug Configurations
 2. Click alt + e, to add field for enviroment variables
-3. add variables:<br> ADMIN_PASSWORD=6fzESmWQptYV;USER_PASSWORD=vYjhpLpM9Bdm;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;DATABASE_DRIVER=org.postgresql.Driver
+3. add variables:<br> DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK
 
 Users for testing:<br><br>
 **USER**<br>
-**login**: user <br>
-**password**: vYjhpLpM9Bdm <br><br>
+**login**: user@user.com <br>
+**password**: vYjhpLpM9Bdm! <br><br>
 **ADMIN**<br>
-**login**: admin <br>
-**password**: 6fzESmWQptYV <br><br>
+**login**: enapiwek@gmail.com <br>
+**password**: 6fzESmWQptYV! <br><br>
 
 
 **production side**: https://enapiwek-api.onrender.com
 
 # Endpoints:
+
+**/login** - (for everyone) return JWT token <br>
+**/register** - (for everyone) create account <br>
+**/refresh** - (for everyone) return refresh token <br>
+
 
 **/hello** - (for everyone) return "hello" <br>
 **/admin** - (for Admin role) return "admin" <br>

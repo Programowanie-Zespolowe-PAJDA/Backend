@@ -1,6 +1,7 @@
 package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,7 @@ public class ReviewDataController {
   }
 
   @PatchMapping("/patch")
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "PATCH - modify \"Review\"",
       description = "Following endpoint modifies a Review")
@@ -81,6 +83,7 @@ public class ReviewDataController {
   }
 
   @DeleteMapping("/del/{id}")
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "DELETE - delete \"Review\"",
       description = "Following endpoint deletes a Review of id")
@@ -94,6 +97,7 @@ public class ReviewDataController {
 
   // TODO - make it so it restricted to one kellner
   @GetMapping("/read")
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "Get - get all \"Review\"",
       description = "Following endpoint returns a Review")
@@ -103,6 +107,7 @@ public class ReviewDataController {
 
   // TODO - make it so it restricted to one kellner
   @GetMapping("/read/{id}")
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "Get - get \"Review\"",
       description = "Following endpoint returns a Review of id")

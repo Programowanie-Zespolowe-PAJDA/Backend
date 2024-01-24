@@ -1,6 +1,7 @@
 package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ public class ExampleEndpointClass {
 
   @GetMapping("/admin")
   @ResponseBody
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "Get \"admin\" message",
       description = "Returns admin when you role is ADMIN")
@@ -29,6 +31,7 @@ public class ExampleEndpointClass {
   }
 
   @GetMapping("/authenticated")
+  @SecurityRequirement(name = "Bearer Authentication")
   @ResponseBody
   @Operation(
       summary = "Get \"authenticated\" message",

@@ -38,11 +38,11 @@ public class SecurityConfig {
     http.authorizeRequests(
             authorize ->
                 authorize
-                    .requestMatchers("/hello", "review/add/**", "/user/read/**")
+                    .requestMatchers("/hello", "review/add/**", "/user/get/**")
                     .permitAll()
                     .requestMatchers("/admin", "/review/del/**", "/review/patch/**", "/user/del/**")
                     .hasRole("ADMIN")
-                    .requestMatchers("/authenticated", "/review/read/**","/user/patch/**")
+                    .requestMatchers("/authenticated", "/review/read/**", "/user/patch/**")
                     .authenticated())
         .sessionManagement(
             manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

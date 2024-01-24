@@ -1,6 +1,7 @@
 package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
 import umk.mat.pajda.ProjektZespolowy.services.UserService;
-import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
 import umk.mat.pajda.ProjektZespolowy.validatorsGroups.EditingEntityGroup;
 
 @RequestMapping("/user")
@@ -27,6 +27,7 @@ public class UserController {
   }
 
   @PatchMapping("/patch")
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "PATCH - modify \"User\"",
       description = "Following endpoint modifies a User")
@@ -54,6 +55,7 @@ public class UserController {
   }
 
   @DeleteMapping("/del/{id}")
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "DELETE - delete \"User\"",
       description = "Following endpoint deletes a User of id")

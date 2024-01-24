@@ -25,6 +25,7 @@ public class UserConverter {
 
   public User createEntity(UserDTO userDTO) {
     User user = new User();
+    user.setId(userDTO.getId());
     user.setName(userDTO.getName());
     user.setMail(userDTO.getMail());
     user.setSurname(userDTO.getSurname());

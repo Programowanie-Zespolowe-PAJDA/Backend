@@ -19,13 +19,10 @@ public class DatabaseConfig {
   @Value("${DATABASE_URL}")
   private String databaseUrl;
 
-  @Value("${DATABASE_DRIVER}")
-  private String databaseDriver;
-
   @Bean
   public DataSource getDataSource() {
     DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-    dataSourceBuilder.driverClassName(databaseDriver);
+    dataSourceBuilder.driverClassName("org.postgresql.Driver");
     dataSourceBuilder.url(databaseUrl);
     dataSourceBuilder.username(databaseUsername);
     dataSourceBuilder.password(databasePassword);

@@ -26,17 +26,6 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  public boolean addUser(UserDTO userDTO) {
-    try {
-      userDTO.setId(null);
-      userRepository.save(userConverter.createEntity(userDTO));
-    } catch (Exception e) {
-      logger.error("addUser", e);
-      return false;
-    }
-    return true;
-  }
-
   public List<UserDTO> getAllUsers() {
     return userConverter.createUserDTOList(userRepository.findAll());
   }

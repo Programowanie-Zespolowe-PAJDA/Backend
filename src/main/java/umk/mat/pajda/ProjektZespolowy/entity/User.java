@@ -5,8 +5,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Setter
@@ -14,7 +18,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
   @Id @GeneratedValue @NotNull private Integer id;
 
@@ -28,6 +32,8 @@ public class User {
 
   private String password;
 
+  private String role;
+
   @Email private String mail;
 
   private String location;
@@ -37,4 +43,34 @@ public class User {
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private List<Review> reviewList;
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return Collections.singleton(() -> role);
+  }
+
+  @Override
+  public String getUsername() {
+    return mail;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }

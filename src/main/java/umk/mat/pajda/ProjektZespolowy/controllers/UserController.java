@@ -26,26 +26,6 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping("/add")
-  @Operation(summary = "POST - Add \"new User\"", description = "Following endpoint adds new User")
-  public ResponseEntity<String> addNewUser(
-      @Validated(CreatingEntityGroup.class) @RequestBody UserDTO userDTO) {
-    if (!(userDTO.getPassword().equals(userDTO.getRetypedPassword()))) {
-      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-          .body("adding failed - passwords don't match");
-    }
-
-    if (userService.getUser(userDTO.getName()) != null) {
-      return ResponseEntity.status(HttpStatus.FOUND).body("adding failed - already exist");
-    }
-
-    if (userService.addUser(userDTO)) {
-      return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
-    } else {
-      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
-    }
-  }
-
   @PatchMapping("/patch")
   @Operation(
       summary = "PATCH - modify \"User\"",

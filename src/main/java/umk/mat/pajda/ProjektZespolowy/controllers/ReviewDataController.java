@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPutPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
 // TODO - if CrossOrigin is fixed remove CrossOrigin annotation
@@ -39,25 +39,25 @@ public class ReviewDataController {
       summary = "POST - Add \"new Review\"",
       description = "Following endpoint adds new Review")
   public ResponseEntity<String> addNewReview(
-      @Valid @RequestBody ReviewPutPostDTO reviewPutPostDTO, BindingResult bindingResult) {
+      @Valid @RequestBody ReviewPatchPostDTO reviewPatchPostDTO, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("Validation failed: " + bindingResult.getAllErrors());
     }
-    if (reviewService.addReview(reviewPutPostDTO)) {
+    if (reviewService.addReview(reviewPatchPostDTO)) {
       return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
     } else {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
     }
   }
 
-  @PutMapping("/{id}")
+  @PatchMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "PUT - modify \"Review\"",
       description = "Following endpoint modifies a Review")
   public ResponseEntity<String> modReview(
-      @Valid @RequestBody ReviewPutPostDTO reviewPutPostDTO,
+      @Valid @RequestBody ReviewPatchPostDTO reviewPatchPostDTO,
       BindingResult bindingResult,
       @PathVariable int id) {
     if (bindingResult.hasErrors()) {
@@ -70,7 +70,7 @@ public class ReviewDataController {
           .body("modifying failed - no review with such id");
     }
 
-    if (reviewService.patchSelectReview(reviewPutPostDTO, id)) {
+    if (reviewService.patchSelectReview(reviewPatchPostDTO, id)) {
       return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");

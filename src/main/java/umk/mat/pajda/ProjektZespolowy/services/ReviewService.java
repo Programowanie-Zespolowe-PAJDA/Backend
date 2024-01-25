@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPutPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
@@ -34,9 +34,9 @@ public class ReviewService {
     this.userRepository = userRepository;
   }
 
-  public Boolean addReview(ReviewPutPostDTO reviewPutPostDTO) {
+  public Boolean addReview(ReviewPatchPostDTO reviewPatchPostDTO) {
     try {
-      reviewRepository.save(reviewConverter.createEntity(reviewPutPostDTO));
+      reviewRepository.save(reviewConverter.createEntity(reviewPatchPostDTO));
     } catch (Exception e) {
       logger.error("addReview", e);
       return false;
@@ -94,12 +94,12 @@ public class ReviewService {
     return true;
   }
 
-  public Boolean patchSelectReview(ReviewPutPostDTO reviewPutPostDTO, int id) {
+  public Boolean patchSelectReview(ReviewPatchPostDTO reviewPatchPostDTO, int id) {
     try {
       Review review = reviewRepository.findById(id).get();
-      review.setClientName(reviewPutPostDTO.getClientName());
-      review.setComment(reviewPutPostDTO.getComment());
-      review.setRating(reviewPutPostDTO.getRating());
+      review.setClientName(reviewPatchPostDTO.getClientName());
+      review.setComment(reviewPatchPostDTO.getComment());
+      review.setRating(reviewPatchPostDTO.getRating());
       reviewRepository.save(review);
     } catch (Exception e) {
       logger.error("patchSelectReview", e);

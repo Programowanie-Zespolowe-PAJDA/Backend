@@ -55,7 +55,7 @@ public class SecurityConfig {
                         "/review/owner/{id}",
                         "/user/profile")
                     .authenticated()
-                    .requestMatchers(HttpMethod.PUT, "/review/{id}")
+                    .requestMatchers(HttpMethod.PATCH, "/review/{id}")
                     .hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/user", "/admin")
                     .hasRole("ADMIN")

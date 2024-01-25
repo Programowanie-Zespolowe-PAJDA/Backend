@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPutPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -31,14 +31,14 @@ public class ReviewConverter {
     return reviewGetDTO;
   }
 
-  public Review createEntity(ReviewPutPostDTO reviewPutPostDTO) {
+  public Review createEntity(ReviewPatchPostDTO reviewPatchPostDTO) {
     Review review = new Review();
-    review.setRating(reviewPutPostDTO.getRating());
-    review.setComment(reviewPutPostDTO.getComment());
+    review.setRating(reviewPatchPostDTO.getRating());
+    review.setComment(reviewPatchPostDTO.getComment());
     review.setCreatedAt(LocalDateTime.now());
-    review.setUser(userRepository.findById(reviewPutPostDTO.getUserID()).get());
-    review.setClientName(reviewPutPostDTO.getClientName());
-    review.setHashRevID(reviewPutPostDTO.getHashRevID());
+    review.setUser(userRepository.findById(reviewPatchPostDTO.getUserID()).get());
+    review.setClientName(reviewPatchPostDTO.getClientName());
+    review.setHashRevID(reviewPatchPostDTO.getHashRevID());
     return review;
   }
 

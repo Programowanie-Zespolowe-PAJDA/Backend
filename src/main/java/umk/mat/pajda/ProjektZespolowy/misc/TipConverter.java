@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import umk.mat.pajda.ProjektZespolowy.DTO.TipGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.TipPutPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.TipPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Tip;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -31,13 +31,13 @@ public class TipConverter {
     return tipGetDTO;
   }
 
-  public Tip createEntity(TipPutPostDTO tipPutPostDTO) {
+  public Tip createEntity(TipPatchPostDTO tipPatchPostDTO) {
     Tip tip = new Tip();
-    tip.setCurrency(tipPutPostDTO.getCurrency());
-    tip.setAmount(tipPutPostDTO.getAmount());
+    tip.setCurrency(tipPatchPostDTO.getCurrency());
+    tip.setAmount(tipPatchPostDTO.getAmount());
     tip.setCreatedAt(LocalDateTime.now());
-    tip.setPaidWith(tipPutPostDTO.getPaidWith());
-    tip.setUser(userRepository.findById(tipPutPostDTO.getUserId()).get());
+    tip.setPaidWith(tipPatchPostDTO.getPaidWith());
+    tip.setUser(userRepository.findById(tipPatchPostDTO.getUserId()).get());
     return tip;
   }
 

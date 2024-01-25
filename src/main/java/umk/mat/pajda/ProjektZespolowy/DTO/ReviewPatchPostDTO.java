@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Range;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewArchivePutPostDTO {
+public class ReviewPatchPostDTO {
   @Range(min = 0, max = 10)
   private Integer rating;
 

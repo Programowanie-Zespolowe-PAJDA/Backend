@@ -31,7 +31,7 @@ Users for testing:<br><br>
 
 
 **[POST] /review** - (for everyone) add a review <br>
-**[PUT] /review/{id}** - (for Admin role) mod a review <br>
+**[PATCH] /review/{id}** - (for Admin role) mod a review <br>
 **[DELETE] /review/{id}** - (for Admin role) delete a review <br>
 **[GET] /review** - (for everyone) get all reviews <br>
 **[GET] /review/{id}** - (for everyone) get a review <br>

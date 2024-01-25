@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewArchiveGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewArchivePutPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewArchivePatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.ReviewArchive;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -30,14 +30,14 @@ public class ReviewArchiveConverter {
     return reviewArchiveGetDTO;
   }
 
-  public ReviewArchive createEntity(ReviewArchivePutPostDTO reviewArchivePutPostDTO) {
+  public ReviewArchive createEntity(ReviewArchivePatchPostDTO reviewArchivePatchPostDTO) {
     ReviewArchive reviewArchive = new ReviewArchive();
-    reviewArchive.setRating(reviewArchivePutPostDTO.getRating());
-    reviewArchive.setComment(reviewArchivePutPostDTO.getComment());
+    reviewArchive.setRating(reviewArchivePatchPostDTO.getRating());
+    reviewArchive.setComment(reviewArchivePatchPostDTO.getComment());
     reviewArchive.setCreatedAt(LocalDateTime.now());
-    reviewArchive.setClientName(reviewArchivePutPostDTO.getClientName());
-    reviewArchive.setHashRevID(reviewArchivePutPostDTO.getHashRevID());
-    reviewArchive.setUser(userRepository.findById(reviewArchivePutPostDTO.getUserID()).get());
+    reviewArchive.setClientName(reviewArchivePatchPostDTO.getClientName());
+    reviewArchive.setHashRevID(reviewArchivePatchPostDTO.getHashRevID());
+    reviewArchive.setUser(userRepository.findById(reviewArchivePatchPostDTO.getUserID()).get());
     return reviewArchive;
   }
 

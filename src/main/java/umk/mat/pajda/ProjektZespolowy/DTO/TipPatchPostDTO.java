@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TipPutPostDTO {
+public class TipPatchPostDTO {
   private String currency;
 
   @NotNull private Float amount;

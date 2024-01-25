@@ -1,3 +1,4 @@
+![pajda](src/main/resources/pajda.jpg)
 # Backend:
 backend as part of team programming<br>
 To gain access to the application, add environment variables:
@@ -19,29 +20,32 @@ Users for testing:<br><br>
 
 # Endpoints:
 
-**/login** - (for everyone) return JWT token <br>
-**/register** - (for everyone) create account <br>
-**/refresh** - (for everyone) return refresh token <br>
+**[POST] /login** - (for everyone) return JWT token <br>
+**[POST] /register** - (for everyone) create account <br>
+**[POST] /refresh** - (for everyone) return refresh token <br>
 
 
-**/hello** - (for everyone) return "hello" <br>
-**/admin** - (for Admin role) return "admin" <br>
-**/authenticated** - (only for authenticated) return "authenticated"<br>
-**/login** - (for everyone) login page <br>
-**/logout** - (for everyone) logout page <br>
+**[GET] /hello** - (for everyone) return "hello" <br>
+**[GET] /admin** - (for Admin role)  return "admin" <br>
+**[GET] /authenticated** - (only for authenticated) return "authenticated"<br>
 
 
-**/review/add** - add a review <br>
-**/review/patch** - mod a review <br>
-**/review/del** - delete a review <br>
-**/review/read** - get all reviews <br>
-**/review/read/{id}** - get a review <br>
+**[POST] /review** - (for everyone) add a review <br>
+**[PUT] /review/{id}** - (for Admin role) mod a review <br>
+**[DELETE] /review/{id}** - (for Admin role) delete a review <br>
+**[GET] /review** - (for everyone) get all reviews <br>
+**[GET] /review/{id}** - (for everyone) get a review <br>
+**[GET] /review/owner** - (only for authenticated) get all owner reviews <br>
+**[GET] /review/owner/{id}** - (only for authenticated) get a owner review <br>
 
-**/user/add** - add a user <br>
-**/user/patch** - mod a user <br>
-**/user/del** - delete a user <br>
-**/user/get** - get all user <br>
-**/user/get/{id}** - get a user <br>
+**[PATCH] /user/editInformations** - (only for authenticated) mod informations of user <br>
+**[PATCH] /user/editPassword** - (only for authenticated) mod password of user <br>
+**[PATCH] /user/editEmail** - (only for authenticated) mod email of user <br>
+**[GET] /user/{id}** - (for everyone)  get a user <br>
+**[GET] /user/profile** - (only for authenticated) get a profile<br>
+**[GET] /user** - (for Admin role) get all users <br>
+**[DELETE] /user** - (only for authenticated) delete account <br>
+**[DELETE] /user/{id}** (for Admin role) delete user <br>
 
 ## Commands:
 **mvn spotless:check** - Formatter check <br>

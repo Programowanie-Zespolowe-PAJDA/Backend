@@ -1,16 +1,14 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
-import umk.mat.pajda.ProjektZespolowy.DTO.JWTAuthenticationResponseDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.RefreshTokenDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.*;
 
 public interface AuthenticationService {
 
-  Boolean register(UserDTO userDTO);
+  Boolean register(RegisterDTO registerDTO);
 
-  JWTAuthenticationResponseDTO login(UserDTO userDTO);
+  JWTAuthenticationResponseDTO login(LoginDTO loginDTO);
 
   JWTAuthenticationResponseDTO refreshToken(RefreshTokenDTO refreshTokenDTO);
 
-  UserDTO getUser(String mail);
+  boolean getUser(String mail);
 }

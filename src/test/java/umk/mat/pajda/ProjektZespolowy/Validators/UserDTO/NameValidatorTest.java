@@ -4,8 +4,7 @@ import jakarta.validation.*;
 import java.util.Set;
 import org.junit.jupiter.api.*;
 import org.springframework.test.context.ActiveProfiles;
-import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
-import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
+import umk.mat.pajda.ProjektZespolowy.DTO.RegisterDTO;
 
 @ActiveProfiles("tests")
 public class NameValidatorTest {
@@ -26,50 +25,50 @@ public class NameValidatorTest {
 
   @Test
   public void shouldFailWhenNoStartsWithUppercaseTest() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setName("te");
-    Set<ConstraintViolation<UserDTO>> violations =
-        validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+    RegisterDTO registerDTO = new RegisterDTO();
+    registerDTO.setName("te");
+    Set<ConstraintViolation<RegisterDTO>> violations =
+        validator.validateProperty(registerDTO, "name");
 
     Assertions.assertFalse(violations.isEmpty());
   }
 
   @Test
   public void shouldFailWhenContainsDigitTest() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setName("Te1");
-    Set<ConstraintViolation<UserDTO>> violations =
-        validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+    RegisterDTO registerDTO = new RegisterDTO();
+    registerDTO.setName("Te1");
+    Set<ConstraintViolation<RegisterDTO>> violations =
+        validator.validateProperty(registerDTO, "name");
 
     Assertions.assertFalse(violations.isEmpty());
   }
 
   @Test
   public void shouldFailWhenContainsSpecialCharacterTest() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setName("Te!");
-    Set<ConstraintViolation<UserDTO>> violations =
-        validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+    RegisterDTO registerDTO = new RegisterDTO();
+    registerDTO.setName("Te!");
+    Set<ConstraintViolation<RegisterDTO>> violations =
+        validator.validateProperty(registerDTO, "name");
 
     Assertions.assertFalse(violations.isEmpty());
   }
 
   @Test
   public void shouldFailWhenUppercaseInsideTest() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setName("TesT");
-    Set<ConstraintViolation<UserDTO>> violations =
-        validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+    RegisterDTO registerDTO = new RegisterDTO();
+    registerDTO.setName("TesT");
+    Set<ConstraintViolation<RegisterDTO>> violations =
+        validator.validateProperty(registerDTO, "name");
 
     Assertions.assertFalse(violations.isEmpty());
   }
 
   @Test
   public void shouldSuccessTest() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setName("Test");
-    Set<ConstraintViolation<UserDTO>> violations =
-        validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+    RegisterDTO registerDTO = new RegisterDTO();
+    registerDTO.setName("Test");
+    Set<ConstraintViolation<RegisterDTO>> violations =
+        validator.validateProperty(registerDTO, "name");
 
     Assertions.assertTrue(violations.isEmpty());
   }

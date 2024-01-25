@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import umk.mat.pajda.ProjektZespolowy.DTO.TipDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.TipGetDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.TipPutPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Tip;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -19,27 +20,29 @@ public class TipConverter {
     this.userRepository = userRepository;
   }
 
-  public TipDTO createDTO(Tip tip) {
-    TipDTO tipDTO = new TipDTO();
-    tipDTO.setCurrency(tip.getCurrency());
-    tipDTO.setAmount(tip.getAmount());
-    tipDTO.setPaidWith(tip.getPaidWith());
-    tipDTO.setCreatedAt(tip.getCreatedAt());
-    return tipDTO;
+  public TipGetDTO createDTO(Tip tip) {
+    TipGetDTO tipGetDTO = new TipGetDTO();
+    tipGetDTO.setId(tip.getId());
+    tipGetDTO.setCurrency(tip.getCurrency());
+    tipGetDTO.setAmount(tip.getAmount());
+    tipGetDTO.setPaidWith(tip.getPaidWith());
+    tipGetDTO.setCreatedAt(tip.getCreatedAt());
+    tipGetDTO.setUserId(tip.getUser().getId());
+    return tipGetDTO;
   }
 
-  public Tip createEntity(TipDTO tipDTO) {
+  public Tip createEntity(TipPutPostDTO tipPutPostDTO) {
     Tip tip = new Tip();
-    tip.setCurrency(tipDTO.getCurrency());
-    tip.setAmount(tipDTO.getAmount());
+    tip.setCurrency(tipPutPostDTO.getCurrency());
+    tip.setAmount(tipPutPostDTO.getAmount());
     tip.setCreatedAt(LocalDateTime.now());
-    tip.setPaidWith(tipDTO.getPaidWith());
-    tip.setUser(userRepository.findById(tipDTO.getUserId()).get());
+    tip.setPaidWith(tipPutPostDTO.getPaidWith());
+    tip.setUser(userRepository.findById(tipPutPostDTO.getUserId()).get());
     return tip;
   }
 
-  public List<TipDTO> createTipDTOList(List<Tip> list) {
-    List<TipDTO> listDTO = list.stream().map(this::createDTO).collect(Collectors.toList());
+  public List<TipGetDTO> createTipDTOList(List<Tip> list) {
+    List<TipGetDTO> listDTO = list.stream().map(this::createDTO).collect(Collectors.toList());
     return listDTO;
   }
 }

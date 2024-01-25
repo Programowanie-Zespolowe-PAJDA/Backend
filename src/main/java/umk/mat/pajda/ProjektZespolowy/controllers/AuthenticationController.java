@@ -2,19 +2,16 @@ package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import umk.mat.pajda.ProjektZespolowy.DTO.JWTAuthenticationResponseDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.RefreshTokenDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
-import umk.mat.pajda.ProjektZespolowy.validatorsGroups.CreatingEntityGroup;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,20 +23,19 @@ public class AuthenticationController {
   @PostMapping("/register")
   @Operation(summary = "POST - Add \"new User\"", description = "Following endpoint adds new User")
   public ResponseEntity<String> register(
-      @Validated(CreatingEntityGroup.class) @RequestBody UserDTO userDTO,
-      BindingResult bindingResult) {
+      @Valid @RequestBody RegisterDTO registerDTO, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("Validation failed: " + bindingResult.getAllErrors());
     }
-    if (!(userDTO.getPassword().equals(userDTO.getRetypedPassword()))) {
+    if (!(registerDTO.getPassword().equals(registerDTO.getRetypedPassword()))) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("adding failed - passwords don't match");
     }
-    if (authenticationService.getUser(userDTO.getMail()) != null) {
+    if (authenticationService.getUser(registerDTO.getMail())) {
       return ResponseEntity.status(HttpStatus.FOUND).body("adding failed - already exist");
     }
-    if (authenticationService.register(userDTO)) {
+    if (authenticationService.register(registerDTO)) {
       return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
     } else {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
@@ -50,8 +46,8 @@ public class AuthenticationController {
   @Operation(
       summary = "POST - get JWT token",
       description = "Following endpoint return JWT Token By User details")
-  public ResponseEntity<JWTAuthenticationResponseDTO> login(@RequestBody UserDTO userDTO) {
-    return ResponseEntity.ok(authenticationService.login(userDTO));
+  public ResponseEntity<JWTAuthenticationResponseDTO> login(@RequestBody LoginDTO loginDTO) {
+    return ResponseEntity.ok(authenticationService.login(loginDTO));
   }
 
   @PostMapping("/refresh")

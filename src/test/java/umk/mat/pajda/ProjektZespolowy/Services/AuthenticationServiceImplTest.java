@@ -16,9 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import umk.mat.pajda.ProjektZespolowy.DTO.JWTAuthenticationResponseDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.RefreshTokenDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
@@ -47,13 +45,13 @@ public class AuthenticationServiceImplTest {
   public void shouldSuccessWhenGetUserTest() {
     String mail = "test@test.com";
     User user = new User();
-    UserDTO userDTO = new UserDTO();
+    UserGetDTO userGetDTO = new UserGetDTO();
     user.setMail(mail);
-    userDTO.setMail(mail);
+    userGetDTO.setMail(mail);
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(user));
-    Mockito.when(userConverter.createDTO(user)).thenReturn(userDTO);
+    Mockito.when(userConverter.createDTO(user)).thenReturn(userGetDTO);
 
-    Assertions.assertEquals(authenticationService.getUser(mail), userDTO);
+    Assertions.assertTrue(authenticationService.getUser(mail));
   }
 
   @Test
@@ -63,41 +61,41 @@ public class AuthenticationServiceImplTest {
     user.setMail(mail);
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.empty());
 
-    Assertions.assertNull(authenticationService.getUser(mail));
+    Assertions.assertFalse(authenticationService.getUser(mail));
   }
 
   @Test
   public void shouldSuccessWhenUserRegisterTest() {
     String mail = "test@test.com";
-    UserDTO userDTO = new UserDTO();
-    userDTO.setMail(mail);
+    RegisterDTO registerDTO = new RegisterDTO();
+    registerDTO.setMail(mail);
     User user = new User();
     user.setMail(mail);
-    Mockito.when(userConverter.createEntity(userDTO)).thenReturn(user);
+    Mockito.when(userConverter.createEntity(registerDTO)).thenReturn(user);
     Mockito.when(userRepository.save(user)).thenReturn(null);
-    Assertions.assertTrue(authenticationService.register(userDTO));
+    Assertions.assertTrue(authenticationService.register(registerDTO));
   }
 
   @Test
   public void shouldFailWhenUserRegisterAndThrowRuntimeExceptionTest() {
     String mail = "test@test.com";
-    UserDTO userDTO = new UserDTO();
-    userDTO.setMail(mail);
+    RegisterDTO registerDTO = new RegisterDTO();
+    registerDTO.setMail(mail);
     User user = new User();
     user.setMail(mail);
-    Mockito.when(userConverter.createEntity(userDTO)).thenReturn(user);
+    Mockito.when(userConverter.createEntity(registerDTO)).thenReturn(user);
     Mockito.when(userRepository.save(user)).thenThrow(new RuntimeException());
 
-    Assertions.assertFalse(authenticationService.register(userDTO));
+    Assertions.assertFalse(authenticationService.register(registerDTO));
   }
 
   @Test
   public void shouldSuccessWhenUserLoginTest() {
     String mail = "test@test.com";
     String password = "Testt!123";
-    UserDTO userDTO = new UserDTO();
-    userDTO.setMail(mail);
-    userDTO.setPassword(password);
+    LoginDTO loginDTO = new LoginDTO();
+    loginDTO.setMail(mail);
+    loginDTO.setPassword(password);
     User user = new User();
     user.setMail(mail);
     user.setPassword(password);
@@ -105,32 +103,32 @@ public class AuthenticationServiceImplTest {
     jwtAuthenticationResponseDTO.setToken("token");
     jwtAuthenticationResponseDTO.setRefreshToken("refreshToken");
     Authentication authentication = Mockito.mock(Authentication.class);
-    Mockito.when(userRepository.findByMail(userDTO.getMail())).thenReturn(Optional.of(user));
+    Mockito.when(userRepository.findByMail(loginDTO.getMail())).thenReturn(Optional.of(user));
     Mockito.when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
         .thenReturn(authentication);
     Mockito.when(jwtService.generateToken(user)).thenReturn("token");
     Mockito.when(jwtService.generateRefreshToken(new HashMap<>(), user)).thenReturn("refreshToken");
 
     Assertions.assertEquals(
-        authenticationService.login(userDTO).getToken(), jwtAuthenticationResponseDTO.getToken());
+        authenticationService.login(loginDTO).getToken(), jwtAuthenticationResponseDTO.getToken());
     Assertions.assertEquals(
-        authenticationService.login(userDTO).getRefreshToken(),
+        authenticationService.login(loginDTO).getRefreshToken(),
         jwtAuthenticationResponseDTO.getRefreshToken());
   }
 
   @Test
   public void shouldFailWhenUserLoginAndThrowAuthenticationExceptionTest() {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setMail("test@test.com");
-    userDTO.setPassword("Testt!123");
-    Mockito.when(userRepository.findByMail(userDTO.getMail())).thenReturn(Optional.of(new User()));
+    LoginDTO loginDTO = new LoginDTO();
+    loginDTO.setMail("test@test.com");
+    loginDTO.setPassword("Testt!123");
+    Mockito.when(userRepository.findByMail(loginDTO.getMail())).thenReturn(Optional.of(new User()));
     Mockito.when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
         .thenThrow(Mockito.mock(AuthenticationException.class));
 
     Assertions.assertThrows(
         AuthenticationException.class,
         () -> {
-          authenticationService.login(userDTO);
+          authenticationService.login(loginDTO);
         });
   }
 

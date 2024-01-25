@@ -3,6 +3,7 @@ package umk.mat.pajda.ProjektZespolowy.configs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,12 +39,28 @@ public class SecurityConfig {
     http.authorizeRequests(
             authorize ->
                 authorize
-                    .requestMatchers("/hello", "review/add/**", "/user/get/**")
+                    .requestMatchers(HttpMethod.POST, "/review", "/login", "/register", "/refresh")
                     .permitAll()
-                    .requestMatchers("/admin", "/review/del/**", "/review/patch/**", "/user/del/**")
+                    .requestMatchers(
+                        HttpMethod.GET, "/hello", "/user/{id}", "/review", "/review/{id}")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.PATCH, "/user/*")
+                    .authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/user")
+                    .authenticated()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/authenticated",
+                        "/review/owner",
+                        "/review/owner/{id}",
+                        "/user/profile")
+                    .authenticated()
+                    .requestMatchers(HttpMethod.PUT, "/review/{id}")
                     .hasRole("ADMIN")
-                    .requestMatchers("/authenticated", "/review/read/**", "/user/patch/**")
-                    .authenticated())
+                    .requestMatchers(HttpMethod.GET, "/user", "/admin")
+                    .hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/review/{id}", "/user/{id}")
+                    .hasRole("ADMIN"))
         .sessionManagement(
             manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider())

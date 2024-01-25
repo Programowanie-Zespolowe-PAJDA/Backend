@@ -4,41 +4,65 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
+import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Component
 public class UserConverter {
 
   private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
 
-  public UserConverter(PasswordEncoder passwordEncoder) {
+  public UserConverter(PasswordEncoder passwordEncoder, UserRepository userRepository) {
     this.passwordEncoder = passwordEncoder;
+    this.userRepository = userRepository;
   }
 
-  public UserDTO createDTO(User user) {
-    UserDTO userDTO = new UserDTO();
-    userDTO.setId(user.getId());
-    userDTO.setName(user.getName());
-    userDTO.setMail(user.getMail());
-    userDTO.setSurname(user.getSurname());
-    userDTO.setLocation(user.getLocation());
-    return userDTO;
+  public UserGetDTO createDTO(User user) {
+    UserGetDTO userGetDTO = new UserGetDTO();
+    userGetDTO.setId(user.getId());
+    userGetDTO.setName(user.getName());
+    userGetDTO.setMail(user.getMail());
+    userGetDTO.setSurname(user.getSurname());
+    userGetDTO.setLocation(user.getLocation());
+    return userGetDTO;
   }
 
-  public User createEntity(UserDTO userDTO) {
+  public User createEntity(RegisterDTO registerDTO) {
     User user = new User();
-    user.setMail(userDTO.getMail());
-    user.setName(userDTO.getName());
-    user.setSurname(userDTO.getSurname());
-    user.setLocation(userDTO.getLocation());
-    user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+    user.setMail(registerDTO.getMail());
+    user.setName(registerDTO.getName());
+    user.setSurname(registerDTO.getSurname());
+    user.setLocation(registerDTO.getLocation());
+    user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
     user.setRole("ROLE_USER");
     return user;
   }
 
-  public List<UserDTO> createUserDTOList(List<User> list) {
-    List<UserDTO> listDTO = list.stream().map(this::createDTO).collect(Collectors.toList());
+  public User updateInformationsOfEntity(
+      UserPatchInformationsDTO userPatchInformationsDTO, String mail) {
+    User user = userRepository.findByMail(mail).get();
+    user.setName(userPatchInformationsDTO.getName());
+    user.setSurname(userPatchInformationsDTO.getSurname());
+    user.setLocation(userPatchInformationsDTO.getLocation());
+    return user;
+  }
+
+  public User updatePasswordOfEntity(UserPatchPasswordDTO userPatchPasswordDTO, String mail) {
+    User user = userRepository.findByMail(mail).get();
+    user.setPassword(passwordEncoder.encode(userPatchPasswordDTO.getPassword()));
+    return user;
+  }
+
+  public User updateEmailOfEntity(UserPatchEmailDTO userPatchEmailDTO, String mail) {
+    User user = userRepository.findByMail(mail).get();
+    user.setMail(userPatchEmailDTO.getMail());
+    return user;
+  }
+
+  public List<UserGetDTO> createUserDTOList(List<User> list) {
+    List<UserGetDTO> listDTO = list.stream().map(this::createDTO).collect(Collectors.toList());
     return listDTO;
   }
 }

@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import umk.mat.pajda.ProjektZespolowy.DTO.JWTAuthenticationResponseDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.RefreshTokenDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.UserDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
@@ -30,9 +28,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private final JWTService jwtService;
   private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-  public Boolean register(UserDTO userDTO) {
+  public Boolean register(RegisterDTO registerDTO) {
     try {
-      userRepository.save(userConverter.createEntity(userDTO));
+      userRepository.save(userConverter.createEntity(registerDTO));
     } catch (Exception e) {
       logger.error("addUser", e);
       return false;
@@ -40,11 +38,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return true;
   }
 
-  public JWTAuthenticationResponseDTO login(UserDTO userDTO) {
+  public JWTAuthenticationResponseDTO login(LoginDTO loginDTO) {
     authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(userDTO.getMail(), userDTO.getPassword()));
+        new UsernamePasswordAuthenticationToken(loginDTO.getMail(), loginDTO.getPassword()));
     var user =
-        userRepository.findByMail(userDTO.getMail()).orElseThrow(IllegalArgumentException::new);
+        userRepository.findByMail(loginDTO.getMail()).orElseThrow(IllegalArgumentException::new);
     var jwt = jwtService.generateToken(user);
     var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
@@ -68,17 +66,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return null;
   }
 
-  public UserDTO getUser(String mail) {
-    User user = null;
+  public boolean getUser(String mail) {
     try {
-      user = userRepository.findByMail(mail).get();
+      userRepository.findByMail(mail).get();
     } catch (NoSuchElementException e) {
-      logger.error("getUser(string)", e);
-      return null;
+      return false;
     }
-    if (user == null) {
-      return null;
-    }
-    return userConverter.createDTO(user);
+    return true;
   }
 }

@@ -25,19 +25,21 @@ public class AuthServiceImplTest {
   }
 
   @Test
-  public void shouldSuccesTest() {
+  public void shouldSuccessTest() {
     String mail = "test@test.com";
     User testUser = new User();
     testUser.setMail(mail);
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(testUser));
     UserDetails userDetails = authService.userDetailsService().loadUserByUsername(mail);
+
     Assertions.assertEquals(testUser.getMail(), userDetails.getUsername());
   }
 
   @Test
-  public void shouldThrowExceptionWhenUserNotFoundTest() {
+  public void shouldThrowUsernameNotFoundExceptionWhenUserNotFoundTest() {
     String mail = "test@test.com";
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.empty());
+
     Assertions.assertThrows(
         UsernameNotFoundException.class,
         () -> {

@@ -30,6 +30,7 @@ public class NameValidatorTest {
     userDTO.setName("te");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -39,6 +40,7 @@ public class NameValidatorTest {
     userDTO.setName("Te1");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -48,6 +50,7 @@ public class NameValidatorTest {
     userDTO.setName("Te!");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -57,6 +60,7 @@ public class NameValidatorTest {
     userDTO.setName("TesT");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -66,6 +70,7 @@ public class NameValidatorTest {
     userDTO.setName("Test");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "name", CreatingEntityGroup.class);
+
     Assertions.assertTrue(violations.isEmpty());
   }
 }

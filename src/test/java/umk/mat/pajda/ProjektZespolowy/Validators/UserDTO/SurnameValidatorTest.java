@@ -30,6 +30,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("te");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -39,6 +40,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("Te1");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -48,6 +50,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("Te!");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -57,6 +60,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("Test-Test-Test");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -66,6 +70,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("Test Test Test");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -75,6 +80,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("TestTestTest");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -84,6 +90,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("Test");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertTrue(violations.isEmpty());
   }
 
@@ -93,6 +100,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("Test-Test");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertTrue(violations.isEmpty());
   }
 
@@ -102,6 +110,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("TestTest");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertTrue(violations.isEmpty());
   }
 
@@ -111,6 +120,7 @@ public class SurnameValidatorTest {
     userDTO.setSurname("Test Test");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "surname", CreatingEntityGroup.class);
+
     Assertions.assertTrue(violations.isEmpty());
   }
 }

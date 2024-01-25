@@ -39,6 +39,7 @@ public class PasswordValidatorTest {
     userDTO.setPassword("BBBBB1!B");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -48,6 +49,7 @@ public class PasswordValidatorTest {
     userDTO.setPassword("testtt!B");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -57,6 +59,7 @@ public class PasswordValidatorTest {
     userDTO.setPassword("testtt1B");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
+
     Assertions.assertFalse(violations.isEmpty());
   }
 
@@ -66,6 +69,7 @@ public class PasswordValidatorTest {
     userDTO.setPassword("testt!1B");
     Set<ConstraintViolation<UserDTO>> violations =
         validator.validateProperty(userDTO, "password", CreatingEntityGroup.class);
+
     Assertions.assertTrue(violations.isEmpty());
   }
 }

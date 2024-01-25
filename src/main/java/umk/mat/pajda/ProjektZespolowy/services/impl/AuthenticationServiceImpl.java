@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.JWTAuthenticationResponseDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.RefreshTokenDTO;
@@ -24,8 +23,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   private final UserRepository userRepository;
 
-  private final PasswordEncoder passwordEncoder;
-
   private final AuthenticationManager authenticationManager;
 
   private final UserConverter userConverter;
@@ -35,14 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   public Boolean register(UserDTO userDTO) {
     try {
-      User user = new User();
-      user.setMail(userDTO.getMail());
-      user.setName(userDTO.getName());
-      user.setSurname(userDTO.getSurname());
-      user.setLocation(userDTO.getLocation());
-      user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-      user.setRole("ROLE_USER");
-      userRepository.save(user);
+      userRepository.save(userConverter.createEntity(userDTO));
     } catch (Exception e) {
       logger.error("addUser", e);
       return false;

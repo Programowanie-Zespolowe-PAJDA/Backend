@@ -65,7 +65,7 @@ public class ReviewDataController {
           .body("Validation failed: " + bindingResult.getAllErrors());
     }
 
-    if (reviewService.getReview(id, null) == null) {
+    if (reviewService.getReview(id) == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND)
           .body("modifying failed - no review with such id");
     }

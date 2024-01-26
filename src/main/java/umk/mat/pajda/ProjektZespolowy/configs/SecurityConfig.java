@@ -39,7 +39,11 @@ public class SecurityConfig {
     http.authorizeRequests(
             authorize ->
                 authorize
-                    .requestMatchers(HttpMethod.PATCH, "/user/*")
+                    .requestMatchers(
+                        HttpMethod.PATCH,
+                        "/user/editInformations",
+                        "/user/editPassword",
+                        "/user/editEmail")
                     .authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/user")
                     .authenticated()

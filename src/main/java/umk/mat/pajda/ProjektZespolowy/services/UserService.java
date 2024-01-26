@@ -1,5 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.slf4j.Logger;
@@ -70,6 +71,7 @@ public class UserService {
     return true;
   }
 
+  @Transactional
   public boolean deleteSelectedUser(String email) {
     try {
       userRepository.deleteByMail(email);

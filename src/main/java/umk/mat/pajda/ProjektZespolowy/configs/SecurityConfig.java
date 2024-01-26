@@ -39,11 +39,6 @@ public class SecurityConfig {
     http.authorizeRequests(
             authorize ->
                 authorize
-                    .requestMatchers(HttpMethod.POST, "/review", "/login", "/register", "/refresh")
-                    .permitAll()
-                    .requestMatchers(
-                        HttpMethod.GET, "/hello", "/user/{id}", "/review", "/review/{id}")
-                    .permitAll()
                     .requestMatchers(HttpMethod.PATCH, "/user/*")
                     .authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/user")
@@ -60,7 +55,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/user", "/admin")
                     .hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/review/{id}", "/user/{id}")
-                    .hasRole("ADMIN"))
+                    .hasRole("ADMIN")
+                    .anyRequest()
+                    .permitAll())
         .sessionManagement(
             manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider())

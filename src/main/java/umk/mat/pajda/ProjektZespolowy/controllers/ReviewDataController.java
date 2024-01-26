@@ -54,7 +54,7 @@ public class ReviewDataController {
   @PatchMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "PUT - modify \"Review\"",
+      summary = "PATCH - modify \"Review\"",
       description = "Following endpoint modifies a Review")
   public ResponseEntity<String> modReview(
       @Valid @RequestBody ReviewPatchPostDTO reviewPatchPostDTO,

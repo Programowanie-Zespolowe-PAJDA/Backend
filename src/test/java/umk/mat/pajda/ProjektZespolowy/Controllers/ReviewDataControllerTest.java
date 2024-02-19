@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -68,16 +69,17 @@ public class ReviewDataControllerTest {
         ReviewPatchPostDTO review = new ReviewPatchPostDTO();
         review.setComment("test");
         review.setRating(5);
-        review.setClientName("asdasdas");
-        review.setHashRevID("aasdad");
+        review.setClientName("delta");
+        review.setHashRevID("adsads");
         review.setUserID(5);
 
 
         //When
-        when(reviewService.addReview(any(ReviewPatchPostDTO.class))).thenReturn(true);
+        when(reviewService.addReview(any(ReviewPatchPostDTO.class))).thenReturn(false);
 
         //Then
-        mockMvc.perform(post("/review").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/review").with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isCreated());
     }
@@ -99,7 +101,7 @@ public class ReviewDataControllerTest {
         when(reviewService.patchSelectReview(any(ReviewPatchPostDTO.class),any(int.class))).thenReturn(true);
 
         //Then
-        mockMvc.perform(patch("/5").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(patch("/5").with(SecurityMockMvcRequestPostProcessors.csrf()).contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(review)))
                 .andExpect(status().isOk());
     }
@@ -159,7 +161,7 @@ public class ReviewDataControllerTest {
         //When
         when(reviewService.deleteSelectReview(any(Integer.class))).thenReturn(true);
         //Then
-        mockMvc.perform(delete("/review/1")).andExpect(status().isOk());
+        mockMvc.perform(delete("/review/1").with(SecurityMockMvcRequestPostProcessors.csrf())).andExpect(status().isOk());
     }
 
 

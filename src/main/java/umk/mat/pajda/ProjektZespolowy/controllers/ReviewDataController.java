@@ -16,7 +16,6 @@ import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
-// TODO - if CrossOrigin is fixed remove CrossOrigin annotation
 
 @RequestMapping("/review")
 @RestController

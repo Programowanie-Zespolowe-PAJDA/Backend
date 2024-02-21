@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewArchiveDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewArchiveGetDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewArchivePatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.ReviewArchive;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -19,28 +20,29 @@ public class ReviewArchiveConverter {
     this.userRepository = userRepository;
   }
 
-  public ReviewArchiveDTO createDTO(ReviewArchive reviewArchive) {
-    ReviewArchiveDTO reviewArchiveDTO = new ReviewArchiveDTO();
-    reviewArchiveDTO.setCreatedAt(reviewArchive.getCreatedAt());
-    reviewArchiveDTO.setRating(reviewArchive.getRating());
-    reviewArchiveDTO.setComment(reviewArchive.getComment());
-    reviewArchiveDTO.setClientName(reviewArchive.getClientName());
-    return reviewArchiveDTO;
+  public ReviewArchiveGetDTO createDTO(ReviewArchive reviewArchive) {
+    ReviewArchiveGetDTO reviewArchiveGetDTO = new ReviewArchiveGetDTO();
+    reviewArchiveGetDTO.setCreatedAt(reviewArchive.getCreatedAt());
+    reviewArchiveGetDTO.setRating(reviewArchive.getRating());
+    reviewArchiveGetDTO.setComment(reviewArchive.getComment());
+    reviewArchiveGetDTO.setClientName(reviewArchive.getClientName());
+    reviewArchiveGetDTO.setUserID(reviewArchive.getUser().getId());
+    return reviewArchiveGetDTO;
   }
 
-  public ReviewArchive createEntity(ReviewArchiveDTO reviewArchiveDTO) {
+  public ReviewArchive createEntity(ReviewArchivePatchPostDTO reviewArchivePatchPostDTO) {
     ReviewArchive reviewArchive = new ReviewArchive();
-    reviewArchive.setRating(reviewArchiveDTO.getRating());
-    reviewArchive.setComment(reviewArchiveDTO.getComment());
+    reviewArchive.setRating(reviewArchivePatchPostDTO.getRating());
+    reviewArchive.setComment(reviewArchivePatchPostDTO.getComment());
     reviewArchive.setCreatedAt(LocalDateTime.now());
-    reviewArchive.setClientName(reviewArchiveDTO.getClientName());
-    reviewArchive.setHashRevID(reviewArchiveDTO.getHashRevID());
-    reviewArchive.setUser(userRepository.findById(reviewArchiveDTO.getUserID()).get());
+    reviewArchive.setClientName(reviewArchivePatchPostDTO.getClientName());
+    reviewArchive.setHashRevID(reviewArchivePatchPostDTO.getHashRevID());
+    reviewArchive.setUser(userRepository.findById(reviewArchivePatchPostDTO.getUserID()).get());
     return reviewArchive;
   }
 
-  public List<ReviewArchiveDTO> createReviewArchiveDTOList(List<ReviewArchive> list) {
-    List<ReviewArchiveDTO> listDTO =
+  public List<ReviewArchiveGetDTO> createReviewArchiveDTOList(List<ReviewArchive> list) {
+    List<ReviewArchiveGetDTO> listDTO =
         list.stream().map(this::createDTO).collect(Collectors.toList());
     return listDTO;
   }

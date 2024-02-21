@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -19,31 +20,30 @@ public class ReviewConverter {
     this.userRepository = userRepository;
   }
 
-  public ReviewDTO createDTO(Review review) {
-    ReviewDTO reviewDTO = new ReviewDTO();
-    reviewDTO.setId(review.getId());
-    reviewDTO.setCreatedAt(review.getCreatedAt());
-    reviewDTO.setRating(review.getRating());
-    reviewDTO.setComment(review.getComment());
-    reviewDTO.setClientName(review.getClientName());
-    return reviewDTO;
+  public ReviewGetDTO createDTO(Review review) {
+    ReviewGetDTO reviewGetDTO = new ReviewGetDTO();
+    reviewGetDTO.setId(review.getId());
+    reviewGetDTO.setCreatedAt(review.getCreatedAt());
+    reviewGetDTO.setRating(review.getRating());
+    reviewGetDTO.setComment(review.getComment());
+    reviewGetDTO.setClientName(review.getClientName());
+    reviewGetDTO.setUserID(review.getUser().getId());
+    return reviewGetDTO;
   }
 
-  public Review createEntity(ReviewDTO reviewDTO) {
+  public Review createEntity(ReviewPatchPostDTO reviewPatchPostDTO) {
     Review review = new Review();
-    review.setId(reviewDTO.getId());
-    review.setRating(reviewDTO.getRating());
-    review.setComment(reviewDTO.getComment());
+    review.setRating(reviewPatchPostDTO.getRating());
+    review.setComment(reviewPatchPostDTO.getComment());
     review.setCreatedAt(LocalDateTime.now());
-    // TODO - add checks because of optional from .get()
-    review.setUser(userRepository.findById(reviewDTO.getUserID()).get());
-    review.setClientName(reviewDTO.getClientName());
-    review.setHashRevID(reviewDTO.getHashRevID());
+    review.setUser(userRepository.findById(reviewPatchPostDTO.getUserID()).get());
+    review.setClientName(reviewPatchPostDTO.getClientName());
+    review.setHashRevID(reviewPatchPostDTO.getHashRevID());
     return review;
   }
 
-  public List<ReviewDTO> createReviewDTOList(List<Review> list) {
-    List<ReviewDTO> listDTO = list.stream().map(this::createDTO).collect(Collectors.toList());
+  public List<ReviewGetDTO> createReviewDTOList(List<Review> list) {
+    List<ReviewGetDTO> listDTO = list.stream().map(this::createDTO).collect(Collectors.toList());
     return listDTO;
   }
 }

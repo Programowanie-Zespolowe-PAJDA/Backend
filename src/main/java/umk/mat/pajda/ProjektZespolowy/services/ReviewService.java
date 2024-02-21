@@ -2,14 +2,18 @@ package umk.mat.pajda.ProjektZespolowy.services;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
+import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
+import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Service
 public class ReviewService {
@@ -18,16 +22,21 @@ public class ReviewService {
   private final ReviewRepository reviewRepository;
   private final ReviewConverter reviewConverter;
 
+  private final UserRepository userRepository;
+
   @Autowired
-  public ReviewService(ReviewRepository reviewRepository, ReviewConverter reviewConverter) {
+  public ReviewService(
+      ReviewRepository reviewRepository,
+      ReviewConverter reviewConverter,
+      UserRepository userRepository) {
     this.reviewRepository = reviewRepository;
     this.reviewConverter = reviewConverter;
+    this.userRepository = userRepository;
   }
 
-  public Boolean addReview(ReviewDTO reviewDTO) {
+  public Boolean addReview(ReviewPatchPostDTO reviewPatchPostDTO) {
     try {
-      reviewDTO.setId(null);
-      reviewRepository.save(reviewConverter.createEntity(reviewDTO));
+      reviewRepository.save(reviewConverter.createEntity(reviewPatchPostDTO));
     } catch (Exception e) {
       logger.error("addReview", e);
       return false;
@@ -35,11 +44,19 @@ public class ReviewService {
     return true;
   }
 
-  public List<ReviewDTO> getAllReviews() {
+  public List<ReviewGetDTO> getAllReviews() {
     return reviewConverter.createReviewDTOList(reviewRepository.findAll());
   }
 
-  public ReviewDTO getReview(int id) {
+  public List<ReviewGetDTO> getAllReviews(String email) {
+    Optional<User> user = userRepository.findByMail(email);
+    if (user.isPresent()) {
+      return reviewConverter.createReviewDTOList(reviewRepository.findAllByUser(user.get()));
+    }
+    return null;
+  }
+
+  public ReviewGetDTO getReview(int id) {
     Review review = null;
     try {
       review = reviewRepository.findById(id).get();
@@ -50,7 +67,20 @@ public class ReviewService {
     if (review == null) {
       return null;
     }
+    return reviewConverter.createDTO(review);
+  }
 
+  public ReviewGetDTO getReview(int id, String email) {
+    Review review = null;
+    try {
+      review = reviewRepository.findByIdAndUser(id, userRepository.findByMail(email).get());
+    } catch (NoSuchElementException e) {
+      logger.error("getReview", e);
+      return null;
+    }
+    if (review == null) {
+      return null;
+    }
     return reviewConverter.createDTO(review);
   }
 
@@ -64,12 +94,12 @@ public class ReviewService {
     return true;
   }
 
-  public Boolean patchSelectReview(ReviewDTO reviewDTO) {
+  public Boolean patchSelectReview(ReviewPatchPostDTO reviewPatchPostDTO, int id) {
     try {
-      Review review = reviewRepository.findById(reviewDTO.getId()).get();
-      review.setClientName(reviewDTO.getClientName());
-      review.setComment(reviewDTO.getComment());
-      review.setRating(reviewDTO.getRating());
+      Review review = reviewRepository.findById(id).get();
+      review.setClientName(reviewPatchPostDTO.getClientName());
+      review.setComment(reviewPatchPostDTO.getComment());
+      review.setRating(reviewPatchPostDTO.getRating());
       reviewRepository.save(review);
     } catch (Exception e) {
       logger.error("patchSelectReview", e);

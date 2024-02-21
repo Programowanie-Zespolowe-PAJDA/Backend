@@ -1,47 +1,37 @@
 package umk.mat.pajda.ProjektZespolowy.configs;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import umk.mat.pajda.ProjektZespolowy.services.AuthService;
 
 @Configuration
+@RequiredArgsConstructor
+@EnableWebSecurity
 public class SecurityConfig {
 
-  private String userPassword;
-
-  private String adminPassword;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final AuthService authService;
 
   @Bean
-  @Profile("!tests")
-  public UserDetailsService userDetailsService() {
-    userPassword = System.getenv("USER_PASSWORD");
-    adminPassword = System.getenv("ADMIN_PASSWORD");
-    UserDetails user =
-        User.builder()
-            .username("user")
-            .password(passwordEncoder().encode(userPassword))
-            .roles("USER")
-            .build();
-
-    UserDetails admin =
-        User.builder()
-            .username("admin")
-            .password(passwordEncoder().encode(adminPassword))
-            .roles("ADMIN")
-            .build();
-
-    return new InMemoryUserDetailsManager(user, admin);
+  public AuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+    authenticationProvider.setUserDetailsService(authService.userDetailsService());
+    authenticationProvider.setPasswordEncoder(passwordEncoder());
+    return authenticationProvider;
   }
 
   @Bean
@@ -49,24 +39,45 @@ public class SecurityConfig {
     http.authorizeRequests(
             authorize ->
                 authorize
-                    .requestMatchers("/hello")
-                    .permitAll()
-                    .requestMatchers("/admin")
+                    .requestMatchers(
+                        HttpMethod.PATCH,
+                        "/user/editInformations",
+                        "/user/editPassword",
+                        "/user/editEmail")
+                    .authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/user")
+                    .authenticated()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/authenticated",
+                        "/review/owner",
+                        "/review/owner/{id}",
+                        "/user/profile")
+                    .authenticated()
+                    .requestMatchers(HttpMethod.PATCH, "/review/{id}")
                     .hasRole("ADMIN")
-                    .requestMatchers("/authenticated")
-                    .authenticated())
-        .formLogin(withDefaults());
+                    .requestMatchers(HttpMethod.GET, "/user", "/admin")
+                    .hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/review/{id}", "/user/{id}")
+                    .hasRole("ADMIN")
+                    .anyRequest()
+                    .permitAll())
+        .sessionManagement(
+            manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authenticationProvider(authenticationProvider())
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .csrf(AbstractHttpConfigurer::disable);
     return http.build();
-  }
-
-  // TODO - fix spring security for review endpoints remove Temporary solution
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring().requestMatchers("/review/**", "/user/**");
   }
 
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+      throws Exception {
+    return configuration.getAuthenticationManager();
   }
 }

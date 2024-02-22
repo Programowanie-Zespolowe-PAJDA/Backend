@@ -7,15 +7,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -38,17 +37,28 @@ public class ReviewDataControllerTest {
 
   @MockBean private ReviewService reviewService;
 
-  @Mock private AuthenticationManager authenticationManager;
+  @MockBean private AuthenticationManager authenticationManager;
 
   @MockBean private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @Mock private JWTService jwtService;
+  @MockBean private JWTService jwtService;
 
-  @InjectMocks private AuthenticationServiceImpl authenticationService;
+  @MockBean private AuthenticationServiceImpl authenticationService;
 
   @Autowired private ObjectMapper objectMapper;
 
+  @TestConfiguration
+  static class TestConfig {
 
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtFilterRegistrationBean(
+        JwtAuthenticationFilter jwtFilter) {
+      FilterRegistrationBean<JwtAuthenticationFilter> registrationBean =
+          new FilterRegistrationBean<>(jwtFilter);
+      registrationBean.setEnabled(false);
+      return registrationBean;
+    }
+  }
 
   @Test
   @WithMockUser(roles = "")
@@ -71,8 +81,7 @@ public class ReviewDataControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(review)))
-        .andExpect(status().isOk());
-    // TODO - fix issues regardi not correct return it should return 201
+        .andExpect(status().isCreated());
   }
 
   @Test
@@ -154,10 +163,12 @@ public class ReviewDataControllerTest {
   @WithMockUser(roles = "USER")
   public void reviewControllerTest_getSelectedReviewOfUser_status() throws Exception {
     // When
-    when(reviewService.getReview(any(Integer.class))).thenReturn(new ReviewGetDTO());
+    when(reviewService.getReview(any(Integer.class), any(String.class)))
+        .thenReturn(new ReviewGetDTO());
     // Then
     mockMvc.perform(get("/review/owner/1")).andExpect(status().isOk());
   }
+
   @Test
   @WithMockUser(roles = "USER")
   public void reviewControllerTest_getSelectedReviewOfUser_IsValidJson() throws Exception {

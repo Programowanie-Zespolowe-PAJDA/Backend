@@ -16,7 +16,6 @@ import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
-
 @RequestMapping("/review")
 @RestController
 @Tag(

@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
                     + "and assess his skills. Backend API Documentation ",
             version = "v0.1"))
 public class ProjektZespolowyApplication {
+
   @Bean
   public RestTemplate restTemplate(RestTemplateBuilder builder) {
     return builder.build();

@@ -18,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
+import umk.mat.pajda.ProjektZespolowy.misc.NotEnabledException;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
@@ -51,7 +52,7 @@ public class AuthenticationServiceImplTest {
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(user));
     Mockito.when(userConverter.createDTO(user)).thenReturn(userGetDTO);
 
-    Assertions.assertTrue(authenticationService.getUser(mail));
+    Assertions.assertNotNull(authenticationService.getUser(mail));
   }
 
   @Test
@@ -61,7 +62,7 @@ public class AuthenticationServiceImplTest {
     user.setMail(mail);
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.empty());
 
-    Assertions.assertFalse(authenticationService.getUser(mail));
+    Assertions.assertNull(authenticationService.getUser(mail));
   }
 
   @Test
@@ -73,6 +74,7 @@ public class AuthenticationServiceImplTest {
     user.setMail(mail);
     Mockito.when(userConverter.createEntity(registerDTO)).thenReturn(user);
     Mockito.when(userRepository.save(user)).thenReturn(null);
+
     Assertions.assertTrue(authenticationService.register(registerDTO));
   }
 
@@ -90,7 +92,7 @@ public class AuthenticationServiceImplTest {
   }
 
   @Test
-  public void shouldSuccessWhenUserLoginTest() {
+  public void shouldSuccessWhenUserLoginTest() throws NotEnabledException {
     String mail = "test@test.com";
     String password = "Testt!123";
     LoginDTO loginDTO = new LoginDTO();
@@ -99,6 +101,7 @@ public class AuthenticationServiceImplTest {
     User user = new User();
     user.setMail(mail);
     user.setPassword(password);
+    user.setEnabled(true);
     JWTAuthenticationResponseDTO jwtAuthenticationResponseDTO = new JWTAuthenticationResponseDTO();
     jwtAuthenticationResponseDTO.setToken("token");
     jwtAuthenticationResponseDTO.setRefreshToken("refreshToken");

@@ -44,6 +44,11 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private List<Review> reviewList;
 
+  private boolean enabled;
+
+  @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  private Token token;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return Collections.singleton(() -> role);
@@ -71,6 +76,6 @@ public class User implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return true;
+    return enabled;
   }
 }

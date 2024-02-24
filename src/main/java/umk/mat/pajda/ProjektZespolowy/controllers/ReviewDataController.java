@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
@@ -23,6 +24,7 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
     description = "Controller for handling requests related to add/del/patch/read reviews")
 public class ReviewDataController {
 
+  private final String fixedSalt = "$2a$10$abcdefghijklmnopqrstuu";
   private final ReviewService reviewService;
 
   @Autowired
@@ -42,6 +44,12 @@ public class ReviewDataController {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("Validation failed: " + bindingResult.getAllErrors());
     }
+    reviewPatchPostDTO.setHashRevID(BCrypt.hashpw(reviewPatchPostDTO.getHashRevID(), fixedSalt));
+    if (!reviewService.validateTime(reviewPatchPostDTO)) {
+      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+          .body("adding failed - too many requests wait 10 minutes");
+    }
+
     if (reviewService.addReview(reviewPatchPostDTO)) {
       return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
     } else {

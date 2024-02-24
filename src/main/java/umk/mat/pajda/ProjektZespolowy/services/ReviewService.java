@@ -1,5 +1,7 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -106,5 +108,26 @@ public class ReviewService {
       return false;
     }
     return true;
+  }
+
+  public boolean validateTime(ReviewPatchPostDTO reviewPatchPostDTO) {
+    Review review = null;
+    LocalDateTime currentDateTime = LocalDateTime.now();
+    try {
+      review =
+          reviewRepository.findFirstByHashRevIDOrderByCreatedAtDesc(
+              reviewPatchPostDTO.getHashRevID());
+      logger.info(String.valueOf(review));
+      if (review == null) {
+        return true;
+      }
+      long minutesDifference = ChronoUnit.MINUTES.between(review.getCreatedAt(), currentDateTime);
+      logger.info("Time in min:" + minutesDifference);
+      return Math.abs(minutesDifference) >= 10;
+
+    } catch (Exception e) {
+      logger.error("validateTime", e);
+      return false;
+    }
   }
 }

@@ -33,7 +33,7 @@ public class ReviewDataController {
   }
 
   // TODO - validate if monetary transaction happened
-  // TODO - validate if there were only one request in 30-60 min
+
   @PostMapping
   @Operation(
       summary = "POST - Add \"new Review\"",

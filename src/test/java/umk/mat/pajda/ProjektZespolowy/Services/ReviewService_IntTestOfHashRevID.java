@@ -28,7 +28,7 @@ public class ReviewService_IntTestOfHashRevID {
   @Test
   @Transactional
   @Rollback
-  public void reviewService_TestOfHashRevID_validateTimeTrue_recordExistAftert15M() {
+  public void reviewService_TestOfHashRevID_validateTimeTrue_recordExistAfter15M() {
     ReviewPatchPostDTO reviewPatchPostDTO = new ReviewPatchPostDTO();
     reviewPatchPostDTO.setComment("test20");
     reviewPatchPostDTO.setUserID(2);
@@ -46,7 +46,7 @@ public class ReviewService_IntTestOfHashRevID {
   @Test
   @Transactional
   @Rollback
-  public void reviewService_TestOfHashRevID_validateTimeTrue_recordExistAftert5M() {
+  public void reviewService_TestOfHashRevID_validateTimeFalse_recordExistAfter5M() {
     ReviewPatchPostDTO reviewPatchPostDTO = new ReviewPatchPostDTO();
     reviewPatchPostDTO.setComment("test20");
     reviewPatchPostDTO.setUserID(2);

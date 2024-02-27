@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,9 +33,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private final UserConverter userConverter;
 
   private final JWTService jwtService;
-  private final TokenRepository tokenRepository;
-  private final EmailService emailService;
-  private final TokenService tokenService;
+
+  @Autowired(required = false)
+  private TokenRepository tokenRepository;
+
+  @Autowired(required = false)
+  private EmailService emailService;
+
+  @Autowired(required = false)
+  private TokenService tokenService;
+
   private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
   @Value("${spring.profiles.active}")
@@ -44,17 +52,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       UserRepository userRepository,
       AuthenticationManager authenticationManager,
       UserConverter userConverter,
-      JWTService jwtService,
-      TokenRepository tokenRepository,
-      EmailService emailService,
-      TokenService tokenService) {
+      JWTService jwtService) {
     this.userRepository = userRepository;
     this.authenticationManager = authenticationManager;
     this.userConverter = userConverter;
     this.jwtService = jwtService;
-    this.tokenRepository = tokenRepository;
-    this.emailService = emailService;
-    this.tokenService = tokenService;
   }
 
   public Boolean register(RegisterDTO registerDTO) {

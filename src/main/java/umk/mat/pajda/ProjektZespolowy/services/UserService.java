@@ -17,13 +17,15 @@ import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 public class UserService {
 
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
-  private final UserConverter userConverter;
+
+  @Autowired(required = false)
+  private UserConverter userConverter;
+
   private final UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserService(UserConverter userConverter, UserRepository userRepository) {
-    this.userConverter = userConverter;
+  public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 

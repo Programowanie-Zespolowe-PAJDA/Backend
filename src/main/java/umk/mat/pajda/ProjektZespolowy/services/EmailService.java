@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 
 @Service
-@Profile("!tests")
+@Profile("prod")
 public class EmailService {
   private JavaMailSender javaMailSender;
 

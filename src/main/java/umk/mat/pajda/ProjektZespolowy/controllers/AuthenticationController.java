@@ -3,6 +3,7 @@ package umk.mat.pajda.ProjektZespolowy.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +16,14 @@ import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
 import umk.mat.pajda.ProjektZespolowy.services.TokenService;
 
 @RestController
-@Profile("!tests")
 @Tag(name = "Authentication Endpoints", description = "Controller for login/register/refresh")
 public class AuthenticationController {
 
-  private final AuthenticationService authenticationService;
+  @Autowired(required = false)
+  private AuthenticationService authenticationService;
 
-  private final TokenService tokenService;
-
-  public AuthenticationController(
-      AuthenticationService authenticationService, TokenService tokenService) {
-    this.authenticationService = authenticationService;
-    this.tokenService = tokenService;
-  }
+  @Autowired(required = false)
+  private TokenService tokenService;
 
   @PostMapping("/register")
   @Operation(summary = "POST - Add \"new User\"", description = "Following endpoint adds new User")
@@ -72,12 +68,11 @@ public class AuthenticationController {
     return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenDTO));
   }
 
-  @RequestMapping(
-      value = "/confirm",
-      method = {RequestMethod.GET, RequestMethod.POST})
+  @GetMapping("/confirm")
   @Operation(
-      summary = "confirm account",
+      summary = "GET - confirm account",
       description = "Following endpoint confirm account by verification Token")
+  @Profile("prod")
   public ResponseEntity<String> confirm(@RequestParam String token) {
     Token confirmToken = tokenService.getToken(token);
     if (confirmToken == null) {

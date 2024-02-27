@@ -11,7 +11,7 @@ import umk.mat.pajda.ProjektZespolowy.repository.TokenRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Service
-@Profile("!tests")
+@Profile("prod")
 public class TokenService {
 
   private final TokenRepository tokenRepository;

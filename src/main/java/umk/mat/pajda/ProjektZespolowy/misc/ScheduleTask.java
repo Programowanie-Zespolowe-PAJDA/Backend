@@ -10,7 +10,7 @@ import umk.mat.pajda.ProjektZespolowy.services.EmailService;
 import umk.mat.pajda.ProjektZespolowy.services.TokenService;
 
 @Component
-@Profile("!tests")
+@Profile("prod")
 public class ScheduleTask {
 
   private final UserRepository userRepository;

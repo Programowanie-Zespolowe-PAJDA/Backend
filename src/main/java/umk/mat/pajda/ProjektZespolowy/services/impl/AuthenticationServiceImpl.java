@@ -1,5 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.services.impl;
 
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import org.slf4j.Logger;
@@ -8,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
-import umk.mat.pajda.ProjektZespolowy.misc.NotEnabledException;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.TokenRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
@@ -43,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Autowired(required = false)
   private TokenService tokenService;
 
-  private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+  private final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
   @Value("${spring.profiles.active}")
   private String activeProfile;
@@ -78,14 +80,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return true;
   }
 
-  public JWTAuthenticationResponseDTO login(LoginDTO loginDTO) throws NotEnabledException {
+  public JWTAuthenticationResponseDTO login(LoginDTO loginDTO)
+      throws DisabledException, BadCredentialsException, IllegalArgumentException {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginDTO.getMail(), loginDTO.getPassword()));
     var user =
         userRepository.findByMail(loginDTO.getMail()).orElseThrow(IllegalArgumentException::new);
-    if (!user.isEnabled()) {
-      throw new NotEnabledException("User is not enabled");
-    }
     var jwt = jwtService.generateToken(user);
     var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
@@ -95,9 +95,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return jwtAuthenticationResponseDTO;
   }
 
-  public JWTAuthenticationResponseDTO refreshToken(RefreshTokenDTO refreshTokenDTO) {
-    String userEmail = jwtService.extractUserName(refreshTokenDTO.getToken());
-    User user = userRepository.findByMail(userEmail).orElseThrow();
+  public JWTAuthenticationResponseDTO refreshToken(RefreshTokenDTO refreshTokenDTO)
+      throws SignatureException, IllegalArgumentException {
+    String userEmail = null;
+    User user = null;
+    userEmail = jwtService.extractUserName(refreshTokenDTO.getToken());
+    user = userRepository.findByMail(userEmail).orElseThrow(IllegalArgumentException::new);
     if (jwtService.isTokenValid(refreshTokenDTO.getToken(), user)) {
       var jwt = jwtService.generateToken(user);
       JWTAuthenticationResponseDTO jwtAuthenticationResponseDTO =

@@ -6,9 +6,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.security.SignatureException;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 
 @Service
 public class JWTServiceImpl implements JWTService {
+
+  private final Logger logger = LoggerFactory.getLogger(JWTServiceImpl.class);
 
   public String generateToken(UserDetails userDetails) {
     return Jwts.builder()
@@ -36,11 +41,12 @@ public class JWTServiceImpl implements JWTService {
         .compact();
   }
 
-  public String extractUserName(String token) {
+  public String extractUserName(String token) throws SignatureException {
     return extractClaim(token, Claims::getSubject);
   }
 
-  public <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
+  public <T> T extractClaim(String token, Function<Claims, T> claimsResolvers)
+      throws SignatureException {
     final Claims claims = extractAllClaims(token);
     return claimsResolvers.apply(claims);
   }
@@ -51,20 +57,24 @@ public class JWTServiceImpl implements JWTService {
     return Keys.hmacShaKeyFor(key);
   }
 
-  public Claims extractAllClaims(String token) {
-    return Jwts.parserBuilder()
-        .setSigningKey(getSiginKey())
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
+  public Claims extractAllClaims(String token) throws SignatureException {
+    try {
+      return Jwts.parserBuilder()
+          .setSigningKey(getSiginKey())
+          .build()
+          .parseClaimsJws(token)
+          .getBody();
+    } catch (Exception e) {
+      throw new SignatureException();
+    }
   }
 
-  public boolean isTokenValid(String token, UserDetails userDetails) {
+  public boolean isTokenValid(String token, UserDetails userDetails) throws SignatureException {
     final String username = extractUserName(token);
     return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
   }
 
-  public boolean isTokenExpired(String token) {
+  public boolean isTokenExpired(String token) throws SignatureException {
     return extractClaim(token, Claims::getExpiration).before(new Date());
   }
 }

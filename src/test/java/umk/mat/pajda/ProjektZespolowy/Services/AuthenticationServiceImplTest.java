@@ -2,6 +2,7 @@ package umk.mat.pajda.ProjektZespolowy.Services;
 
 import static org.mockito.ArgumentMatchers.any;
 
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +19,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
-import umk.mat.pajda.ProjektZespolowy.misc.NotEnabledException;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
@@ -92,7 +92,7 @@ public class AuthenticationServiceImplTest {
   }
 
   @Test
-  public void shouldSuccessWhenUserLoginTest() throws NotEnabledException {
+  public void shouldSuccessWhenUserLoginTest() {
     String mail = "test@test.com";
     String password = "Testt!123";
     LoginDTO loginDTO = new LoginDTO();
@@ -136,7 +136,7 @@ public class AuthenticationServiceImplTest {
   }
 
   @Test
-  public void shouldSuccessWhenRefreshTokenTest() {
+  public void shouldSuccessWhenRefreshTokenTest() throws SignatureException {
     String mail = "test@test.com";
     User user = new User();
     user.setMail(mail);
@@ -159,7 +159,7 @@ public class AuthenticationServiceImplTest {
   }
 
   @Test
-  public void shouldFailWhenTokenIsNotValidTest() {
+  public void shouldFailWhenTokenIsNotValidTest() throws SignatureException {
     String mail = "test@test.com";
     User user = new User();
     user.setMail(mail);

@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
 import umk.mat.pajda.ProjektZespolowy.controllers.UserController;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
@@ -34,7 +34,9 @@ public class UserControllerTest {
 
   @MockBean private JWTService jwtService;
 
-  @InjectMocks private AuthenticationServiceImpl authenticationService;
+  @MockBean private AuthenticationServiceImpl authenticationService;
+
+  @MockBean private RestTemplate restTemplate;
 
   @Autowired private ObjectMapper objectMapper;
 

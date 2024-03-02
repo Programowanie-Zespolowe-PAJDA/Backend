@@ -21,6 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
@@ -44,6 +45,8 @@ public class ReviewDataControllerTest {
   @MockBean private JWTService jwtService;
 
   @MockBean private AuthenticationServiceImpl authenticationService;
+
+  @MockBean private RestTemplate restTemplate;
 
   @Autowired private ObjectMapper objectMapper;
 

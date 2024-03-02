@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
 import umk.mat.pajda.ProjektZespolowy.controllers.AuthenticationController;
@@ -38,6 +39,8 @@ public class AuthenticationControllerTest {
   @MockBean private JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @MockBean private JWTService jwtService;
+
+  @MockBean private RestTemplate restTemplate;
 
   @Autowired private ObjectMapper objectMapper;
 

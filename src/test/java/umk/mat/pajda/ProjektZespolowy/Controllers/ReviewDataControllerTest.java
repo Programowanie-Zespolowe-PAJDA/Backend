@@ -62,7 +62,7 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void reviewControllerTest_addNewReview_status() throws Exception {
+  public void reviewControllerTestAddNewReviewStatus() throws Exception {
     // Given
     ReviewPatchPostDTO review = new ReviewPatchPostDTO();
     review.setComment("test");
@@ -86,7 +86,7 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void reviewControllerTest_modReview_status() throws Exception {
+  public void reviewControllerTestModReviewStatus() throws Exception {
     // Given
     ReviewPatchPostDTO review = new ReviewPatchPostDTO();
     review.setComment("test");
@@ -113,13 +113,13 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void reviewControllerTest_getAllReviews_status() throws Exception {
+  public void reviewControllerTestGetAllReviewsStatus() throws Exception {
     mockMvc.perform(get("/review")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "")
-  public void reviewControllerTest_getAllReviews_IsValidJson() throws Exception {
+  public void reviewControllerTestGetAllReviewsIsValidJson() throws Exception {
     ResultActions result = mockMvc.perform(get("/review"));
     String content = result.andReturn().getResponse().getContentAsString();
     // Asserting that the content is valid JSON
@@ -128,13 +128,13 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "USER")
-  public void reviewControllerTest_getAllReviewsOfUser_status() throws Exception {
+  public void reviewControllerTestGetAllReviewsOfUserStatus() throws Exception {
     mockMvc.perform(get("/review/owner")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "USER")
-  public void reviewControllerTest_getAllReviewsOfUser_IsValidJson() throws Exception {
+  public void reviewControllerTestGetAllReviewsOfUserIsValidJson() throws Exception {
     ResultActions result = mockMvc.perform(get("/review/owner"));
     String content = result.andReturn().getResponse().getContentAsString();
     // Asserting that the content is valid JSON
@@ -143,7 +143,7 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void reviewControllerTest_getSelectedReview_status() throws Exception {
+  public void reviewControllerTestGetSelectedReviewStatus() throws Exception {
     // When
     when(reviewService.getReview(any(Integer.class))).thenReturn(new ReviewGetDTO());
     // Then
@@ -152,7 +152,7 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void reviewControllerTest_getSelectedReview_IsValidJson() throws Exception {
+  public void reviewControllerTestGetSelectedReviewIsValidJson() throws Exception {
     ResultActions result = mockMvc.perform(get("/review/1"));
     String content = result.andReturn().getResponse().getContentAsString();
     // Asserting that the content is valid JSON
@@ -161,7 +161,7 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "USER")
-  public void reviewControllerTest_getSelectedReviewOfUser_status() throws Exception {
+  public void reviewControllerTestGetSelectedReviewOfUserStatus() throws Exception {
     // When
     when(reviewService.getReview(any(Integer.class), any(String.class)))
         .thenReturn(new ReviewGetDTO());
@@ -171,7 +171,7 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "USER")
-  public void reviewControllerTest_getSelectedReviewOfUser_IsValidJson() throws Exception {
+  public void reviewControllerTestGetSelectedReviewOfUserIsValidJson() throws Exception {
     ResultActions result = mockMvc.perform(get("/review/owner/1"));
     String content = result.andReturn().getResponse().getContentAsString();
     // Asserting that the content is valid JSON
@@ -180,7 +180,7 @@ public class ReviewDataControllerTest {
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void reviewControllerTest_delReview_status() throws Exception {
+  public void reviewControllerTestDelReviewStatus() throws Exception {
     // When
     when(reviewService.deleteSelectReview(any(Integer.class))).thenReturn(true);
     // Then

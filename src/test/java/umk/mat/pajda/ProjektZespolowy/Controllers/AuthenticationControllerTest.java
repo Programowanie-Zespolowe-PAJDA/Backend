@@ -56,7 +56,7 @@ public class AuthenticationControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTest_register_status() throws Exception {
+  public void authenticationControllerTestRegisterStatus() throws Exception {
     // Given
     RegisterDTO user = new RegisterDTO();
     user.setMail("test@gmail.com");
@@ -82,7 +82,7 @@ public class AuthenticationControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTest_login_status() throws Exception {
+  public void authenticationControllerTestLoginStatus() throws Exception {
     // Given
     LoginDTO user = new LoginDTO();
     JWTAuthenticationResponseDTO jwt = new JWTAuthenticationResponseDTO();
@@ -102,7 +102,7 @@ public class AuthenticationControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTest_refresh_status() throws Exception {
+  public void authenticationControllerTestRefreshStatus() throws Exception {
     // Given
     RefreshTokenDTO token = new RefreshTokenDTO();
     JWTAuthenticationResponseDTO jwt = new JWTAuthenticationResponseDTO();

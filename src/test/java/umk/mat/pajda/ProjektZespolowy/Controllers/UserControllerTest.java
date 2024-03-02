@@ -40,13 +40,13 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void userControllerTest_getAllUsers_status() throws Exception {
+  public void userControllerTestGetAllUsersStatus() throws Exception {
     mockMvc.perform(get("/user")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void userControllerTest_getAllUsers_IsValidJson() throws Exception {
+  public void userControllerTestGetAllUsersIsValidJson() throws Exception {
     ResultActions result = mockMvc.perform(get("/user"));
     String content = result.andReturn().getResponse().getContentAsString();
     // Asserting that the content is valid JSON
@@ -55,13 +55,13 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser(roles = "USER")
-  public void userControllerTest_getOwner_status() throws Exception {
+  public void userControllerTestGetOwnerStatus() throws Exception {
     mockMvc.perform(get("/user/profile")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "USER")
-  public void userControllerTest_getOwner_IsValidJson() throws Exception {
+  public void userControllerTestGetOwnerIsValidJson() throws Exception {
     ResultActions result = mockMvc.perform(get("/user/profile"));
     String content = result.andReturn().getResponse().getContentAsString();
     // Asserting that the content is valid JSON
@@ -70,13 +70,13 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void userControllerTest_getSelectedUser_status() throws Exception {
+  public void userControllerTestGetSelectedUserStatus() throws Exception {
     mockMvc.perform(get("/user/1")).andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void userControllerTest_getSelectedUser_IsValidJson() throws Exception {
+  public void userControllerTestGetSelectedUserIsValidJson() throws Exception {
     ResultActions result = mockMvc.perform(get("/user/1"));
     String content = result.andReturn().getResponse().getContentAsString();
     // Asserting that the content is valid JSON
@@ -85,7 +85,7 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser(roles = "ADMIN")
-  public void userControllerTest_delUser_status() throws Exception {
+  public void userControllerTestDelUserStatus() throws Exception {
     // When
     when(userService.deleteSelectedUser(any(int.class))).thenReturn(true);
     // Then
@@ -96,7 +96,7 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser(roles = "USER")
-  public void userControllerTest_modInformationsOfUser_status() throws Exception {
+  public void userControllerTestModInformationsOfUserStatus() throws Exception {
     mockMvc
         .perform(patch("/user/editInformations").with(SecurityMockMvcRequestPostProcessors.csrf()))
         .andExpect(status().isOk());
@@ -104,7 +104,7 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser(roles = "USER")
-  public void userControllerTest_modPasswordOfUser_status() throws Exception {
+  public void userControllerTestModPasswordOfUserStatus() throws Exception {
     mockMvc
         .perform(patch("/user/editPassword").with(SecurityMockMvcRequestPostProcessors.csrf()))
         .andExpect(status().isOk());
@@ -112,7 +112,7 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser(roles = "USER")
-  public void userControllerTest_modEmailOfUser_status() throws Exception {
+  public void userControllerTestModEmailOfUserStatus() throws Exception {
     mockMvc
         .perform(patch("/user/editEmail").with(SecurityMockMvcRequestPostProcessors.csrf()))
         .andExpect(status().isOk());

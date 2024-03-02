@@ -9,29 +9,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
+import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
+import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
 @SpringBootTest
-public class ReviewService_IntTestOfHashRevID {
+@ActiveProfiles("tests")
+public class ReviewServiceIntTestOfHashRevID {
 
   private final String fixedSalt = "$2a$10$abcdefghijklmnopqrstuu";
   @Autowired private ReviewService reviewService;
 
   @Autowired private ReviewRepository reviewRepository;
+
+  @Autowired private UserRepository userRepository;
   @Autowired private ReviewConverter reviewConverter;
 
   @Test
   @Transactional
   @Rollback
-  public void reviewService_TestOfHashRevID_validateTimeTrue_recordExistAfter15M() {
+  public void reviewServiceTestOfHashRevIDValidateTimeTrueRecordExistAfter15M() {
+    // Given
+    User user = new User();
+    user.setId(1000);
+    user.setMail("test@gmail.com");
+    user.setName("Adam");
+    user.setSurname("Kowalski");
+    user.setPassword("testpass123456789");
+    user.setRole("ROLE_USER");
+    userRepository.save(user);
+
     ReviewPatchPostDTO reviewPatchPostDTO = new ReviewPatchPostDTO();
     reviewPatchPostDTO.setComment("test20");
-    reviewPatchPostDTO.setUserID(2);
+    reviewPatchPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
     reviewPatchPostDTO.setRating(5);
     reviewPatchPostDTO.setClientName("delta");
     reviewPatchPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.100", fixedSalt));
@@ -40,16 +56,27 @@ public class ReviewService_IntTestOfHashRevID {
     review.setCreatedAt(LocalDateTime.now().minusMinutes(15));
     reviewRepository.save(review);
 
+    // Then
     assertTrue(reviewService.validateTime(reviewPatchPostDTO));
   }
 
   @Test
   @Transactional
   @Rollback
-  public void reviewService_TestOfHashRevID_validateTimeFalse_recordExistAfter5M() {
+  public void reviewServiceTestOfHashRevIDValidateTimeFalseRecordExistAfter5M() {
+    // Given
+    User user = new User();
+    user.setId(1000);
+    user.setMail("test@gmail.com");
+    user.setName("Adam");
+    user.setSurname("Kowalski");
+    user.setPassword("testpass123456789");
+    user.setRole("ROLE_USER");
+    userRepository.save(user);
+
     ReviewPatchPostDTO reviewPatchPostDTO = new ReviewPatchPostDTO();
     reviewPatchPostDTO.setComment("test20");
-    reviewPatchPostDTO.setUserID(2);
+    reviewPatchPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
     reviewPatchPostDTO.setRating(5);
     reviewPatchPostDTO.setClientName("delta");
     reviewPatchPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.100", fixedSalt));
@@ -57,21 +84,32 @@ public class ReviewService_IntTestOfHashRevID {
     Review review = reviewConverter.createEntity(reviewPatchPostDTO);
     review.setCreatedAt(LocalDateTime.now().minusMinutes(5));
     reviewRepository.save(review);
-
+    // Then
     assertFalse(reviewService.validateTime(reviewPatchPostDTO));
   }
 
   @Test
   @Transactional
   @Rollback
-  public void reviewService_TestOfHashRevID_validateTimeTrue_NoRecord() {
+  public void reviewServiceTestOfHashRevIDValidateTimeTrueNoRecord() {
+    // Given
+    User user = new User();
+    user.setId(1000);
+    user.setMail("test@gmail.com");
+    user.setName("Adam");
+    user.setSurname("Kowalski");
+    user.setPassword("testpass123456789");
+    user.setRole("ROLE_USER");
+    userRepository.save(user);
+
     ReviewPatchPostDTO reviewPatchPostDTO = new ReviewPatchPostDTO();
     reviewPatchPostDTO.setComment("test20");
-    reviewPatchPostDTO.setUserID(2);
+    reviewPatchPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
     reviewPatchPostDTO.setRating(5);
     reviewPatchPostDTO.setClientName("delta");
     reviewPatchPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.105", fixedSalt));
 
+    // Then
     assertTrue(reviewService.validateTime(reviewPatchPostDTO));
   }
 }

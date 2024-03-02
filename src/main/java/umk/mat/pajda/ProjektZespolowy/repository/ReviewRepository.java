@@ -13,4 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
   Review findByIdAndUser(int id, User user);
 
   Review findFirstByHashRevIDOrderByCreatedAtDesc(String hashRevID);
+
+  Review findFirstByUserAndHashRevIDOrderByCreatedAtDesc(User user,String hashRevID);
 }

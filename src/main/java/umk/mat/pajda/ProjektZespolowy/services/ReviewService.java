@@ -115,7 +115,7 @@ public class ReviewService {
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
-          reviewRepository.findFirstByHashRevIDOrderByCreatedAtDesc(
+          reviewRepository.findFirstByUserAndHashRevIDOrderByCreatedAtDesc(userRepository.findById(reviewPatchPostDTO.getUserID()).get(),
               reviewPatchPostDTO.getHashRevID());
       logger.info(String.valueOf(review));
       if (review == null) {

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,8 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
     name = "Review Endpoints",
     description = "Controller for handling requests related to add/del/patch/read reviews")
 public class ReviewDataController {
+  @Value("${app.isProd:true}")
+  private boolean isProd;
 
   private final String fixedSalt = "$2a$10$abcdefghijklmnopqrstuu";
   private final ReviewService reviewService;
@@ -45,7 +48,7 @@ public class ReviewDataController {
           .body("Validation failed: " + bindingResult.getAllErrors());
     }
     reviewPatchPostDTO.setHashRevID(BCrypt.hashpw(reviewPatchPostDTO.getHashRevID(), fixedSalt));
-    if (!reviewService.validateTime(reviewPatchPostDTO)) {
+    if (isProd && !reviewService.validateTime(reviewPatchPostDTO)) {
       return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
           .body("adding failed - too many requests wait 10 minutes");
     }

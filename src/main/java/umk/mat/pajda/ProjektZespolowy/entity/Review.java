@@ -42,4 +42,33 @@ public class Review {
 
   @OneToOne(mappedBy = "review", fetch = FetchType.LAZY)
   private Tip tip;
+
+  @Override
+  public String toString() {
+    return "Review{" +
+            "id='" + id + '\'' +
+            ", rating=" + rating +
+            ", comment='" + comment + '\'' +
+            ", createdAt=" + createdAt +
+            ", clientName='" + clientName + '\'' +
+            ", hashRevID='" + hashRevID + '\'' +
+            ", status=" + status +
+            ", user=" + user +
+            ", tip=" + tip +
+            '}';
+  }
+
+  public String toString2() {
+    return "Review{" +
+            "id='" + id + '\'' +
+            ", rating=" + rating +
+            ", comment='" + comment + '\'' +
+            ", clientName='" + clientName + '\'' +
+            ", hashRevID='" + hashRevID + '\'' +
+            ", status=" + status +
+            ", user=" + user +
+            ", tip=" + tip +
+            '}';
+  }
+
 }

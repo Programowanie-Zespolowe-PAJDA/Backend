@@ -11,6 +11,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Tip {
 
   @Id @GeneratedValue private Integer id;
@@ -27,4 +28,21 @@ public class Tip {
   @ManyToOne
   @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
   private User user;
+
+  public String toString2() {
+    return "Tip{"
+        + "id="
+        + id
+        + ", currency='"
+        + currency
+        + '\''
+        + ", amount="
+        + amount
+        + ", paidWith='"
+        + paidWith
+        + '\''
+        + ", user="
+        + user.toString2()
+        + '}';
+  }
 }

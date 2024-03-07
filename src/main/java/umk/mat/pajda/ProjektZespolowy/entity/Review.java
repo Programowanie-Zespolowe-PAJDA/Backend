@@ -36,4 +36,47 @@ public class Review {
   @ManyToOne
   @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
   private User user;
+
+  @Override
+  public String toString() {
+    return "ReviewArchive{"
+        + "id="
+        + id
+        + ", rating="
+        + rating
+        + ", comment='"
+        + comment
+        + '\''
+        + ", createdAt="
+        + createdAt
+        + ", clientName='"
+        + clientName
+        + '\''
+        + ", hashRevID='"
+        + hashRevID
+        + '\''
+        + ", user="
+        + user
+        + '}';
+  }
+
+  public String toString2() {
+    return "ReviewArchive{"
+        + "id="
+        + id
+        + ", rating="
+        + rating
+        + ", comment='"
+        + comment
+        + '\''
+        + ", clientName='"
+        + clientName
+        + '\''
+        + ", hashRevID='"
+        + hashRevID
+        + '\''
+        + ", user="
+        + user.toString2()
+        + '}';
+  }
 }

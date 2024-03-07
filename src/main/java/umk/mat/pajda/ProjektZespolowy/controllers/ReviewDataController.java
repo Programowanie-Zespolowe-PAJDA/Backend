@@ -15,7 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
+import umk.mat.pajda.ProjektZespolowy.services.OpinionService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
 @RequestMapping("/review")
@@ -37,38 +38,13 @@ public class ReviewDataController {
     this.reviewService = reviewService;
   }
 
-  // TODO - validate if monetary transaction happened
-
-  @PostMapping
-  @Operation(
-      summary = "POST - Add \"new Review\"",
-      description = "Following endpoint adds new Review")
-  public ResponseEntity<String> addNewReview(
-      @Valid @RequestBody ReviewPatchPostDTO reviewPatchPostDTO, BindingResult bindingResult) {
-    if (bindingResult.hasErrors()) {
-      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-          .body("Validation failed: " + bindingResult.getAllErrors());
-    }
-    reviewPatchPostDTO.setHashRevID(BCrypt.hashpw(reviewPatchPostDTO.getHashRevID(), fixedSalt));
-    if (isProd && !reviewService.validateTime(reviewPatchPostDTO)) {
-      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-          .body("adding failed - too many requests wait 10 minutes");
-    }
-
-    if (reviewService.addReview(reviewPatchPostDTO)) {
-      return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
-    } else {
-      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
-    }
-  }
-
   @PatchMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "PATCH - modify \"Review\"",
       description = "Following endpoint modifies a Review")
   public ResponseEntity<String> modReview(
-      @Valid @RequestBody ReviewPatchPostDTO reviewPatchPostDTO,
+      @Valid @RequestBody ReviewPatchDTO reviewPatchDTO,
       BindingResult bindingResult,
       @PathVariable int id) {
     if (bindingResult.hasErrors()) {
@@ -81,7 +57,7 @@ public class ReviewDataController {
           .body("modifying failed - no review with such id");
     }
 
-    if (reviewService.patchSelectReview(reviewPatchPostDTO, id)) {
+    if (reviewService.patchSelectReview(reviewPatchDTO, id)) {
       return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");

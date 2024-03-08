@@ -76,6 +76,7 @@ public class ReviewDataControllerTest {
 
     // When
     when(reviewService.addReview(any(ReviewPatchPostDTO.class))).thenReturn(true);
+    when(reviewService.validateTime(any(ReviewPatchPostDTO.class))).thenReturn(true);
 
     // Then
     mockMvc

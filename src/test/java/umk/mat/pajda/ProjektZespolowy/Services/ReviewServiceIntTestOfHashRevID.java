@@ -24,7 +24,7 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 @ActiveProfiles("tests")
 public class ReviewServiceIntTestOfHashRevID {
 
-  @Value("${FIXEDSALT_IPHASH:$2a$10$zxcvbhjklas}")
+  @Value("${FIXEDSALT_IPHASH:$2a$10$9elrbM0La5ooQgMP7i9yjO}")
   private String fixedSalt;
 
   @Autowired private ReviewService reviewService;

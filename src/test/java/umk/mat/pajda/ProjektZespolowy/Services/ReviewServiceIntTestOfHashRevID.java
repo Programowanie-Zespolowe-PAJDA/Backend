@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.annotation.Rollback;
@@ -23,7 +24,9 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 @ActiveProfiles("tests")
 public class ReviewServiceIntTestOfHashRevID {
 
-  private final String fixedSalt = "$2a$10$abcdefghijklmnopqrstuu";
+  @Value("${controller.review.data-fixed-salt}")
+  private String fixedSalt;
+
   @Autowired private ReviewService reviewService;
 
   @Autowired private ReviewRepository reviewRepository;

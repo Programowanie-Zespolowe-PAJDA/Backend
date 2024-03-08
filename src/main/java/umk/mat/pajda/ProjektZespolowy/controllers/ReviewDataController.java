@@ -27,7 +27,9 @@ public class ReviewDataController {
   @Value("${app.isProd:true}")
   private boolean isProd;
 
-  private final String fixedSalt = "$2a$10$abcdefghijklmnopqrstuu";
+  @Value("${controller.review.data-fixed-salt}")
+  private String fixedSalt;
+
   private final ReviewService reviewService;
 
   @Autowired

@@ -1,8 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.DTO;
 
 import jakarta.validation.constraints.*;
-
-import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -5,7 +5,7 @@ To gain access to the application, add environment variables:
 Example in intelije: 
 1. Open Run/Debug Configurations
 2. Click alt + e, to add field for environmental variables
-3. add variables:<br> DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK
+3. add variables:<br> FIXEDSALT_IPHASH=$2a$10$abcdefghijklmnopqrstuu;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK
 
 Users for testing:<br><br>
 **USER**<br>

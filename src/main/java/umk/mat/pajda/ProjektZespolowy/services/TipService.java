@@ -68,7 +68,7 @@ public class TipService {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(getToken());
     headers.setContentType(MediaType.APPLICATION_JSON);
-    Integer amount = (int) (opinionPostDTO.getAmount().floatValue() * 100);
+    Integer amount = opinionPostDTO.getAmount();
     Map<String, Object> products = new HashMap<>();
     products.put("name", "Napiwek");
     products.put("unitPrice", String.valueOf(amount));

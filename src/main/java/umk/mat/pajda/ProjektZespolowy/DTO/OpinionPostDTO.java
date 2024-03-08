@@ -26,8 +26,8 @@ public class OpinionPostDTO {
 
   @NotNull @Positive private Integer userID;
 
-  @DecimalMin(value = "0.80")
-  private BigDecimal amount;
+  @Min(value = 80)
+  private Integer amount;
 
   @Pattern(regexp = "^(CHF|CZK|DKK|EUR|GBP|HUF|NOK|PLN|RON|SEK|USD)$")
   private String currency;

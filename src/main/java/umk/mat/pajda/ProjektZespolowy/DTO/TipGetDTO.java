@@ -14,7 +14,7 @@ import lombok.Setter;
 public class TipGetDTO {
   private Integer id;
   private String currency;
-  private BigDecimal amount;
+  private Integer amount;
   private String paidWith;
   private Integer userId;
   private LocalDateTime createdAt;

@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
@@ -22,9 +23,10 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
 @SpringBootTest
 @ActiveProfiles("tests")
+@TestPropertySource(properties = {"FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO"})
 public class ReviewServiceIntTestOfHashRevID {
 
-  @Value("${FIXEDSALT_IPHASH:$2a$10$9elrbM0La5ooQgMP7i9yjO}")
+  @Value("${FIXEDSALT_IPHASH}")
   private String fixedSalt;
 
   @Autowired private ReviewService reviewService;

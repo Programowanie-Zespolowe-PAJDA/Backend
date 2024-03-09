@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +33,7 @@ import umk.mat.pajda.ProjektZespolowy.services.impl.AuthenticationServiceImpl;
 
 @WebMvcTest(ReviewDataController.class)
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {"FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO"})
 public class ReviewDataControllerTest {
 
   @Autowired private MockMvc mockMvc;

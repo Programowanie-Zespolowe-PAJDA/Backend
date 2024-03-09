@@ -6,10 +6,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
@@ -22,6 +24,11 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
     name = "Review Endpoints",
     description = "Controller for handling requests related to add/del/patch/read reviews")
 public class ReviewDataController {
+  @Value("${app.isProd:true}")
+  private boolean isProd;
+
+  @Value("${FIXEDSALT_IPHASH}")
+  private String fixedSalt;
 
   private final ReviewService reviewService;
 
@@ -31,7 +38,7 @@ public class ReviewDataController {
   }
 
   // TODO - validate if monetary transaction happened
-  // TODO - validate if there were only one request in 30-60 min
+
   @PostMapping
   @Operation(
       summary = "POST - Add \"new Review\"",
@@ -42,6 +49,12 @@ public class ReviewDataController {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("Validation failed: " + bindingResult.getAllErrors());
     }
+    reviewPatchPostDTO.setHashRevID(BCrypt.hashpw(reviewPatchPostDTO.getHashRevID(), fixedSalt));
+    if (isProd && !reviewService.validateTime(reviewPatchPostDTO)) {
+      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+          .body("adding failed - too many requests wait 10 minutes");
+    }
+
     if (reviewService.addReview(reviewPatchPostDTO)) {
       return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
     } else {

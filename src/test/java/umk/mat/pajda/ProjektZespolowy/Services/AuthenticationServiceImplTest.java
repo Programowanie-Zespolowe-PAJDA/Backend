@@ -2,6 +2,7 @@ package umk.mat.pajda.ProjektZespolowy.Services;
 
 import static org.mockito.ArgumentMatchers.any;
 
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -51,7 +52,7 @@ public class AuthenticationServiceImplTest {
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(user));
     Mockito.when(userConverter.createDTO(user)).thenReturn(userGetDTO);
 
-    Assertions.assertTrue(authenticationService.getUser(mail));
+    Assertions.assertNotNull(authenticationService.getUser(mail));
   }
 
   @Test
@@ -61,7 +62,7 @@ public class AuthenticationServiceImplTest {
     user.setMail(mail);
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.empty());
 
-    Assertions.assertFalse(authenticationService.getUser(mail));
+    Assertions.assertNull(authenticationService.getUser(mail));
   }
 
   @Test
@@ -73,6 +74,7 @@ public class AuthenticationServiceImplTest {
     user.setMail(mail);
     Mockito.when(userConverter.createEntity(registerDTO)).thenReturn(user);
     Mockito.when(userRepository.save(user)).thenReturn(null);
+
     Assertions.assertTrue(authenticationService.register(registerDTO));
   }
 
@@ -99,6 +101,7 @@ public class AuthenticationServiceImplTest {
     User user = new User();
     user.setMail(mail);
     user.setPassword(password);
+    user.setEnabled(true);
     JWTAuthenticationResponseDTO jwtAuthenticationResponseDTO = new JWTAuthenticationResponseDTO();
     jwtAuthenticationResponseDTO.setToken("token");
     jwtAuthenticationResponseDTO.setRefreshToken("refreshToken");
@@ -133,7 +136,7 @@ public class AuthenticationServiceImplTest {
   }
 
   @Test
-  public void shouldSuccessWhenRefreshTokenTest() {
+  public void shouldSuccessWhenRefreshTokenTest() throws SignatureException {
     String mail = "test@test.com";
     User user = new User();
     user.setMail(mail);
@@ -156,7 +159,7 @@ public class AuthenticationServiceImplTest {
   }
 
   @Test
-  public void shouldFailWhenTokenIsNotValidTest() {
+  public void shouldFailWhenTokenIsNotValidTest() throws SignatureException {
     String mail = "test@test.com";
     User user = new User();
     user.setMail(mail);

@@ -1,11 +1,12 @@
 ![pajda](src/main/resources/pajda.jpg)
 # Backend:
 backend as part of team programming<br>
-To gain access to the application, add environment variables:
-Example in intelije: 
+To gain access to the application, add environment variables and profile:
+Example in intelije:
 1. Open Run/Debug Configurations
-2. Click alt + e, to add field for environmental variables
-3. add variables:<br> FIXEDSALT_IPHASH=$2a$10$Lmqw7nJI8P.klorFNe.3Ye;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK
+2. add profile: dev
+3. Click alt + e, to add field for enviromental variables
+4. add variables:<br> FIXEDSALT_IPHASH=$2a$10$Lmqw7nJI8P.klorFNe.3Ye;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK
 
 Users for testing:<br><br>
 **USER**<br>
@@ -23,6 +24,8 @@ Users for testing:<br><br>
 **[POST] /login** - (for everyone) return JWT token <br>
 **[POST] /register** - (for everyone) create account <br>
 **[POST] /refresh** - (for everyone) return refresh token <br>
+**[GET] /confirm** - (for everyone) confirming account <br>
+
 
 
 **[GET] /hello** - (for everyone) return "hello" <br>

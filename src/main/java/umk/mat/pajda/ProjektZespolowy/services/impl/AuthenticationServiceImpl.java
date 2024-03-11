@@ -1,22 +1,31 @@
 package umk.mat.pajda.ProjektZespolowy.services.impl;
 
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
+import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
+import umk.mat.pajda.ProjektZespolowy.repository.TokenRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
+import umk.mat.pajda.ProjektZespolowy.services.EmailService;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
+import umk.mat.pajda.ProjektZespolowy.services.TokenService;
 
 @Service
-@RequiredArgsConstructor
+@Profile("!tests")
 public class AuthenticationServiceImpl implements AuthenticationService {
 
   private final UserRepository userRepository;
@@ -26,11 +35,44 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private final UserConverter userConverter;
 
   private final JWTService jwtService;
-  private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+
+  @Autowired(required = false)
+  private TokenRepository tokenRepository;
+
+  @Autowired(required = false)
+  private EmailService emailService;
+
+  @Autowired(required = false)
+  private TokenService tokenService;
+
+  private final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
+
+  @Value("${spring.profiles.active}")
+  private String activeProfile;
+
+  public AuthenticationServiceImpl(
+      UserRepository userRepository,
+      AuthenticationManager authenticationManager,
+      UserConverter userConverter,
+      JWTService jwtService) {
+    this.userRepository = userRepository;
+    this.authenticationManager = authenticationManager;
+    this.userConverter = userConverter;
+    this.jwtService = jwtService;
+  }
 
   public Boolean register(RegisterDTO registerDTO) {
     try {
-      userRepository.save(userConverter.createEntity(registerDTO));
+      User user = userRepository.save(userConverter.createEntity(registerDTO));
+      if ("prod".equals(activeProfile)) {
+        Token token = tokenRepository.save(tokenService.createToken(user));
+        emailService.send(
+            user,
+            "Verify your email",
+            "Thanks for creating account. \n Please click the following link to activate your account.\n"
+                + "https://enapiwek-api.onrender.com/confirm?token="
+                + token.getToken());
+      }
     } catch (Exception e) {
       logger.error("addUser", e);
       return false;
@@ -38,7 +80,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return true;
   }
 
-  public JWTAuthenticationResponseDTO login(LoginDTO loginDTO) {
+  public JWTAuthenticationResponseDTO login(LoginDTO loginDTO)
+      throws DisabledException, BadCredentialsException, IllegalArgumentException {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginDTO.getMail(), loginDTO.getPassword()));
     var user =
@@ -52,9 +95,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return jwtAuthenticationResponseDTO;
   }
 
-  public JWTAuthenticationResponseDTO refreshToken(RefreshTokenDTO refreshTokenDTO) {
-    String userEmail = jwtService.extractUserName(refreshTokenDTO.getToken());
-    User user = userRepository.findByMail(userEmail).orElseThrow();
+  public JWTAuthenticationResponseDTO refreshToken(RefreshTokenDTO refreshTokenDTO)
+      throws SignatureException, IllegalArgumentException {
+    String userEmail = null;
+    User user = null;
+    userEmail = jwtService.extractUserName(refreshTokenDTO.getToken());
+    user = userRepository.findByMail(userEmail).orElseThrow(IllegalArgumentException::new);
     if (jwtService.isTokenValid(refreshTokenDTO.getToken(), user)) {
       var jwt = jwtService.generateToken(user);
       JWTAuthenticationResponseDTO jwtAuthenticationResponseDTO =
@@ -66,12 +112,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return null;
   }
 
-  public boolean getUser(String mail) {
+  public User getUser(String mail) {
+    User user = null;
     try {
-      userRepository.findByMail(mail).get();
+      user = userRepository.findByMail(mail).get();
     } catch (NoSuchElementException e) {
-      return false;
+      return null;
     }
-    return true;
+    return user;
   }
 }

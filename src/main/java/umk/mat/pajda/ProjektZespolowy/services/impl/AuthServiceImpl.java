@@ -1,6 +1,5 @@
 package umk.mat.pajda.ProjektZespolowy.services.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,10 +8,13 @@ import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 import umk.mat.pajda.ProjektZespolowy.services.AuthService;
 
 @Service
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
   private final UserRepository userRepository;
+
+  public AuthServiceImpl(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @Override
   public UserDetailsService userDetailsService() {

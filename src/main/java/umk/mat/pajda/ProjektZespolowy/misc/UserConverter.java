@@ -2,6 +2,8 @@ package umk.mat.pajda.ProjektZespolowy.misc;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
@@ -9,10 +11,14 @@ import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Component
+@Profile("!tests")
 public class UserConverter {
 
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
+
+  @Value("${user-allowed}")
+  private boolean allowed;
 
   public UserConverter(PasswordEncoder passwordEncoder, UserRepository userRepository) {
     this.passwordEncoder = passwordEncoder;
@@ -37,6 +43,7 @@ public class UserConverter {
     user.setLocation(registerDTO.getLocation());
     user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
     user.setRole("ROLE_USER");
+    user.setEnabled(allowed);
     return user;
   }
 

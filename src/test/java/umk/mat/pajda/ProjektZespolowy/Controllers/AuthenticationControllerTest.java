@@ -2,6 +2,7 @@ package umk.mat.pajda.ProjektZespolowy.Controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,6 +17,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,8 +25,10 @@ import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
 import umk.mat.pajda.ProjektZespolowy.controllers.AuthenticationController;
+import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
+import umk.mat.pajda.ProjektZespolowy.services.TokenService;
 
 @WebMvcTest(AuthenticationController.class)
 @AutoConfigureMockMvc
@@ -41,6 +45,8 @@ public class AuthenticationControllerTest {
   @MockBean private JWTService jwtService;
 
   @MockBean private RestTemplate restTemplate;
+
+  @MockBean private TokenService tokenService;
 
   @Autowired private ObjectMapper objectMapper;
 
@@ -70,7 +76,7 @@ public class AuthenticationControllerTest {
     user.setRetypedPassword("vYjhpLpM9Bdm!");
 
     // When
-    when(authenticationService.getUser(any(String.class))).thenReturn(false);
+    when(authenticationService.getUser(any(String.class))).thenReturn(null);
     when(authenticationService.register(any(RegisterDTO.class))).thenReturn(true);
 
     // Then
@@ -121,5 +127,37 @@ public class AuthenticationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(token)))
         .andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(roles = "")
+  public void authenticationControllerTestConfirmVerificationTokenStatusNotFoundWhenTokenNotFound() throws Exception {
+    String token = "token";
+    when(tokenService.getToken(token)).thenReturn(null);
+
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockUser(roles = "")
+  public void authenticationControllerTestConfirmVerificationTokenStatusUnathorizedWhenTokenIsExpired() throws Exception {
+    String token = "token";
+    Token confirmToken = new Token();
+    when(tokenService.getToken(token)).thenReturn(confirmToken);
+    when(tokenService.isExpired(confirmToken)).thenReturn(true);
+
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @WithMockUser(roles = "")
+  public void authenticationControllerTestConfirmVerificationTokenStatusOk() throws Exception {
+    String token = "token";
+    Token confirmToken = new Token();
+    when(tokenService.getToken(token)).thenReturn(confirmToken);
+    when(tokenService.isExpired(confirmToken)).thenReturn(false);
+    when(tokenService.confirm(confirmToken)).thenReturn(true);
+
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isOk());
   }
 }

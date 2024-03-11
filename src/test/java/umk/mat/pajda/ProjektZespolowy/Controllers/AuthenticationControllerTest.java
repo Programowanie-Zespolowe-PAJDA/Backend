@@ -17,7 +17,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -131,7 +130,8 @@ public class AuthenticationControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTestConfirmVerificationTokenStatusNotFoundWhenTokenNotFound() throws Exception {
+  public void authenticationControllerTestConfirmVerificationTokenStatusNotFoundWhenTokenNotFound()
+      throws Exception {
     String token = "token";
     when(tokenService.getToken(token)).thenReturn(null);
 
@@ -140,7 +140,9 @@ public class AuthenticationControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTestConfirmVerificationTokenStatusUnathorizedWhenTokenIsExpired() throws Exception {
+  public void
+      authenticationControllerTestConfirmVerificationTokenStatusUnathorizedWhenTokenIsExpired()
+          throws Exception {
     String token = "token";
     Token confirmToken = new Token();
     when(tokenService.getToken(token)).thenReturn(confirmToken);

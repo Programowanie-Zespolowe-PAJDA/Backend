@@ -57,13 +57,12 @@ public class OpinionController {
     opinionPostDTO.setHashRevID(BCrypt.hashpw(opinionPostDTO.getHashRevID(), fixedSalt));
     if (isProd && !reviewService.validateTime(opinionPostDTO)) {
       return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-              .body("adding failed - too many requests wait 10 minutes");
+          .body("adding failed - too many requests wait 10 minutes");
     }
     ResponseEntity<String> response = opinionService.addOpinion(opinionPostDTO, ip);
-    if(response == null){
+    if (response == null) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
-    }
-    else {
+    } else {
       return response;
     }
   }

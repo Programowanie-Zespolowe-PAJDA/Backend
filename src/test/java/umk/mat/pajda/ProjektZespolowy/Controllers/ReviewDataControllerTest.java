@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.client.RestTemplate;
@@ -65,7 +64,6 @@ public class ReviewDataControllerTest {
       return registrationBean;
     }
   }
-
 
   @Test
   @WithMockUser(roles = "ADMIN")

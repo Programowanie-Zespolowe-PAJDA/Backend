@@ -21,10 +21,10 @@ public class OpinionService {
     this.reviewService = reviewService;
   }
 
-  public ResponseEntity<String> addOpinion(OpinionPostDTO opinionPostDTO) {
+  public ResponseEntity<String> addOpinion(OpinionPostDTO opinionPostDTO, String ip) {
     try {
       reviewService.addReview(opinionPostDTO);
-      return tipService.createPayment(opinionPostDTO);
+      return tipService.createPayment(opinionPostDTO, ip);
     } catch (Exception e) {
       logger.error("addOpinion", e);
       return null;

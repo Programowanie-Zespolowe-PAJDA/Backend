@@ -111,14 +111,14 @@ public class ReviewService {
     return true;
   }
 
-  public boolean validateTime(ReviewPatchPostDTO reviewPatchPostDTO) {
+  public boolean validateTime(OpinionPostDTO opinionPostDTO) {
     Review review = null;
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
           reviewRepository.findFirstByUserAndHashRevIDOrderByCreatedAtDesc(
-              userRepository.findById(reviewPatchPostDTO.getUserID()).get(),
-              reviewPatchPostDTO.getHashRevID());
+              userRepository.findById(opinionPostDTO.getUserID()).get(),
+              opinionPostDTO.getHashRevID());
       logger.info(String.valueOf(review));
       if (review == null) {
         return true;

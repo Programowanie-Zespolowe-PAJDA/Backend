@@ -62,7 +62,7 @@ public class TipService {
     return jsonNode.get("access_token").asText();
   }
 
-  public ResponseEntity<String> createPayment(OpinionPostDTO opinionPostDTO)
+  public ResponseEntity<String> createPayment(OpinionPostDTO opinionPostDTO, String ip)
       throws JsonProcessingException {
     RestTemplate restTemplate = new RestTemplate();
     HttpHeaders headers = new HttpHeaders();
@@ -74,7 +74,7 @@ public class TipService {
     products.put("unitPrice", String.valueOf(amount));
     products.put("quantity", "1");
     Map<String, Object> body = new HashMap<>();
-    body.put("customerIp", opinionPostDTO.getHashRevID());
+    body.put("customerIp", ip);
     body.put("merchantPosId", clientId);
     body.put("description", opinionPostDTO.getUserID().toString());
     body.put("currencyCode", opinionPostDTO.getCurrency());

@@ -25,11 +25,6 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
     name = "Review Endpoints",
     description = "Controller for handling requests related to add/del/patch/read reviews")
 public class ReviewDataController {
-  @Value("${app.isProd:true}")
-  private boolean isProd;
-
-  @Value("${FIXEDSALT_IPHASH}")
-  private String fixedSalt;
 
   private final ReviewService reviewService;
 

@@ -38,6 +38,9 @@ public class User implements UserDetails {
 
   private String location;
 
+  @Pattern(regexp = "^[0-9]{26}$")
+  private String bankAccountNumber;
+
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private List<Tip> tipList;
 

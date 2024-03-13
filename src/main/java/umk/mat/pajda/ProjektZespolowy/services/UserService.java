@@ -115,4 +115,16 @@ public class UserService {
     }
     return true;
   }
+
+  public boolean patchBankAccountNumberOfUser(
+      UserPatchBankAccountNumberDTO userPatchBankAccountNumberDTO, String email) {
+    try {
+      userRepository.save(
+          userConverter.updateBankAccountNumberOfEntity(userPatchBankAccountNumberDTO, email));
+    } catch (Exception e) {
+      logger.error("patchBankAccountNumberOfUser", e);
+      return false;
+    }
+    return true;
+  }
 }

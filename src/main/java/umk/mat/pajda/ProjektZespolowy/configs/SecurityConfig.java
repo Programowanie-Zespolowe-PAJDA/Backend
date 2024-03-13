@@ -43,7 +43,8 @@ public class SecurityConfig {
                         HttpMethod.PATCH,
                         "/user/editInformations",
                         "/user/editPassword",
-                        "/user/editEmail")
+                        "/user/editEmail",
+                        "/user/editBankAccountNumber")
                     .authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/user")
                     .authenticated()

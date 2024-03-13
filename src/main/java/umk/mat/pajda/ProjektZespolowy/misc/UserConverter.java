@@ -41,6 +41,7 @@ public class UserConverter {
     user.setName(registerDTO.getName());
     user.setSurname(registerDTO.getSurname());
     user.setLocation(registerDTO.getLocation());
+    user.setBankAccountNumber(registerDTO.getBankAccountNumber());
     user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
     user.setRole("ROLE_USER");
     user.setEnabled(allowed);
@@ -65,6 +66,13 @@ public class UserConverter {
   public User updateEmailOfEntity(UserPatchEmailDTO userPatchEmailDTO, String mail) {
     User user = userRepository.findByMail(mail).get();
     user.setMail(userPatchEmailDTO.getMail());
+    return user;
+  }
+
+  public User updateBankAccountNumberOfEntity(
+      UserPatchBankAccountNumberDTO userPatchBankAccountNumberDTO, String mail) {
+    User user = userRepository.findByMail(mail).get();
+    user.setBankAccountNumber(userPatchBankAccountNumberDTO.getBankAccountNumber());
     return user;
   }
 

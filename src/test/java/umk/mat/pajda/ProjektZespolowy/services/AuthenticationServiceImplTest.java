@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Services;
+package umk.mat.pajda.ProjektZespolowy.services;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -21,7 +21,6 @@ import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
-import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.impl.AuthenticationServiceImpl;
 
 public class AuthenticationServiceImplTest {
@@ -49,6 +48,7 @@ public class AuthenticationServiceImplTest {
     UserGetDTO userGetDTO = new UserGetDTO();
     user.setMail(mail);
     userGetDTO.setMail(mail);
+
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(user));
     Mockito.when(userConverter.createDTO(user)).thenReturn(userGetDTO);
 
@@ -60,6 +60,7 @@ public class AuthenticationServiceImplTest {
     String mail = "test@test.com";
     User user = new User();
     user.setMail(mail);
+
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.empty());
 
     Assertions.assertNull(authenticationService.getUser(mail));
@@ -72,6 +73,7 @@ public class AuthenticationServiceImplTest {
     registerDTO.setMail(mail);
     User user = new User();
     user.setMail(mail);
+
     Mockito.when(userConverter.createEntity(registerDTO)).thenReturn(user);
     Mockito.when(userRepository.save(user)).thenReturn(null);
 
@@ -85,6 +87,7 @@ public class AuthenticationServiceImplTest {
     registerDTO.setMail(mail);
     User user = new User();
     user.setMail(mail);
+
     Mockito.when(userConverter.createEntity(registerDTO)).thenReturn(user);
     Mockito.when(userRepository.save(user)).thenThrow(new RuntimeException());
 
@@ -106,6 +109,7 @@ public class AuthenticationServiceImplTest {
     jwtAuthenticationResponseDTO.setToken("token");
     jwtAuthenticationResponseDTO.setRefreshToken("refreshToken");
     Authentication authentication = Mockito.mock(Authentication.class);
+
     Mockito.when(userRepository.findByMail(loginDTO.getMail())).thenReturn(Optional.of(user));
     Mockito.when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
         .thenReturn(authentication);
@@ -124,6 +128,7 @@ public class AuthenticationServiceImplTest {
     LoginDTO loginDTO = new LoginDTO();
     loginDTO.setMail("test@test.com");
     loginDTO.setPassword("Testt!123");
+
     Mockito.when(userRepository.findByMail(loginDTO.getMail())).thenReturn(Optional.of(new User()));
     Mockito.when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
         .thenThrow(Mockito.mock(AuthenticationException.class));
@@ -145,6 +150,7 @@ public class AuthenticationServiceImplTest {
     jwtAuthenticationResponseDTO.setRefreshToken("token");
     RefreshTokenDTO refreshTokenDTO = new RefreshTokenDTO();
     refreshTokenDTO.setToken("token");
+
     Mockito.when(jwtService.extractUserName("token")).thenReturn("test@test.com");
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(user));
     Mockito.when(jwtService.isTokenValid("token", user)).thenReturn(true);
@@ -165,6 +171,7 @@ public class AuthenticationServiceImplTest {
     user.setMail(mail);
     RefreshTokenDTO refreshTokenDTO = new RefreshTokenDTO();
     refreshTokenDTO.setToken("token");
+
     Mockito.when(jwtService.extractUserName("token")).thenReturn("test@test.com");
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(user));
     Mockito.when(jwtService.isTokenValid("token", user)).thenReturn(false);

@@ -17,8 +17,8 @@ public class UserConverter {
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
 
-  @Value("${user-allowed}")
-  private boolean allowed;
+  @Value("${profile}")
+  private String profile;
 
   public UserConverter(PasswordEncoder passwordEncoder, UserRepository userRepository) {
     this.passwordEncoder = passwordEncoder;
@@ -45,7 +45,11 @@ public class UserConverter {
     user.setBankAccountNumber(registerDTO.getBankAccountNumber());
     user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
     user.setRole("ROLE_USER");
-    user.setEnabled(allowed);
+    if ("prod".equals(profile)) {
+      user.setEnabled(false);
+    } else {
+      user.setEnabled(true);
+    }
     return user;
   }
 

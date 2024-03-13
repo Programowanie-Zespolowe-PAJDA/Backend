@@ -7,7 +7,14 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @ActiveProfiles("tests")
-@TestPropertySource(properties = {"FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO"})
+@TestPropertySource(
+    properties = {
+      "FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO",
+      "SHOP_ID = shop_id",
+      "CLIENT_SECRET = client_secret",
+      "CLIENT_ID = client_id",
+      "profile = tests"
+    })
 class ProjektZespolowyApplicationTests {
 
   @Test

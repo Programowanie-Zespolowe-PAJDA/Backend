@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Controllers;
+package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -26,14 +25,12 @@ import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
-import umk.mat.pajda.ProjektZespolowy.controllers.ReviewDataController;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 import umk.mat.pajda.ProjektZespolowy.services.impl.AuthenticationServiceImpl;
 
 @WebMvcTest(ReviewDataController.class)
 @AutoConfigureMockMvc
-@Profile("!tests")
 public class ReviewDataControllerTest {
 
   @Autowired private MockMvc mockMvc;

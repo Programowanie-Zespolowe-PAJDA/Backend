@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Services;
+package umk.mat.pajda.ProjektZespolowy.services;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,11 +19,17 @@ import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
-import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
 @SpringBootTest
 @ActiveProfiles("tests")
-@TestPropertySource(properties = {"FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO"})
+@TestPropertySource(
+    properties = {
+      "FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO",
+      "SHOP_ID = shop_id",
+      "CLIENT_SECRET = client_secret",
+      "CLIENT_ID = client_id",
+      "profile = tests"
+    })
 public class ReviewServiceIntTestOfHashRevID {
 
   @Value("${FIXEDSALT_IPHASH}")

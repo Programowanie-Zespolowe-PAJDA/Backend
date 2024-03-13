@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Controllers;
+package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
-import umk.mat.pajda.ProjektZespolowy.controllers.UserController;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.UserService;
 import umk.mat.pajda.ProjektZespolowy.services.impl.AuthenticationServiceImpl;

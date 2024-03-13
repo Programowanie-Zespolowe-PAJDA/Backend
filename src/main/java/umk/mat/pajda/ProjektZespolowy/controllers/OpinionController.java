@@ -25,8 +25,8 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
     description = "Controller for handling requests related to add opinion")
 public class OpinionController {
 
-  @Value("${app.isProd:true}")
-  private boolean isProd;
+  @Value("${profile}")
+  private String profile;
 
   @Value("${FIXEDSALT_IPHASH}")
   private String fixedSalt;
@@ -48,14 +48,13 @@ public class OpinionController {
       description = "Following endpoint adds new Opinion")
   public ResponseEntity<String> addNewOpinion(
       @Valid @RequestBody OpinionPostDTO opinionPostDTO, BindingResult bindingResult) {
-    logger.info(opinionPostDTO.getComment(), opinionPostDTO.getAmount());
     if (bindingResult.hasErrors()) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("Validation failed: " + bindingResult.getAllErrors());
     }
     String ip = opinionPostDTO.getHashRevID();
     opinionPostDTO.setHashRevID(BCrypt.hashpw(opinionPostDTO.getHashRevID(), fixedSalt));
-    if (isProd && !reviewService.validateTime(opinionPostDTO)) {
+    if ("prod".equals(profile) && !reviewService.validateTime(opinionPostDTO)) {
       return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
           .body("adding failed - too many requests wait 10 minutes");
     }

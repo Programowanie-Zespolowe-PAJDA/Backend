@@ -119,4 +119,13 @@ public class UserControllerTest {
         .perform(patch("/user/editEmail").with(SecurityMockMvcRequestPostProcessors.csrf()))
         .andExpect(status().isOk());
   }
+
+  @Test
+  @WithMockUser(roles = "USER")
+  public void userControllerTestModBankAccountNumberOfUserStatus() throws Exception {
+    mockMvc
+        .perform(
+            patch("/user/editBankAccountNumber").with(SecurityMockMvcRequestPostProcessors.csrf()))
+        .andExpect(status().isOk());
+  }
 }

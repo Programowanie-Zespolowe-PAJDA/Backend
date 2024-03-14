@@ -109,7 +109,7 @@ public class ReviewDataController {
       summary = "GET - get owner \"Review\"",
       description = "Following endpoint returns a owner Review of id")
   public ResponseEntity<ReviewGetDTO> readReview(
-      @AuthenticationPrincipal UserDetails userDetails, @PathVariable int id) {
+      @AuthenticationPrincipal UserDetails userDetails, @PathVariable String id) {
     ReviewGetDTO reviewGetDTO = null;
     reviewGetDTO = reviewService.getReview(id, userDetails.getUsername());
     if (reviewGetDTO != null) {

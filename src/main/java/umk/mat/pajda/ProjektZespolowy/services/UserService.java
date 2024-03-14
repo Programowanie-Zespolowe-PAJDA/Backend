@@ -18,14 +18,14 @@ public class UserService {
 
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-  @Autowired(required = false)
-  private UserConverter userConverter;
+  private final UserConverter userConverter;
 
   private final UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserService(UserRepository userRepository) {
+  public UserService(UserConverter userConverter, UserRepository userRepository) {
+    this.userConverter = userConverter;
     this.userRepository = userRepository;
   }
 

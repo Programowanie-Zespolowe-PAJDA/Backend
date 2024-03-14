@@ -8,9 +8,12 @@ import umk.mat.pajda.ProjektZespolowy.entity.User;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
-  List<Review> findAllByUser(User user);
+  List<Review> findAllByUserAndEnabledIsTrue(User user);
 
-  Review findByIdAndUser(int id, User user);
+  List<Review> findAllByEnabledIsTrue();
 
-  Review findFirstByUserAndHashRevIDOrderByCreatedAtDesc(User user, String hashRevID);
+  Review findByIdAndUserAndEnabledIsTrue(String id, User user);
+
+  Review findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
+      User user, String hashRevID);
 }

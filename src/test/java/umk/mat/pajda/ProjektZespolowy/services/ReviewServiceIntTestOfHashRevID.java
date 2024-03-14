@@ -63,7 +63,7 @@ public class ReviewServiceIntTestOfHashRevID {
     opinionPostDTO.setClientName("delta");
     opinionPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.100", fixedSalt));
 
-    Review review = reviewConverter.createEntity(opinionPostDTO);
+    Review review = reviewConverter.createEntity(opinionPostDTO, "fsad4234ffsda");
     review.setCreatedAt(LocalDateTime.now().minusMinutes(15));
     reviewRepository.save(review);
 
@@ -92,8 +92,9 @@ public class ReviewServiceIntTestOfHashRevID {
     opinionPostDTO.setClientName("delta");
     opinionPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.100", fixedSalt));
 
-    Review review = reviewConverter.createEntity(opinionPostDTO);
+    Review review = reviewConverter.createEntity(opinionPostDTO, "fsad4234ffsda");
     review.setCreatedAt(LocalDateTime.now().minusMinutes(5));
+    review.setEnabled(true);
     reviewRepository.save(review);
     // Then
     assertFalse(reviewService.validateTime(opinionPostDTO));

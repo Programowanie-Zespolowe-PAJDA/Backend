@@ -141,7 +141,7 @@ public class ReviewDataControllerTest {
   @WithMockUser(roles = "USER")
   public void reviewControllerTestGetSelectedReviewOfUserStatus() throws Exception {
     // When
-    when(reviewService.getReview(any(Integer.class), any(String.class)))
+    when(reviewService.getReview(any(String.class), any(String.class)))
         .thenReturn(new ReviewGetDTO());
     // Then
     mockMvc.perform(get("/review/owner/1")).andExpect(status().isOk());

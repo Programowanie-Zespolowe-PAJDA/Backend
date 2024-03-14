@@ -31,14 +31,16 @@ public class ReviewConverter {
     return reviewGetDTO;
   }
 
-  public Review createEntity(OpinionPostDTO opinionPostDTO) {
+  public Review createEntity(OpinionPostDTO opinionPostDTO, String id) {
     Review review = new Review();
+    review.setId(id);
     review.setRating(opinionPostDTO.getRating());
     review.setComment(opinionPostDTO.getComment());
     review.setCreatedAt(LocalDateTime.now());
     review.setUser(userRepository.findById(opinionPostDTO.getUserID()).get());
     review.setClientName(opinionPostDTO.getClientName());
     review.setHashRevID(opinionPostDTO.getHashRevID());
+    review.setEnabled(false);
     return review;
   }
 

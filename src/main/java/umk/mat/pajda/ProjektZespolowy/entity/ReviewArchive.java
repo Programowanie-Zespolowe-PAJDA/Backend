@@ -6,6 +6,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 
 @Entity
 @Setter
@@ -14,9 +15,9 @@ import lombok.*;
 @AllArgsConstructor
 public class ReviewArchive {
 
-  @Id @GeneratedValue private Integer id;
+  @Id @NotNull private String id;
 
-  @Size(max = 10)
+  @Range(min = 0, max = 10)
   private Integer rating;
 
   @Size(max = 1500)

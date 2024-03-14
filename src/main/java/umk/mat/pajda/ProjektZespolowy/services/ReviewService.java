@@ -37,9 +37,9 @@ public class ReviewService {
     this.userRepository = userRepository;
   }
 
-  public Boolean addReview(OpinionPostDTO opinionPostDTO) {
+  public Boolean addReview(OpinionPostDTO opinionPostDTO, String id) {
     try {
-      reviewRepository.save(reviewConverter.createEntity(opinionPostDTO));
+      reviewRepository.save(reviewConverter.createEntity(opinionPostDTO, id));
     } catch (Exception e) {
       logger.error("addReview", e);
       return false;
@@ -48,13 +48,14 @@ public class ReviewService {
   }
 
   public List<ReviewGetDTO> getAllReviews() {
-    return reviewConverter.createReviewDTOList(reviewRepository.findAll());
+    return reviewConverter.createReviewDTOList(reviewRepository.findAllByEnabledIsTrue());
   }
 
   public List<ReviewGetDTO> getAllReviews(String email) {
     Optional<User> user = userRepository.findByMail(email);
     if (user.isPresent()) {
-      return reviewConverter.createReviewDTOList(reviewRepository.findAllByUser(user.get()));
+      return reviewConverter.createReviewDTOList(
+          reviewRepository.findAllByUserAndEnabledIsTrue(user.get()));
     }
     return null;
   }
@@ -73,10 +74,12 @@ public class ReviewService {
     return reviewConverter.createDTO(review);
   }
 
-  public ReviewGetDTO getReview(int id, String email) {
+  public ReviewGetDTO getReview(String id, String email) {
     Review review = null;
     try {
-      review = reviewRepository.findByIdAndUser(id, userRepository.findByMail(email).get());
+      review =
+          reviewRepository.findByIdAndUserAndEnabledIsTrue(
+              id, userRepository.findByMail(email).get());
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -116,7 +119,7 @@ public class ReviewService {
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
-          reviewRepository.findFirstByUserAndHashRevIDOrderByCreatedAtDesc(
+          reviewRepository.findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
               userRepository.findById(opinionPostDTO.getUserID()).get(),
               opinionPostDTO.getHashRevID());
       logger.info(String.valueOf(review));

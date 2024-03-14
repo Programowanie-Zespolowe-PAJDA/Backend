@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 public class Tip {
 
-  @Id @GeneratedValue private Integer id;
+  @Id @NotNull private String id;
 
   @Pattern(regexp = "^(CHF|CZK|DKK|EUR|GBP|HUF|NOK|PLN|RON|SEK|USD)$")
   private String currency;

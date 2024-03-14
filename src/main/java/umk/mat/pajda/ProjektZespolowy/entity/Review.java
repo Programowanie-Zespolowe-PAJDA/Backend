@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.Range;
 @AllArgsConstructor
 public class Review {
 
-  @Id @GeneratedValue @NotNull private Integer id;
+  @Id @NotNull private String id;
 
   @Range(min = 0, max = 10)
   private Integer rating;
@@ -31,6 +31,8 @@ public class Review {
   private String clientName;
 
   @NotNull private String hashRevID;
+
+  private boolean enabled;
 
   @NotNull
   @ManyToOne

@@ -32,14 +32,14 @@ public class TipConverterTest {
     Tip tip = new Tip();
     tip.setCreatedAt(localDateTime);
     tip.setUser(user);
-    tip.setId(1);
+    tip.setId("1");
     tip.setAmount(500);
     tip.setCurrency("PLN");
     tip.setPaidWith("BLIK");
     TipGetDTO expectedTipDTO = new TipGetDTO();
     expectedTipDTO.setCreatedAt(localDateTime);
     expectedTipDTO.setUserId(user.getId());
-    expectedTipDTO.setId(1);
+    expectedTipDTO.setId("1");
     expectedTipDTO.setAmount(500);
     expectedTipDTO.setCurrency("PLN");
     expectedTipDTO.setPaidWith("BLIK");

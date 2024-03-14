@@ -12,6 +12,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ReviewArchive {
 
   @Id @GeneratedValue private Integer id;
@@ -33,4 +34,24 @@ public class ReviewArchive {
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
+
+  public String toString2() {
+    return "ReviewArchive{"
+        + "id="
+        + id
+        + ", rating="
+        + rating
+        + ", comment='"
+        + comment
+        + '\''
+        + ", clientName='"
+        + clientName
+        + '\''
+        + ", hashRevID='"
+        + hashRevID
+        + '\''
+        + ", user="
+        + user.toString2()
+        + '}';
+  }
 }

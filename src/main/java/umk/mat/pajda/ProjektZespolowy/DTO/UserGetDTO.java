@@ -15,4 +15,5 @@ public class UserGetDTO {
   private String surname;
   private String mail;
   private String location;
+  private String bankAccountNumber;
 }

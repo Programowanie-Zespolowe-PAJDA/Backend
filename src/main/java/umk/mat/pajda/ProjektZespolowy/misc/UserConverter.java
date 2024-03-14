@@ -32,6 +32,7 @@ public class UserConverter {
     userGetDTO.setMail(user.getMail());
     userGetDTO.setSurname(user.getSurname());
     userGetDTO.setLocation(user.getLocation());
+    userGetDTO.setBankAccountNumber(user.getBankAccountNumber());
     return userGetDTO;
   }
 

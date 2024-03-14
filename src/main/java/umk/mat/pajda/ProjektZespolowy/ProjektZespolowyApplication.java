@@ -16,9 +16,9 @@ import org.springframework.web.client.RestTemplate;
         @Info(
             title = "Kellner app",
             description =
-                "An application that allows the waiter to receive tips electronically and assess his skills."
+                "An application that allows the waiter to receive tips electronically "
                     + "and assess his skills. Backend API Documentation ",
-            version = "v0.1"))
+            version = "v0.5"))
 public class ProjektZespolowyApplication {
 
   @Bean

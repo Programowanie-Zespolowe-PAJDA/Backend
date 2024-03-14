@@ -98,6 +98,30 @@ public class UserController {
     }
   }
 
+  @PatchMapping("/editBankAccountNumber")
+  @SecurityRequirement(name = "Bearer Authentication")
+  @Operation(
+      summary = "PATCH - modify  \"User\" bank account number",
+      description = "Following endpoint edits User bank account number")
+  public ResponseEntity<String> modBankAccountNumberOfUser(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @Valid @RequestBody UserPatchBankAccountNumberDTO userPatchBankAccountNumberDTO,
+      BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity.badRequest().body("Validation failed: " + bindingResult.getAllErrors());
+    }
+    if (userService.getUser(userDetails.getUsername()) == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed - no user");
+    }
+    if (userService.patchBankAccountNumberOfUser(
+        userPatchBankAccountNumberDTO, userDetails.getUsername())) {
+      return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("modifying failed - wrong BANK ACCOUNT NUMBER [BBAN] ");
+    }
+  }
+
   @DeleteMapping
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(

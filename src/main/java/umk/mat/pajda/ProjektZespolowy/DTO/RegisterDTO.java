@@ -32,4 +32,7 @@ public class RegisterDTO {
   @Email private String mail;
 
   private String location;
+
+  @Pattern(regexp = "^[0-9]{26}$")
+  private String bankAccountNumber;
 }

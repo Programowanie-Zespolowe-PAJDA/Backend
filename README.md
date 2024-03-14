@@ -44,6 +44,7 @@ Users for testing:<br><br>
 **[PATCH] /user/editInformations** - (only for authenticated) mod informations of user <br>
 **[PATCH] /user/editPassword** - (only for authenticated) mod password of user <br>
 **[PATCH] /user/editEmail** - (only for authenticated) mod email of user <br>
+**[PATCH] /user/editBankAccountNumber** - (only for authenticated) mod bank account number of user <br>
 **[GET] /user/{id}** - (for everyone)  get a user <br>
 **[GET] /user/profile** - (only for authenticated) get a profile<br>
 **[GET] /user** - (for Admin role) get all users <br>

@@ -1,8 +1,7 @@
 package umk.mat.pajda.ProjektZespolowy.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import lombok.*;
 
@@ -13,11 +12,13 @@ import lombok.*;
 @AllArgsConstructor
 public class Tip {
 
-  @Id @GeneratedValue private Integer id;
+  @Id @NotNull private String id;
 
+  @Pattern(regexp = "^(CHF|CZK|DKK|EUR|GBP|HUF|NOK|PLN|RON|SEK|USD)$")
   private String currency;
 
-  @NotNull private Float amount;
+  @Min(value = 80)
+  private Integer amount;
 
   @FutureOrPresent private LocalDateTime createdAt;
 

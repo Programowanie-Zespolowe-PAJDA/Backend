@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Services;
+package umk.mat.pajda.ProjektZespolowy.services;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -29,15 +29,17 @@ public class AuthServiceImplTest {
     String mail = "test@test.com";
     User testUser = new User();
     testUser.setMail(mail);
-    Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(testUser));
-    UserDetails userDetails = authService.userDetailsService().loadUserByUsername(mail);
 
+    Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.of(testUser));
+
+    UserDetails userDetails = authService.userDetailsService().loadUserByUsername(mail);
     Assertions.assertEquals(testUser.getMail(), userDetails.getUsername());
   }
 
   @Test
   public void shouldThrowUsernameNotFoundExceptionWhenUserNotFoundTest() {
     String mail = "test@test.com";
+
     Mockito.when(userRepository.findByMail(mail)).thenReturn(Optional.empty());
 
     Assertions.assertThrows(

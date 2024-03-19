@@ -1,8 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.DTO;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,7 @@ import org.hibernate.validator.constraints.Range;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewPatchPostDTO {
+public class OpinionPostDTO {
   @Range(min = 0, max = 10)
   private Integer rating;
 
@@ -26,4 +24,10 @@ public class ReviewPatchPostDTO {
   @NotNull private String hashRevID;
 
   @NotNull @Positive private Integer userID;
+
+  @Min(value = 80)
+  private Integer amount;
+
+  @Pattern(regexp = "^(CHF|CZK|DKK|EUR|GBP|HUF|NOK|PLN|RON|SEK|USD)$")
+  private String currency;
 }

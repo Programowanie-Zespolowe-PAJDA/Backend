@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Services;
+package umk.mat.pajda.ProjektZespolowy.services;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,17 +13,23 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
-import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
 @SpringBootTest
 @ActiveProfiles("tests")
-@TestPropertySource(properties = {"FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO"})
+@TestPropertySource(
+    properties = {
+      "FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO",
+      "SHOP_ID = shop_id",
+      "CLIENT_SECRET = client_secret",
+      "CLIENT_ID = client_id",
+      "profile = tests"
+    })
 public class ReviewServiceIntTestOfHashRevID {
 
   @Value("${FIXEDSALT_IPHASH}")
@@ -50,19 +56,19 @@ public class ReviewServiceIntTestOfHashRevID {
     user.setRole("ROLE_USER");
     userRepository.save(user);
 
-    ReviewPatchPostDTO reviewPatchPostDTO = new ReviewPatchPostDTO();
-    reviewPatchPostDTO.setComment("test20");
-    reviewPatchPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
-    reviewPatchPostDTO.setRating(5);
-    reviewPatchPostDTO.setClientName("delta");
-    reviewPatchPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.100", fixedSalt));
+    OpinionPostDTO opinionPostDTO = new OpinionPostDTO();
+    opinionPostDTO.setComment("test20");
+    opinionPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
+    opinionPostDTO.setRating(5);
+    opinionPostDTO.setClientName("delta");
+    opinionPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.100", fixedSalt));
 
-    Review review = reviewConverter.createEntity(reviewPatchPostDTO);
+    Review review = reviewConverter.createEntity(opinionPostDTO, "fsad4234ffsda");
     review.setCreatedAt(LocalDateTime.now().minusMinutes(15));
     reviewRepository.save(review);
 
     // Then
-    assertTrue(reviewService.validateTime(reviewPatchPostDTO));
+    assertTrue(reviewService.validateTime(opinionPostDTO));
   }
 
   @Test
@@ -79,18 +85,19 @@ public class ReviewServiceIntTestOfHashRevID {
     user.setRole("ROLE_USER");
     userRepository.save(user);
 
-    ReviewPatchPostDTO reviewPatchPostDTO = new ReviewPatchPostDTO();
-    reviewPatchPostDTO.setComment("test20");
-    reviewPatchPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
-    reviewPatchPostDTO.setRating(5);
-    reviewPatchPostDTO.setClientName("delta");
-    reviewPatchPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.100", fixedSalt));
+    OpinionPostDTO opinionPostDTO = new OpinionPostDTO();
+    opinionPostDTO.setComment("test20");
+    opinionPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
+    opinionPostDTO.setRating(5);
+    opinionPostDTO.setClientName("delta");
+    opinionPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.100", fixedSalt));
 
-    Review review = reviewConverter.createEntity(reviewPatchPostDTO);
+    Review review = reviewConverter.createEntity(opinionPostDTO, "fsad4234ffsda");
     review.setCreatedAt(LocalDateTime.now().minusMinutes(5));
+    review.setEnabled(true);
     reviewRepository.save(review);
     // Then
-    assertFalse(reviewService.validateTime(reviewPatchPostDTO));
+    assertFalse(reviewService.validateTime(opinionPostDTO));
   }
 
   @Test
@@ -107,14 +114,14 @@ public class ReviewServiceIntTestOfHashRevID {
     user.setRole("ROLE_USER");
     userRepository.save(user);
 
-    ReviewPatchPostDTO reviewPatchPostDTO = new ReviewPatchPostDTO();
-    reviewPatchPostDTO.setComment("test20");
-    reviewPatchPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
-    reviewPatchPostDTO.setRating(5);
-    reviewPatchPostDTO.setClientName("delta");
-    reviewPatchPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.105", fixedSalt));
+    OpinionPostDTO opinionPostDTO = new OpinionPostDTO();
+    opinionPostDTO.setComment("test20");
+    opinionPostDTO.setUserID(userRepository.findByMail("test@gmail.com").get().getId());
+    opinionPostDTO.setRating(5);
+    opinionPostDTO.setClientName("delta");
+    opinionPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.105", fixedSalt));
 
     // Then
-    assertTrue(reviewService.validateTime(reviewPatchPostDTO));
+    assertTrue(reviewService.validateTime(opinionPostDTO));
   }
 }

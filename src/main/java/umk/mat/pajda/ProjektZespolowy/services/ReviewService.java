@@ -9,8 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
@@ -36,9 +37,9 @@ public class ReviewService {
     this.userRepository = userRepository;
   }
 
-  public Boolean addReview(ReviewPatchPostDTO reviewPatchPostDTO) {
+  public Boolean addReview(OpinionPostDTO opinionPostDTO, String id) {
     try {
-      reviewRepository.save(reviewConverter.createEntity(reviewPatchPostDTO));
+      reviewRepository.save(reviewConverter.createEntity(opinionPostDTO, id));
     } catch (Exception e) {
       logger.error("addReview", e);
       return false;
@@ -47,13 +48,14 @@ public class ReviewService {
   }
 
   public List<ReviewGetDTO> getAllReviews() {
-    return reviewConverter.createReviewDTOList(reviewRepository.findAll());
+    return reviewConverter.createReviewDTOList(reviewRepository.findAllByEnabledIsTrue());
   }
 
   public List<ReviewGetDTO> getAllReviews(String email) {
     Optional<User> user = userRepository.findByMail(email);
     if (user.isPresent()) {
-      return reviewConverter.createReviewDTOList(reviewRepository.findAllByUser(user.get()));
+      return reviewConverter.createReviewDTOList(
+          reviewRepository.findAllByUserAndEnabledIsTrue(user.get()));
     }
     return null;
   }
@@ -72,10 +74,12 @@ public class ReviewService {
     return reviewConverter.createDTO(review);
   }
 
-  public ReviewGetDTO getReview(int id, String email) {
+  public ReviewGetDTO getReview(String id, String email) {
     Review review = null;
     try {
-      review = reviewRepository.findByIdAndUser(id, userRepository.findByMail(email).get());
+      review =
+          reviewRepository.findByIdAndUserAndEnabledIsTrue(
+              id, userRepository.findByMail(email).get());
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -96,12 +100,12 @@ public class ReviewService {
     return true;
   }
 
-  public Boolean patchSelectReview(ReviewPatchPostDTO reviewPatchPostDTO, int id) {
+  public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, int id) {
     try {
       Review review = reviewRepository.findById(id).get();
-      review.setClientName(reviewPatchPostDTO.getClientName());
-      review.setComment(reviewPatchPostDTO.getComment());
-      review.setRating(reviewPatchPostDTO.getRating());
+      review.setClientName(reviewPatchDTO.getClientName());
+      review.setComment(reviewPatchDTO.getComment());
+      review.setRating(reviewPatchDTO.getRating());
       reviewRepository.save(review);
     } catch (Exception e) {
       logger.error("patchSelectReview", e);
@@ -110,14 +114,14 @@ public class ReviewService {
     return true;
   }
 
-  public boolean validateTime(ReviewPatchPostDTO reviewPatchPostDTO) {
+  public boolean validateTime(OpinionPostDTO opinionPostDTO) {
     Review review = null;
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
-          reviewRepository.findFirstByUserAndHashRevIDOrderByCreatedAtDesc(
-              userRepository.findById(reviewPatchPostDTO.getUserID()).get(),
-              reviewPatchPostDTO.getHashRevID());
+          reviewRepository.findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
+              userRepository.findById(opinionPostDTO.getUserID()).get(),
+              opinionPostDTO.getHashRevID());
       logger.info(String.valueOf(review));
       if (review == null) {
         return true;

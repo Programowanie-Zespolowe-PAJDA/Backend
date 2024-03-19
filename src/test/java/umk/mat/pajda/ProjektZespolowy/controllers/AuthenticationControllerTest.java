@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Controllers;
+package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
-import umk.mat.pajda.ProjektZespolowy.controllers.AuthenticationController;
 import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;

@@ -1,12 +1,13 @@
 ![pajda](src/main/resources/pajda.jpg)
 # Backend:
 backend as part of team programming<br>
-To gain access to the application, add environment variables and profile:
+To gain access to the application, add environmental variables and profile:
 Example in intelije:
 1. Open Run/Debug Configurations
 2. add profile: dev
 3. Click alt + e, to add field for enviromental variables
-4. add variables:<br> FIXEDSALT_IPHASH=$2a$10$Lmqw7nJI8P.klorFNe.3Ye;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK
+4. add variables:<br> FIXEDSALT_IPHASH=$2a$10$Lmqw7nJI8P.klorFNe.3Ye;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK;SHOP_ID=10I7CfvA;CLIENT_ID=476823;CLIENT_SECRET=20ae328bb9e5ab99a51b414a3acfa83b
+
 
 Users for testing:<br><br>
 **USER**<br>
@@ -33,7 +34,6 @@ Users for testing:<br><br>
 **[GET] /authenticated** - (only for authenticated) return "authenticated"<br>
 
 
-**[POST] /review** - (for everyone) add a review <br>
 **[PATCH] /review/{id}** - (for Admin role) mod a review <br>
 **[DELETE] /review/{id}** - (for Admin role) delete a review <br>
 **[GET] /review** - (for everyone) get all reviews <br>
@@ -50,6 +50,10 @@ Users for testing:<br><br>
 **[GET] /user** - (for Admin role) get all users <br>
 **[DELETE] /user** - (only for authenticated) delete account <br>
 **[DELETE] /user/{id}** (for Admin role) delete user <br>
+
+
+**[POST] /opinion** - (for everyone) add a opinion <br>
+
 
 ## Commands:
 **mvn spotless:check** - Formatter check <br>

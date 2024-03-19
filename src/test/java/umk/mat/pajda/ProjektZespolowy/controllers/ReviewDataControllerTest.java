@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Controllers;
+package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,21 +19,18 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
-import umk.mat.pajda.ProjektZespolowy.controllers.ReviewDataController;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 import umk.mat.pajda.ProjektZespolowy.services.impl.AuthenticationServiceImpl;
 
 @WebMvcTest(ReviewDataController.class)
 @AutoConfigureMockMvc
-@TestPropertySource(properties = {"FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO"})
 public class ReviewDataControllerTest {
 
   @Autowired private MockMvc mockMvc;
@@ -66,35 +63,10 @@ public class ReviewDataControllerTest {
   }
 
   @Test
-  @WithMockUser(roles = "")
-  public void reviewControllerTestAddNewReviewStatus() throws Exception {
-    // Given
-    ReviewPatchPostDTO review = new ReviewPatchPostDTO();
-    review.setComment("test");
-    review.setRating(5);
-    review.setClientName("delta");
-    review.setHashRevID("adsads");
-    review.setUserID(5);
-
-    // When
-    when(reviewService.addReview(any(ReviewPatchPostDTO.class))).thenReturn(true);
-    when(reviewService.validateTime(any(ReviewPatchPostDTO.class))).thenReturn(true);
-
-    // Then
-    mockMvc
-        .perform(
-            post("/review")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(review)))
-        .andExpect(status().isCreated());
-  }
-
-  @Test
   @WithMockUser(roles = "ADMIN")
   public void reviewControllerTestModReviewStatus() throws Exception {
     // Given
-    ReviewPatchPostDTO review = new ReviewPatchPostDTO();
+    ReviewPatchDTO review = new ReviewPatchDTO();
     review.setComment("test");
     review.setRating(5);
     review.setClientName("asdasdas");
@@ -104,7 +76,7 @@ public class ReviewDataControllerTest {
 
     // When
     when(reviewService.getReview(any(int.class))).thenReturn(reviewGetDTO);
-    when(reviewService.patchSelectReview(any(ReviewPatchPostDTO.class), any(int.class)))
+    when(reviewService.patchSelectReview(any(ReviewPatchDTO.class), any(int.class)))
         .thenReturn(true);
 
     // Then
@@ -169,7 +141,7 @@ public class ReviewDataControllerTest {
   @WithMockUser(roles = "USER")
   public void reviewControllerTestGetSelectedReviewOfUserStatus() throws Exception {
     // When
-    when(reviewService.getReview(any(Integer.class), any(String.class)))
+    when(reviewService.getReview(any(String.class), any(String.class)))
         .thenReturn(new ReviewGetDTO());
     // Then
     mockMvc.perform(get("/review/owner/1")).andExpect(status().isOk());

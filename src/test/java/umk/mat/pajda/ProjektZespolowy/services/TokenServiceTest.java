@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Services;
+package umk.mat.pajda.ProjektZespolowy.services;
 
 import java.util.Optional;
 import org.junit.jupiter.api.*;
@@ -7,7 +7,6 @@ import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.repository.TokenRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
-import umk.mat.pajda.ProjektZespolowy.services.TokenService;
 
 public class TokenServiceTest {
 
@@ -25,8 +24,8 @@ public class TokenServiceTest {
     User user = new User();
     Token expectedToken = new Token();
     expectedToken.setUser(user);
-    Token token = tokenService.createToken(user);
 
+    Token token = tokenService.createToken(user);
     Assertions.assertNotNull(token);
     Assertions.assertNotNull(token.getToken());
     Assertions.assertEquals(token.getUser(), expectedToken.getUser());
@@ -35,6 +34,7 @@ public class TokenServiceTest {
   @Test
   public void shouldSuccessWhenGetTokenTest() {
     Token token = new Token();
+
     Mockito.when(tokenRepository.findByToken("test")).thenReturn(Optional.of(token));
 
     Assertions.assertEquals(token, tokenService.getToken("test"));
@@ -52,15 +52,17 @@ public class TokenServiceTest {
     Token token = new Token();
     User user = new User();
     user.setEnabled(false);
-    Mockito.when(userRepository.findByToken(token)).thenReturn(Optional.of(user));
-    tokenService.confirm(token);
 
+    Mockito.when(userRepository.findByToken(token)).thenReturn(Optional.of(user));
+
+    tokenService.confirm(token);
     Assertions.assertTrue(user.isEnabled());
   }
 
   @Test
   public void shouldTokenNotFoundWhenConfirmTest() {
     Token token = new Token();
+
     Mockito.when(userRepository.findByToken(token)).thenReturn(Optional.empty());
 
     Assertions.assertFalse(tokenService.confirm(token));

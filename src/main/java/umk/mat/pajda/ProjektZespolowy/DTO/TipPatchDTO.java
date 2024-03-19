@@ -1,7 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.DTO;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +10,13 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TipPatchPostDTO {
-  private String currency;
+public class TipPatchDTO {
 
-  @NotNull private Float amount;
+  @Min(value = 80)
+  private Integer amount;
+
+  @Pattern(regexp = "^(CHF|CZK|DKK|EUR|GBP|HUF|NOK|PLN|RON|SEK|USD)$")
+  private String currency;
 
   private String paidWith;
 

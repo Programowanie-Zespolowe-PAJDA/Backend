@@ -11,9 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TipGetDTO {
-  private Integer id;
+  private String id;
   private String currency;
-  private Float amount;
+  private Integer amount;
   private String paidWith;
   private Integer userId;
   private LocalDateTime createdAt;

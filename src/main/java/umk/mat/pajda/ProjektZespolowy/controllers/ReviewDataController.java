@@ -6,16 +6,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
 @RequestMapping("/review")
@@ -24,11 +22,6 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
     name = "Review Endpoints",
     description = "Controller for handling requests related to add/del/patch/read reviews")
 public class ReviewDataController {
-  @Value("${app.isProd:true}")
-  private boolean isProd;
-
-  @Value("${FIXEDSALT_IPHASH}")
-  private String fixedSalt;
 
   private final ReviewService reviewService;
 
@@ -37,38 +30,13 @@ public class ReviewDataController {
     this.reviewService = reviewService;
   }
 
-  // TODO - validate if monetary transaction happened
-
-  @PostMapping
-  @Operation(
-      summary = "POST - Add \"new Review\"",
-      description = "Following endpoint adds new Review")
-  public ResponseEntity<String> addNewReview(
-      @Valid @RequestBody ReviewPatchPostDTO reviewPatchPostDTO, BindingResult bindingResult) {
-    if (bindingResult.hasErrors()) {
-      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-          .body("Validation failed: " + bindingResult.getAllErrors());
-    }
-    reviewPatchPostDTO.setHashRevID(BCrypt.hashpw(reviewPatchPostDTO.getHashRevID(), fixedSalt));
-    if (isProd && !reviewService.validateTime(reviewPatchPostDTO)) {
-      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-          .body("adding failed - too many requests wait 10 minutes");
-    }
-
-    if (reviewService.addReview(reviewPatchPostDTO)) {
-      return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
-    } else {
-      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
-    }
-  }
-
   @PatchMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "PATCH - modify \"Review\"",
       description = "Following endpoint modifies a Review")
   public ResponseEntity<String> modReview(
-      @Valid @RequestBody ReviewPatchPostDTO reviewPatchPostDTO,
+      @Valid @RequestBody ReviewPatchDTO reviewPatchDTO,
       BindingResult bindingResult,
       @PathVariable int id) {
     if (bindingResult.hasErrors()) {
@@ -81,7 +49,7 @@ public class ReviewDataController {
           .body("modifying failed - no review with such id");
     }
 
-    if (reviewService.patchSelectReview(reviewPatchPostDTO, id)) {
+    if (reviewService.patchSelectReview(reviewPatchDTO, id)) {
       return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed");
@@ -141,7 +109,7 @@ public class ReviewDataController {
       summary = "GET - get owner \"Review\"",
       description = "Following endpoint returns a owner Review of id")
   public ResponseEntity<ReviewGetDTO> readReview(
-      @AuthenticationPrincipal UserDetails userDetails, @PathVariable int id) {
+      @AuthenticationPrincipal UserDetails userDetails, @PathVariable String id) {
     ReviewGetDTO reviewGetDTO = null;
     reviewGetDTO = reviewService.getReview(id, userDetails.getUsername());
     if (reviewGetDTO != null) {

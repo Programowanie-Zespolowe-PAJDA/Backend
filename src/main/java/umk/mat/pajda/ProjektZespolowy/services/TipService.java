@@ -90,7 +90,6 @@ public class TipService {
       body.put("notifyUrl", "https://enapiwek-api.onrender.com/tip");
       body.put("continueUrl", "https://enapiwek.onrender.com/thankyou");
     } else {
-      body.put("notifyUrl", "http://localhost:8080/tip");
       body.put("continueUrl", "http://localhost:5173/thankyou");
     }
     ObjectMapper objectMapper = new ObjectMapper();

@@ -3,7 +3,6 @@ package umk.mat.pajda.ProjektZespolowy.controllers;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.services.TipService;
 
@@ -21,9 +20,10 @@ public class TipController {
   }
 
   @PostMapping
-  public void addTip(@RequestBody String requestBody, @RequestHeader HttpHeaders headers) {
+  public void addTip(
+      @RequestBody String requestBody, @RequestHeader("openpayu-signature") String header) {
 
-    logger.info("test");
-    tipService.verifyNotification(requestBody, headers);
+    logger.info("header");
+    // tipService.verifyNotification(requestBody, headers);
   }
 }

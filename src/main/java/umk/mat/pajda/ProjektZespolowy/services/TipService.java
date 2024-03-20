@@ -43,6 +43,14 @@ public class TipService {
     this.restTemplate = new RestTemplate();
   }
 
+  public boolean verifyNotification(String requestBody, HttpHeaders headers) {
+    headers.forEach(
+        (key, value) -> {
+          logger.info(String.format("Header '%s' = %s", key, value));
+        });
+    return true;
+  }
+
   public String getToken() throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

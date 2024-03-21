@@ -54,6 +54,8 @@ Users for testing:<br><br>
 
 **[POST] /opinion** - (for everyone) add a opinion <br>
 
+**[GET] /tip/stats** - (for authenticated) get a statistics about tips <br>
+
 
 ## Commands:
 **mvn spotless:check** - Formatter check <br>

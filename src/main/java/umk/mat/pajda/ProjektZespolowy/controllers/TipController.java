@@ -28,15 +28,17 @@ public class TipController {
   public void addTip(
       @RequestBody String requestBody, @RequestHeader("OpenPayu-Signature") String header)
       throws NoSuchAlgorithmException, JsonProcessingException {
-    logger.info("1", requestBody);
+    logger.info(requestBody);
+    logger.info(header);
     if (tipService.verifyNotification(requestBody, header)) {
       String status = tipService.getStatus(requestBody);
+      logger.info(status);
       if (status.equals("CANCELED")) {
         if (!reviewService.deleteSelectReview(tipService.getOrderId(requestBody))) {
           logger.error("deleting failed");
         }
       } else if (status.equals("COMPLETED")) {
-        logger.info("2", requestBody);
+        logger.info(requestBody);
         tipService.makePayout();
       }
     }

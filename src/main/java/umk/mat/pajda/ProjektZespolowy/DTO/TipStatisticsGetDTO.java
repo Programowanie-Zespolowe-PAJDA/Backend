@@ -14,7 +14,5 @@ public class TipStatisticsGetDTO {
   private Integer maxTipAmount;
   private Double avgTipAmount;
   private String currency;
-
   private List<TipMonthDTO> sumTipValueForEveryMonth;
-  private Double avgRatingOfUser;
 }

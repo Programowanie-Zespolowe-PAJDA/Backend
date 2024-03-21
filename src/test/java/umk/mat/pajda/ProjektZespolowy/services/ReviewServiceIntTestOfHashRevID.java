@@ -28,7 +28,8 @@ import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
       "SHOP_ID = shop_id",
       "CLIENT_SECRET = client_secret",
       "CLIENT_ID = client_id",
-      "profile = tests"
+      "profile = tests",
+      "KEY_MD5 = key_md5"
     })
 public class ReviewServiceIntTestOfHashRevID {
 

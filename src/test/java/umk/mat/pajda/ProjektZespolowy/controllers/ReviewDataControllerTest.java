@@ -75,8 +75,8 @@ public class ReviewDataControllerTest {
     ReviewGetDTO reviewGetDTO = new ReviewGetDTO();
 
     // When
-    when(reviewService.getReview(any(int.class))).thenReturn(reviewGetDTO);
-    when(reviewService.patchSelectReview(any(ReviewPatchDTO.class), any(int.class)))
+    when(reviewService.getReview(any(String.class))).thenReturn(reviewGetDTO);
+    when(reviewService.patchSelectReview(any(ReviewPatchDTO.class), any(String.class)))
         .thenReturn(true);
 
     // Then
@@ -123,7 +123,7 @@ public class ReviewDataControllerTest {
   @WithMockUser(roles = "ADMIN")
   public void reviewControllerTestGetSelectedReviewStatus() throws Exception {
     // When
-    when(reviewService.getReview(any(Integer.class))).thenReturn(new ReviewGetDTO());
+    when(reviewService.getReview(any(String.class))).thenReturn(new ReviewGetDTO());
     // Then
     mockMvc.perform(get("/review/1")).andExpect(status().isOk());
   }
@@ -160,7 +160,7 @@ public class ReviewDataControllerTest {
   @WithMockUser(roles = "ADMIN")
   public void reviewControllerTestDelReviewStatus() throws Exception {
     // When
-    when(reviewService.deleteSelectReview(any(Integer.class))).thenReturn(true);
+    when(reviewService.deleteSelectReview(any(String.class))).thenReturn(true);
     // Then
     mockMvc
         .perform(delete("/review/1").with(SecurityMockMvcRequestPostProcessors.csrf()))

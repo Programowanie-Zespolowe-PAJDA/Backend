@@ -60,7 +60,7 @@ public class ReviewService {
     return null;
   }
 
-  public ReviewGetDTO getReview(int id) {
+  public ReviewGetDTO getReview(String id) {
     Review review = null;
     try {
       review = reviewRepository.findById(id).get();
@@ -90,7 +90,7 @@ public class ReviewService {
     return reviewConverter.createDTO(review);
   }
 
-  public Boolean deleteSelectReview(int id) {
+  public Boolean deleteSelectReview(String id) {
     try {
       reviewRepository.deleteById(id);
     } catch (Exception e) {
@@ -100,7 +100,7 @@ public class ReviewService {
     return true;
   }
 
-  public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, int id) {
+  public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, String id) {
     try {
       Review review = reviewRepository.findById(id).get();
       review.setClientName(reviewPatchDTO.getClientName());

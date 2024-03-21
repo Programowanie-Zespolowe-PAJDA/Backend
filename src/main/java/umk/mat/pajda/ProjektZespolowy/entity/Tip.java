@@ -14,7 +14,7 @@ public class Tip {
 
   @Id @NotNull private String id;
 
-  @Pattern(regexp = "^(CHF|CZK|DKK|EUR|GBP|HUF|NOK|PLN|RON|SEK|USD)$")
+  @Pattern(regexp = "^(PLN|EUR|USD|GBP|CHF|DKK|SEK)$")
   private String currency;
 
   @Min(value = 80)

@@ -28,6 +28,6 @@ public class OpinionPostDTO {
   @Min(value = 80)
   private Integer amount;
 
-  @Pattern(regexp = "^(CHF|CZK|DKK|EUR|GBP|HUF|NOK|PLN|RON|SEK|USD)$")
+  @Pattern(regexp = "^(PLN|EUR|USD|GBP|CHF|DKK|SEK)$")
   private String currency;
 }

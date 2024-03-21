@@ -1,9 +1,12 @@
 package umk.mat.pajda.ProjektZespolowy.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.security.NoSuchAlgorithmException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 import umk.mat.pajda.ProjektZespolowy.services.TipService;
 
 @RestController
@@ -12,18 +15,30 @@ import umk.mat.pajda.ProjektZespolowy.services.TipService;
 public class TipController {
 
   private final TipService tipService;
+  private final ReviewService reviewService;
 
   private final Logger logger = LoggerFactory.getLogger(TipController.class);
 
-  public TipController(TipService tipService) {
+  public TipController(TipService tipService, ReviewService reviewService) {
     this.tipService = tipService;
+    this.reviewService = reviewService;
   }
 
   @PostMapping
   public void addTip(
-      @RequestBody String requestBody, @RequestHeader("openpayu-signature") String header) {
-
-    logger.info("header");
-    // tipService.verifyNotification(requestBody, headers);
+      @RequestBody String requestBody, @RequestHeader("OpenPayu-Signature") String header)
+      throws NoSuchAlgorithmException, JsonProcessingException {
+    logger.info("1", requestBody);
+    if (tipService.verifyNotification(requestBody, header)) {
+      String status = tipService.getStatus(requestBody);
+      if (status.equals("CANCELED")) {
+        if (!reviewService.deleteSelectReview(tipService.getOrderId(requestBody))) {
+          logger.error("deleting failed");
+        }
+      } else if (status.equals("COMPLETED")) {
+        logger.info("2", requestBody);
+        tipService.makePayout();
+      }
+    }
   }
 }

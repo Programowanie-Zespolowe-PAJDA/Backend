@@ -16,4 +16,9 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
   Review findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
       User user, String hashRevID);
+  /*
+   @Query("select AVG(r.amount) from Review r where r.user.id = :userid")
+   Double getAvgRating(@Param("userid") Integer userid);
+
+  */
 }

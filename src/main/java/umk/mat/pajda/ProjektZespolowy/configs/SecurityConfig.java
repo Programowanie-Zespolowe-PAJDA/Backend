@@ -53,6 +53,7 @@ public class SecurityConfig {
                         "/authenticated",
                         "/review/owner",
                         "/review/owner/{id}",
+                        "/tip/stats",
                         "/user/profile")
                     .authenticated()
                     .requestMatchers(HttpMethod.PATCH, "/review/{id}")

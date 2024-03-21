@@ -20,7 +20,7 @@ public class Tip {
   @Min(value = 80)
   private Integer amount;
 
-  @FutureOrPresent private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
   private String paidWith;
 

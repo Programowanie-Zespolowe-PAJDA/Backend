@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewAvgRatingGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
@@ -117,5 +118,16 @@ public class ReviewDataController {
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
+  }
+
+  @GetMapping("/avgRating")
+  @SecurityRequirement(name = "Bearer Authentication")
+  @Operation(
+      summary = "GET - get avg rating of all \"Review\"",
+      description = "Following endpoint returns avg rating of all Reviews")
+  public ResponseEntity<ReviewAvgRatingGetDTO> getAvgRating(
+      @AuthenticationPrincipal UserDetails userDetails) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(reviewService.getAvgRatingOfReview(userDetails.getUsername()));
   }
 }

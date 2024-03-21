@@ -3,8 +3,7 @@ package umk.mat.pajda.ProjektZespolowy.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,14 +13,19 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.TipStatisticsGetDTO;
+import umk.mat.pajda.ProjektZespolowy.entity.Tip;
+import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.TipConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.TipRepository;
+import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Service
 public class TipService {
   private final Logger logger = LoggerFactory.getLogger(TipService.class);
   private final TipConverter tipConverter;
   private final TipRepository tipRepository;
+  private final UserRepository userRepository;
 
   private RestTemplate restTemplate;
 
@@ -37,9 +41,11 @@ public class TipService {
   @Value("${profile}")
   private String profile;
 
-  public TipService(TipConverter tipConverter, TipRepository tipRepository) {
+  public TipService(
+      TipConverter tipConverter, TipRepository tipRepository, UserRepository userRepository) {
     this.tipConverter = tipConverter;
     this.tipRepository = tipRepository;
+    this.userRepository = userRepository;
     this.restTemplate = new RestTemplate();
   }
 
@@ -94,5 +100,27 @@ public class TipService {
 
   public void setRestTemplate(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
+  }
+
+  public TipStatisticsGetDTO getStatistics(String userName) {
+    try {
+      User user = userRepository.findByMail(userName).get();
+      TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
+      Tip tipMin = tipRepository.findFirstByUserOrderByAmountDesc(user);
+      tipStatisticsGetDTO.setMaxTipAmount(tipMin.getAmount());
+      tipStatisticsGetDTO.setCurrency(tipMin.getCurrency());
+
+      tipStatisticsGetDTO.setMinTipAmount(
+          tipRepository.findFirstByUserOrderByAmountAsc(user).getAmount());
+      tipStatisticsGetDTO.setAvgTipAmount(tipRepository.getAvgAmountForAllTips(user.getId()));
+      tipStatisticsGetDTO.setSumTipValueForEveryMonth(
+          tipRepository.getSumAmountForEachMonth(user.getId()));
+      tipStatisticsGetDTO.setNumberOfTips(tipRepository.getNumberOfTips(user.getId()));
+
+      return tipStatisticsGetDTO;
+    } catch (Exception e) {
+      logger.error("getStatistics", e);
+      return null;
+    }
   }
 }

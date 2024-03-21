@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.ReviewAvgRatingGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
@@ -133,6 +134,17 @@ public class ReviewService {
     } catch (Exception e) {
       logger.error("validateTime", e);
       return false;
+    }
+  }
+
+  public ReviewAvgRatingGetDTO getAvgRatingOfReview(String username) {
+    try {
+      ReviewAvgRatingGetDTO reviewAvgRatingGetDTO = new ReviewAvgRatingGetDTO();
+      reviewAvgRatingGetDTO.setAvgRating(reviewRepository.getAvgRating(username));
+      return reviewAvgRatingGetDTO;
+    } catch (Exception e) {
+      logger.error("getAvgRatingOfReview", e);
+      return null;
     }
   }
 }

@@ -56,7 +56,12 @@ public class TipService {
   @Value("${profile}")
   private String profile;
 
-  public TipService(TipConverter tipConverter, TipRepository tipRepository, UserRepository userRepository, ReviewService reviewService, UserService userService) {
+  public TipService(
+      TipConverter tipConverter,
+      TipRepository tipRepository,
+      UserRepository userRepository,
+      ReviewService reviewService,
+      UserService userService) {
     this.tipConverter = tipConverter;
     this.tipRepository = tipRepository;
     this.userRepository = userRepository;
@@ -65,7 +70,8 @@ public class TipService {
     this.restTemplate = new RestTemplate();
   }
 
-  public String makePayout(String orderId, String realAmount, String token) throws JsonProcessingException {
+  public String makePayout(String orderId, String realAmount, String token)
+      throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -77,28 +83,27 @@ public class TipService {
     payout.put("description", "Napiwek");
     Map<String, Object> account = new HashMap<>();
     User user = userService.getUserByReviewId(orderId);
-    if(user==null)
-    {
+    if (user == null) {
       return null;
     }
     account.put("accountNumber", user.getBankAccountNumber());
     Map<String, Object> customerAddress = new HashMap<>();
-    customerAddress.put("name", user.getName()+" "+user.getSurname());
+    customerAddress.put("name", user.getName() + " " + user.getSurname());
     body.put("payout", payout);
     body.put("account", account);
     body.put("customerAddress", customerAddress);
-    HttpEntity<Map<String,Object>>  request = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response = restTemplate.exchange("https://secure.snd.payu.com/api/v2_1/payouts", HttpMethod.POST, request, String.class);
-    if(!response.getStatusCode().equals(HttpStatus.CREATED))
-    {
+    HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+    ResponseEntity<String> response =
+        restTemplate.exchange(
+            "https://secure.snd.payu.com/api/v2_1/payouts", HttpMethod.POST, request, String.class);
+    if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
       return null;
     }
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode = objectMapper.readTree(response.getBody());
-    if(jsonNode.get("status").get("statusCode").asText().equals("SUCCESS")){
-       return jsonNode.get("payout").get("payoutId").asText();
-    }
-    else {
+    if (jsonNode.get("status").get("statusCode").asText().equals("SUCCESS")) {
+      return jsonNode.get("payout").get("payoutId").asText();
+    } else {
       return null;
     }
   }
@@ -154,7 +159,7 @@ public class TipService {
             HttpMethod.POST,
             request,
             String.class);
-    if(!tokenResponse.getStatusCode().equals(HttpStatus.OK)){
+    if (!tokenResponse.getStatusCode().equals(HttpStatus.OK)) {
       return null;
     }
     ObjectMapper objectMapper = new ObjectMapper();
@@ -166,8 +171,7 @@ public class TipService {
       throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     String token = getToken();
-    if(token==null)
-    {
+    if (token == null) {
       return null;
     }
     headers.setBearerAuth(token);
@@ -189,8 +193,7 @@ public class TipService {
     String currency = opinionPostDTO.getCurrency();
     if (!currency.equals("PLN")) {
       String exchangeRate = getExchangeRate(token, currency);
-      if(exchangeRate==null)
-      {
+      if (exchangeRate == null) {
         return null;
       }
       int lastAmount = Math.round(amount * Float.parseFloat(exchangeRate));
@@ -205,16 +208,16 @@ public class TipService {
     ObjectMapper objectMapper = new ObjectMapper();
     body.put("products", new Object[] {products});
     HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(body), headers);
-    ResponseEntity<String> response = restTemplate.exchange(
-        "https://secure.snd.payu.com/api/v2_1/orders", HttpMethod.POST, request, String.class);
-    if(!response.getStatusCode().equals(HttpStatus.FOUND)){
+    ResponseEntity<String> response =
+        restTemplate.exchange(
+            "https://secure.snd.payu.com/api/v2_1/orders", HttpMethod.POST, request, String.class);
+    if (!response.getStatusCode().equals(HttpStatus.FOUND)) {
       return null;
     }
     return response;
   }
 
-  public String getExchangeRate(String token, String currency)
-      throws JsonProcessingException {
+  public String getExchangeRate(String token, String currency) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
     HttpEntity<Object> request = new HttpEntity<>(headers);
@@ -224,7 +227,7 @@ public class TipService {
             HttpMethod.GET,
             request,
             String.class);
-    if(!response.getStatusCode().equals(HttpStatus.OK)){
+    if (!response.getStatusCode().equals(HttpStatus.OK)) {
       return null;
     }
     ObjectMapper objectMapper = new ObjectMapper();
@@ -238,19 +241,21 @@ public class TipService {
     return null;
   }
 
-  public boolean addTip(String payoutId, String orderId, String realAmount, String paidWith, String currency){
+  public boolean addTip(
+      String payoutId, String orderId, String realAmount, String paidWith, String currency) {
     try {
-      String nameOfPaidWith = switch (paidWith) {
-        case "blik" -> "BLIK";
-        case "c" -> "KARTA_PŁATNICZA";
-        case "p", "o", "m" -> "PRZELEW";
-        case "dpkl" -> "KLARNA";
-        default -> null;
-      };
-      tipRepository.save(tipConverter.createEntity(payoutId, orderId, realAmount , nameOfPaidWith, currency));
-    }
-    catch (Exception e){
-      logger.error("addTip",e);
+      String nameOfPaidWith =
+          switch (paidWith) {
+            case "blik" -> "BLIK";
+            case "c" -> "KARTA_PŁATNICZA";
+            case "p", "o", "m" -> "PRZELEW";
+            case "dpkl" -> "KLARNA";
+            default -> null;
+          };
+      tipRepository.save(
+          tipConverter.createEntity(payoutId, orderId, realAmount, nameOfPaidWith, currency));
+    } catch (Exception e) {
+      logger.error("addTip", e);
       return false;
     }
     return true;
@@ -261,14 +266,18 @@ public class TipService {
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBearerAuth(token);
     HttpEntity<Object> request = new HttpEntity<>(headers);
-    ResponseEntity<String> response = restTemplate.exchange("https://secure.snd.payu.com/api/v2_1/orders/"+orderId+"/transactions", HttpMethod.GET, request, String.class);
-    if(!response.getStatusCode().equals(HttpStatus.OK)){
+    ResponseEntity<String> response =
+        restTemplate.exchange(
+            "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/transactions",
+            HttpMethod.GET,
+            request,
+            String.class);
+    if (!response.getStatusCode().equals(HttpStatus.OK)) {
       return null;
     }
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode node = objectMapper.readTree(response.getBody());
-    for(JsonNode jsonNode: node.get("transactions"))
-    {
+    for (JsonNode jsonNode : node.get("transactions")) {
       return jsonNode.get("payMethod").get("value").asText();
     }
     return null;
@@ -287,8 +296,13 @@ public class TipService {
     description.put("description", "Refund");
     body.put("refund", description);
     HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response = restTemplate.exchange("https://secure.snd.payu.com/api/v2_1/orders/"+orderId+"/refunds", HttpMethod.POST, request, String.class);
-    if(!response.getStatusCode().equals(HttpStatus.OK)){
+    ResponseEntity<String> response =
+        restTemplate.exchange(
+            "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/refunds",
+            HttpMethod.POST,
+            request,
+            String.class);
+    if (!response.getStatusCode().equals(HttpStatus.OK)) {
       return false;
     }
     ObjectMapper objectMapper = new ObjectMapper();
@@ -306,7 +320,9 @@ public class TipService {
     return objectMapper.readTree(requestBody).get("order").get("totalAmount").asText();
   }
 
-  public List<String> getRealAmounts(String totalAmount, String currency, String paidWith, String token, String exchangeRate) throws JsonProcessingException {
+  public List<String> getRealAmounts(
+      String totalAmount, String currency, String paidWith, String token, String exchangeRate)
+      throws JsonProcessingException {
     int amount = Integer.parseInt(totalAmount);
     float commissionFee;
     switch (paidWith) {
@@ -330,24 +346,26 @@ public class TipService {
         commissionFee = (float) (amount * 0.025);
         amount = amount - 35 - Math.round(commissionFee);
       }
+      default -> {}
     }
-    if(currency.equals("PLN")) {
+    if (currency.equals("PLN")) {
       return List.of(String.valueOf(amount), String.valueOf(amount));
-    }
-    else {
-      int lastAmount = Math.round(amount/Float.parseFloat(exchangeRate));
+    } else {
+      int lastAmount = Math.round(amount / Float.parseFloat(exchangeRate));
       return List.of(String.valueOf(lastAmount), String.valueOf(amount));
     }
   }
 
   public void cancelPayout(String orderId, String token) throws JsonProcessingException {
     reviewService.deleteSelectReview(orderId);
-    if(token!=null&&!makeRefund(token, orderId))
-    {
+    if (token != null && !makeRefund(token, orderId)) {
       logger.error("makeRefund - failed");
-      if("prod".equals(profile)) {
+      if ("prod".equals(profile)) {
         try {
-          emailService.send(userRepository.findByMail("enapiwek@gmail.com").get(), "Refund", "refund failed for order: " + orderId);
+          emailService.send(
+              userRepository.findByMail("enapiwek@gmail.com").get(),
+              "Refund",
+              "refund failed for order: " + orderId);
         } catch (Exception e) {
           logger.error("sendMail - failed", e);
         }
@@ -359,6 +377,4 @@ public class TipService {
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.readTree(requestBody).get("order").get("additionalDescription").asText();
   }
-
-
 }

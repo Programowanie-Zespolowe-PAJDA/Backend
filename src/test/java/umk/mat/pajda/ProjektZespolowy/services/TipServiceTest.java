@@ -11,7 +11,6 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.misc.TipConverter;
-import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.TipRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -33,7 +32,9 @@ public class TipServiceTest {
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
-    tipService = new TipService(tipConverter, tipRepository, userRepository, tipService, reviewService, userService);
+    tipService =
+        new TipService(
+            tipConverter, tipRepository, userRepository, reviewService, userService);
     tipService.setRestTemplate(restTemplate);
   }
 

@@ -3,7 +3,6 @@ package umk.mat.pajda.ProjektZespolowy.misc;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import umk.mat.pajda.ProjektZespolowy.DTO.TipGetDTO;
@@ -35,7 +34,8 @@ public class TipConverter {
     return tipGetDTO;
   }
 
-  public Tip createEntity(String payoutId, String orderId, String realAmount, String paidWith, String currency){
+  public Tip createEntity(
+      String payoutId, String orderId, String realAmount, String paidWith, String currency) {
     Tip tip = new Tip();
     tip.setId(payoutId);
     tip.setUser(reviewRepository.findById(orderId).get().getUser());

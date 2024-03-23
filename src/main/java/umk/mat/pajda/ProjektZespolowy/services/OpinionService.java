@@ -25,8 +25,7 @@ public class OpinionService {
   public ResponseEntity<String> addOpinion(OpinionPostDTO opinionPostDTO, String ip) {
     try {
       ResponseEntity<String> response = tipService.createPayment(opinionPostDTO, ip);
-      if(response==null)
-      {
+      if (response == null) {
         return null;
       }
       ObjectMapper objectMapper = new ObjectMapper();

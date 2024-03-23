@@ -26,7 +26,10 @@ public class UserService {
   @Autowired private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserService(UserConverter userConverter, ReviewRepository reviewRepository, UserRepository userRepository) {
+  public UserService(
+      UserConverter userConverter,
+      ReviewRepository reviewRepository,
+      UserRepository userRepository) {
     this.userConverter = userConverter;
     this.reviewRepository = reviewRepository;
     this.userRepository = userRepository;
@@ -131,11 +134,10 @@ public class UserService {
     return true;
   }
 
-  public User getUserByReviewId(String id){
+  public User getUserByReviewId(String id) {
     try {
       return userRepository.findByReviewList(reviewRepository.findById(id).get()).get(0);
-    }
-    catch (Exception e){
+    } catch (Exception e) {
       return null;
     }
   }

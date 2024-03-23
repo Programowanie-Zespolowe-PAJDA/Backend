@@ -1,12 +1,11 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +87,7 @@ public class ReviewService {
     }
     return reviewConverter.createDTO(review);
   }
+
   @Transactional
   public Boolean deleteSelectReview(String id) {
     try {
@@ -135,13 +135,12 @@ public class ReviewService {
     }
   }
 
-  public boolean setEnabled(String id){
+  public boolean setEnabled(String id) {
     try {
-       Review review = reviewRepository.findById(id).get();
-       review.setEnabled(true);
-       reviewRepository.save(review);
-    }
-    catch (Exception e){
+      Review review = reviewRepository.findById(id).get();
+      review.setEnabled(true);
+      reviewRepository.save(review);
+    } catch (Exception e) {
       logger.error("setEnabled", e);
       return false;
     }

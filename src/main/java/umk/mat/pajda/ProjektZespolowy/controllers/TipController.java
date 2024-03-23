@@ -27,7 +27,7 @@ public class TipController {
   public void addTip(
       @RequestBody String requestBody, @RequestHeader("OpenPayu-Signature") String header)
       throws NoSuchAlgorithmException, JsonProcessingException {
-    if (!tipService.verifyNotification(requestBody, header)) {
+    if (tipService.verifyNotification(requestBody, header)) {
       String status = tipService.getStatus(requestBody);
       String orderId = tipService.getOrderId(requestBody);
       if (status.equals("CANCELED")) {

@@ -1,7 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
@@ -12,12 +11,20 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.misc.TipConverter;
+import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.TipRepository;
+import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 public class TipServiceTest {
 
   @Mock private TipRepository tipRepository;
   @Mock private TipConverter tipConverter;
+
+  @Mock private UserService userService;
+
+  @Mock private UserRepository userRepository;
+
+  @Mock private ReviewService reviewService;
 
   @Mock private RestTemplate restTemplate;
 
@@ -26,7 +33,7 @@ public class TipServiceTest {
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
-    tipService = new TipService(tipConverter, tipRepository);
+    tipService = new TipService(tipConverter, tipRepository, userRepository, tipService, reviewService, userService);
     tipService.setRestTemplate(restTemplate);
   }
 

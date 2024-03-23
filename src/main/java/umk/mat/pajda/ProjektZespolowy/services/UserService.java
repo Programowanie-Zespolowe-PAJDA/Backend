@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
+import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Service
@@ -19,13 +20,15 @@ public class UserService {
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
   private final UserConverter userConverter;
+  private final ReviewRepository reviewRepository;
 
   private final UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserService(UserConverter userConverter, UserRepository userRepository) {
+  public UserService(UserConverter userConverter, ReviewRepository reviewRepository, UserRepository userRepository) {
     this.userConverter = userConverter;
+    this.reviewRepository = reviewRepository;
     this.userRepository = userRepository;
   }
 
@@ -126,5 +129,14 @@ public class UserService {
       return false;
     }
     return true;
+  }
+
+  public User getUserByReviewId(String id){
+    try {
+      return userRepository.findByReviewList(reviewRepository.findById(id).get()).get(0);
+    }
+    catch (Exception e){
+      return null;
+    }
   }
 }

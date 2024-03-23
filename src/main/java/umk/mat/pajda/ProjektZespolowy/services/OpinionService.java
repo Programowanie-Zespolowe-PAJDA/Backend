@@ -25,6 +25,10 @@ public class OpinionService {
   public ResponseEntity<String> addOpinion(OpinionPostDTO opinionPostDTO, String ip) {
     try {
       ResponseEntity<String> response = tipService.createPayment(opinionPostDTO, ip);
+      if(response==null)
+      {
+        return null;
+      }
       ObjectMapper objectMapper = new ObjectMapper();
       JsonNode jsonNode = objectMapper.readTree(response.getBody());
       if (!reviewService.addReview(opinionPostDTO, jsonNode.get("orderId").asText())) {

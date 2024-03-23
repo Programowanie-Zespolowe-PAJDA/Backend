@@ -55,6 +55,7 @@ public class OpinionController {
     String ip = opinionPostDTO.getHashRevID();
     opinionPostDTO.setHashRevID(BCrypt.hashpw(opinionPostDTO.getHashRevID(), fixedSalt));
     if ("prod".equals(profile) && !reviewService.validateTime(opinionPostDTO)) {
+
       return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
           .body("adding failed - too many requests wait 10 minutes");
     }

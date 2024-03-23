@@ -5,6 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,9 +70,6 @@ public class ReviewService {
       logger.error("getReview", e);
       return null;
     }
-    if (review == null) {
-      return null;
-    }
     return reviewConverter.createDTO(review);
   }
 
@@ -89,7 +88,7 @@ public class ReviewService {
     }
     return reviewConverter.createDTO(review);
   }
-
+  @Transactional
   public Boolean deleteSelectReview(String id) {
     try {
       reviewRepository.deleteById(id);
@@ -134,5 +133,18 @@ public class ReviewService {
       logger.error("validateTime", e);
       return false;
     }
+  }
+
+  public boolean setEnabled(String id){
+    try {
+       Review review = reviewRepository.findById(id).get();
+       review.setEnabled(true);
+       reviewRepository.save(review);
+    }
+    catch (Exception e){
+      logger.error("setEnabled", e);
+      return false;
+    }
+    return true;
   }
 }

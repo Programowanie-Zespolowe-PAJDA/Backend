@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TipPatchDTO {
 
-  @Min(value = 80)
   private Integer amount;
 
   @Pattern(regexp = "^(PLN|EUR|USD|GBP|CHF|DKK|SEK)$")

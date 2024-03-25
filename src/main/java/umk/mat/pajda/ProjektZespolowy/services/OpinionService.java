@@ -22,9 +22,9 @@ public class OpinionService {
     this.tipService = tipService;
   }
 
-  public ResponseEntity<String> addOpinion(OpinionPostDTO opinionPostDTO, String ip) {
+  public ResponseEntity<String> addOpinion(OpinionPostDTO opinionPostDTO, String ip, int lastAmount, String exchangeRate) {
     try {
-      ResponseEntity<String> response = tipService.createPayment(opinionPostDTO, ip);
+      ResponseEntity<String> response = tipService.createPayment(opinionPostDTO, ip, lastAmount, exchangeRate);
       if (response == null) {
         return null;
       }

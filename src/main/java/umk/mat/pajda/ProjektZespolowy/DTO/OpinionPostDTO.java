@@ -25,7 +25,6 @@ public class OpinionPostDTO {
 
   @NotNull @Positive private Integer userID;
 
-  @Min(value = 80)
   private Integer amount;
 
   @Pattern(regexp = "^(PLN|EUR|USD|GBP|CHF|DKK|SEK)$")

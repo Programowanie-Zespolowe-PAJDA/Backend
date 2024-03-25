@@ -9,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
@@ -56,6 +59,8 @@ public class TipService {
   @Value("${profile}")
   private String profile;
 
+  private String token = null;
+
   public TipService(
       TipConverter tipConverter,
       TipRepository tipRepository,
@@ -70,7 +75,7 @@ public class TipService {
     this.restTemplate = new RestTemplate();
   }
 
-  public String makePayout(String orderId, String realAmount, String token)
+  public String makePayout(String orderId, String realAmount)
       throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
@@ -93,9 +98,16 @@ public class TipService {
     body.put("account", account);
     body.put("customerAddress", customerAddress);
     HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response =
-        restTemplate.exchange(
-            "https://secure.snd.payu.com/api/v2_1/payouts", HttpMethod.POST, request, String.class);
+    ResponseEntity<String> response;
+    try {
+      response =
+              restTemplate.exchange(
+                      "https://secure.snd.payu.com/api/v2_1/payouts", HttpMethod.POST, request, String.class);
+    }
+    catch (HttpClientErrorException.Unauthorized e)
+    {
+      response = changeBearerAuth(headers, body, "https://secure.snd.payu.com/api/v2_1/payouts", HttpMethod.POST);
+    }
     if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
       return null;
     }
@@ -145,7 +157,7 @@ public class TipService {
     return expectedSignature.equals(map.get("signature"));
   }
 
-  public String getToken() throws JsonProcessingException {
+  public void setToken() throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -160,20 +172,16 @@ public class TipService {
             request,
             String.class);
     if (!tokenResponse.getStatusCode().equals(HttpStatus.OK)) {
-      return null;
+      token = null;
     }
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode = objectMapper.readTree(tokenResponse.getBody());
-    return jsonNode.get("access_token").asText();
+    token = jsonNode.get("access_token").asText();
   }
 
-  public ResponseEntity<String> createPayment(OpinionPostDTO opinionPostDTO, String ip)
+  public ResponseEntity<String> createPayment(OpinionPostDTO opinionPostDTO, String ip, int lastAmount, String exchangeRate)
       throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
-    String token = getToken();
-    if (token == null) {
-      return null;
-    }
     headers.setBearerAuth(token);
     headers.setContentType(MediaType.APPLICATION_JSON);
     Integer amount = opinionPostDTO.getAmount();
@@ -190,43 +198,47 @@ public class TipService {
     } else {
       body.put("continueUrl", "http://localhost:5173/thankyou");
     }
-    String currency = opinionPostDTO.getCurrency();
-    if (!currency.equals("PLN")) {
-      String exchangeRate = getExchangeRate(token, currency);
-      if (exchangeRate == null) {
-        return null;
-      }
-      int lastAmount = Math.round(amount * Float.parseFloat(exchangeRate));
-      body.put("totalAmount", String.valueOf(lastAmount));
-      products.put("unitPrice", String.valueOf(lastAmount));
-      body.put("additionalDescription", exchangeRate);
-    } else {
-      products.put("unitPrice", String.valueOf(amount));
-      body.put("totalAmount", String.valueOf(amount));
-    }
+    body.put("totalAmount", String.valueOf(lastAmount));
+    products.put("unitPrice", String.valueOf(lastAmount));
+    body.put("additionalDescription", exchangeRate);
     body.put("description", opinionPostDTO.getCurrency());
     ObjectMapper objectMapper = new ObjectMapper();
     body.put("products", new Object[] {products});
-    HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(body), headers);
-    ResponseEntity<String> response =
-        restTemplate.exchange(
-            "https://secure.snd.payu.com/api/v2_1/orders", HttpMethod.POST, request, String.class);
+    HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+    ResponseEntity<String> response;
+    try {
+      response = restTemplate.exchange(
+              "https://secure.snd.payu.com/api/v2_1/orders", HttpMethod.POST, request, String.class);
+    }
+    catch (HttpClientErrorException.Unauthorized e)
+    {
+      response = changeBearerAuth(headers, body, "https://secure.snd.payu.com/api/v2_1/orders", HttpMethod.POST);
+    }
     if (!response.getStatusCode().equals(HttpStatus.FOUND)) {
       return null;
     }
     return response;
   }
 
-  public String getExchangeRate(String token, String currency) throws JsonProcessingException {
+  public String getExchangeRate(String currency) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
     HttpEntity<Object> request = new HttpEntity<>(headers);
-    ResponseEntity<String> response =
-        restTemplate.exchange(
-            "https://secure.snd.payu.com/api/v2_1/mcp-partners/6283a549-8b1a-430d-8a62-eea64327440e/fx-table",
-            HttpMethod.GET,
-            request,
-            String.class);
+    ResponseEntity<String> response;
+    try {
+      response =
+              restTemplate.exchange(
+                      "https://secure.snd.payu.com/api/v2_1/mcp-partners/6283a549-8b1a-430d-8a62-eea64327440e/fx-table",
+                      HttpMethod.GET,
+                      request,
+                      String.class);
+
+    }
+    catch (HttpClientErrorException.Unauthorized e){
+      response = changeBearerAuth(headers, null, "https://secure.snd.payu.com/api/v2_1/mcp-partners/6283a549-8b1a-430d-8a62-eea64327440e/fx-table", HttpMethod.GET);
+
+    }
+
     if (!response.getStatusCode().equals(HttpStatus.OK)) {
       return null;
     }
@@ -261,17 +273,23 @@ public class TipService {
     return true;
   }
 
-  public String getPaidWith(String orderId, String token) throws JsonProcessingException {
+  public String getPaidWith(String orderId) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBearerAuth(token);
     HttpEntity<Object> request = new HttpEntity<>(headers);
-    ResponseEntity<String> response =
-        restTemplate.exchange(
-            "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/transactions",
-            HttpMethod.GET,
-            request,
-            String.class);
+    ResponseEntity<String> response;
+    try {
+      response = restTemplate.exchange(
+              "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/transactions",
+              HttpMethod.GET,
+              request,
+              String.class);
+    }
+    catch (HttpClientErrorException.Unauthorized e)
+    {
+      response = changeBearerAuth(headers, null, "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/transactions", HttpMethod.GET);
+    }
     if (!response.getStatusCode().equals(HttpStatus.OK)) {
       return null;
     }
@@ -287,7 +305,7 @@ public class TipService {
     this.restTemplate = restTemplate;
   }
 
-  public boolean makeRefund(String token, String orderId) throws JsonProcessingException {
+  public boolean makeRefund(String orderId) throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -296,12 +314,18 @@ public class TipService {
     description.put("description", "Refund");
     body.put("refund", description);
     HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response =
-        restTemplate.exchange(
-            "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/refunds",
-            HttpMethod.POST,
-            request,
-            String.class);
+    ResponseEntity<String> response;
+    try {
+      response = restTemplate.exchange(
+              "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/refunds",
+              HttpMethod.POST,
+              request,
+              String.class);
+    }
+    catch (HttpClientErrorException.Unauthorized e)
+    {
+      response = changeBearerAuth(headers, body, "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/refunds", HttpMethod.POST);
+    }
     if (!response.getStatusCode().equals(HttpStatus.OK)) {
       return false;
     }
@@ -321,7 +345,7 @@ public class TipService {
   }
 
   public List<String> getRealAmounts(
-      String totalAmount, String currency, String paidWith, String token, String exchangeRate)
+      String totalAmount, String currency, String paidWith, String exchangeRate)
       throws JsonProcessingException {
     int amount = Integer.parseInt(totalAmount);
     float commissionFee;
@@ -356,19 +380,27 @@ public class TipService {
     }
   }
 
-  public void cancelPayout(String orderId, String token) throws JsonProcessingException {
+  public void cancelPayout(String orderId) throws JsonProcessingException {
     reviewService.deleteSelectReview(orderId);
-    if (token != null && !makeRefund(token, orderId)) {
-      logger.error("makeRefund - failed");
-      if ("prod".equals(profile)) {
-        try {
-          emailService.send(
-              userRepository.findByMail("enapiwek@gmail.com").get(),
-              "Refund",
-              "refund failed for order: " + orderId);
-        } catch (Exception e) {
-          logger.error("sendMail - failed", e);
-        }
+    if(token==null)
+    {
+      cancelRefund(orderId);
+    }
+    else if(!makeRefund(orderId)) {
+      cancelRefund(orderId);
+    }
+  }
+
+  public void cancelRefund(String orderId){
+    logger.error("makeRefund - failed");
+    if ("prod".equals(profile)) {
+      try {
+        emailService.send(
+                userRepository.findByMail("enapiwek@gmail.com").get(),
+                "Refund",
+                "refund failed for order: " + orderId);
+      } catch (Exception e) {
+        logger.error("sendMail - failed", e);
       }
     }
   }
@@ -376,5 +408,19 @@ public class TipService {
   public String getAdditionalDescription(String requestBody) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.readTree(requestBody).get("order").get("additionalDescription").asText();
+  }
+
+  public ResponseEntity<String> changeBearerAuth(HttpHeaders headers, Map<String, Object> body, String link, HttpMethod method) throws JsonProcessingException {
+      setToken();
+      headers.setBearerAuth(token);
+      HttpEntity<?> updateRequest;
+      if(body==null){
+        updateRequest = new HttpEntity<>(headers);
+
+      }else {
+        updateRequest = new HttpEntity<>(body ,headers);
+      }
+      return restTemplate.exchange(
+              link, method, updateRequest, String.class);
   }
 }

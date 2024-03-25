@@ -31,6 +31,7 @@ import umk.mat.pajda.ProjektZespolowy.services.OpinionService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 import umk.mat.pajda.ProjektZespolowy.services.impl.AuthenticationServiceImpl;
 
+
 @WebMvcTest(OpinionController.class)
 @AutoConfigureMockMvc
 @TestPropertySource(
@@ -99,6 +100,8 @@ public class OpinionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(opinionPostDTO)))
         .andExpect(status().isOk());
+
+
   }
 
   @Test
@@ -124,5 +127,9 @@ public class OpinionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(opinionPostDTO)))
         .andExpect(status().isNotAcceptable());
+
+
   }
 }
+
+

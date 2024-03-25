@@ -25,6 +25,7 @@ public class TipController {
   public void addTip(
       @RequestBody String requestBody, @RequestHeader("OpenPayu-Signature") String header)
       throws NoSuchAlgorithmException, JsonProcessingException {
+
     if (tipService.verifyNotification(requestBody, header)) {
       String status = tipService.getStatus(requestBody);
       String orderId = tipService.getOrderId(requestBody);
@@ -33,14 +34,9 @@ public class TipController {
       } else if (status.equals("COMPLETED")) {
         String amount = tipService.getAmount(requestBody);
         String currency = tipService.getCurrency(requestBody);
-        String token = tipService.getToken();
-        if (token == null) {
-          tipService.cancelPayout(orderId, null);
-          return;
-        }
-        String paidWith = tipService.getPaidWith(orderId, token);
+        String paidWith = tipService.getPaidWith(orderId);
         if (paidWith == null) {
-          tipService.cancelPayout(orderId, token);
+          tipService.cancelPayout(orderId);
           return;
         }
         List<String> list =
@@ -48,13 +44,12 @@ public class TipController {
                 amount,
                 currency,
                 paidWith,
-                token,
                 tipService.getAdditionalDescription(requestBody));
         if (list == null) {
-          tipService.cancelPayout(orderId, token);
+          tipService.cancelPayout(orderId);
           return;
         }
-        String payoutId = tipService.makePayout(orderId, list.get(1), token);
+        String payoutId = tipService.makePayout(orderId, list.get(1));
         if (payoutId != null) {
           if (tipService.addTip(payoutId, orderId, list.get(0), paidWith, currency)) {
             if (!reviewService.setEnabled(orderId)) {
@@ -64,7 +59,7 @@ public class TipController {
             reviewService.deleteSelectReview(orderId);
           }
         } else {
-          tipService.cancelPayout(orderId, token);
+          tipService.cancelPayout(orderId);
         }
       }
     }

@@ -17,7 +17,6 @@ public class Tip {
   @Pattern(regexp = "^(PLN|EUR|USD|GBP|CHF|DKK|SEK)$")
   private String currency;
 
-  @Min(value = 80)
   private Integer amount;
 
   private LocalDateTime createdAt;
@@ -28,4 +27,5 @@ public class Tip {
   @ManyToOne
   @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
   private User user;
+
 }

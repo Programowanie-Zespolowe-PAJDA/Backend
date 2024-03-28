@@ -1,5 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -60,15 +61,12 @@ public class ReviewService {
     return null;
   }
 
-  public ReviewGetDTO getReview(int id) {
+  public ReviewGetDTO getReview(String id) {
     Review review = null;
     try {
       review = reviewRepository.findById(id).get();
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
-      return null;
-    }
-    if (review == null) {
       return null;
     }
     return reviewConverter.createDTO(review);
@@ -90,7 +88,8 @@ public class ReviewService {
     return reviewConverter.createDTO(review);
   }
 
-  public Boolean deleteSelectReview(int id) {
+  @Transactional
+  public Boolean deleteSelectReview(String id) {
     try {
       reviewRepository.deleteById(id);
     } catch (Exception e) {
@@ -100,7 +99,7 @@ public class ReviewService {
     return true;
   }
 
-  public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, int id) {
+  public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, String id) {
     try {
       Review review = reviewRepository.findById(id).get();
       review.setClientName(reviewPatchDTO.getClientName());
@@ -114,14 +113,13 @@ public class ReviewService {
     return true;
   }
 
-  public boolean validateTime(OpinionPostDTO opinionPostDTO) {
+  public boolean validateTime(User user, String hashRevId) {
     Review review = null;
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
           reviewRepository.findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
-              userRepository.findById(opinionPostDTO.getUserID()).get(),
-              opinionPostDTO.getHashRevID());
+              user, hashRevId);
       logger.info(String.valueOf(review));
       if (review == null) {
         return true;
@@ -134,5 +132,28 @@ public class ReviewService {
       logger.error("validateTime", e);
       return false;
     }
+  }
+
+  public boolean setEnabled(String id) {
+    try {
+      Review review = reviewRepository.findById(id).get();
+      review.setEnabled(true);
+      reviewRepository.save(review);
+    } catch (Exception e) {
+      logger.error("setEnabled", e);
+      return false;
+    }
+    return true;
+  }
+
+  public User getUser(int id) {
+    User user;
+    try {
+      user = userRepository.findById(id).get();
+    } catch (Exception e) {
+      logger.error("getting error - ", e);
+      return null;
+    }
+    return user;
   }
 }

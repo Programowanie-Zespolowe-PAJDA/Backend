@@ -1,4 +1,4 @@
-package umk.mat.pajda.ProjektZespolowy.Validators.UserDTO;
+package umk.mat.pajda.ProjektZespolowy.Validators.RegisterDTO;
 
 import jakarta.validation.*;
 import java.util.Set;

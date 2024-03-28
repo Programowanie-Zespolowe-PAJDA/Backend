@@ -200,6 +200,7 @@ public class TipService {
     } else {
       body.put("continueUrl", "http://localhost:5173/thankyou");
     }
+    logger.info(String.valueOf(lastAmount));
     body.put("totalAmount", String.valueOf(lastAmount));
     products.put("unitPrice", String.valueOf(lastAmount));
     body.put("description", opinionPostDTO.getCurrency());
@@ -359,15 +360,8 @@ public class TipService {
     return objectMapper.readTree(requestBody).get("order").get("totalAmount").asText();
   }
 
-  public String getRealAmount(String totalAmount, String paidWith, String currency)
-      throws JsonProcessingException {
-    int amount;
-    if (currency.equals("PLN")) {
-      amount = Integer.parseInt(totalAmount);
-    } else {
-      String exchangeRate = getExchangeRate(currency);
-      amount = Math.round(Integer.parseInt(totalAmount) * Float.parseFloat(exchangeRate));
-    }
+  public String getRealAmount(String totalAmount, String paidWith) {
+    int amount = Integer.parseInt(totalAmount);
     float commissionFee;
     switch (paidWith) {
       case "blik" -> {
@@ -431,17 +425,5 @@ public class TipService {
       updateRequest = new HttpEntity<>(body, headers);
     }
     return restTemplate.exchange(link, method, updateRequest, String.class);
-  }
-
-  public boolean checkMinOfCurrency(String currency, Integer lastAmount)
-      throws JsonProcessingException {
-    if (!currency.equals("PLN")) {
-      String exchangeRate = getExchangeRate(currency);
-      if (exchangeRate == null) {
-        return false;
-      }
-      lastAmount = Math.round(lastAmount * Float.parseFloat(exchangeRate));
-    }
-    return lastAmount >= 80;
   }
 }

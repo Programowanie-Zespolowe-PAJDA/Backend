@@ -61,7 +61,15 @@ public class OpinionController {
           .body("Validation failed: " + bindingResult.getAllErrors());
     }
     Integer lastAmount = opinionPostDTO.getAmount();
-    if (!tipService.checkMinOfCurrency(opinionPostDTO.getCurrency(), lastAmount)) {
+    String currency = opinionPostDTO.getCurrency();
+    if (!currency.equals("PLN")) {
+      String exchangeRate = tipService.getExchangeRate(currency);
+      if (exchangeRate == null) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
+      }
+      lastAmount = Math.round(lastAmount * Float.parseFloat(exchangeRate));
+    }
+    if (lastAmount < 80) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("Validation failed: amount is below min");
     }

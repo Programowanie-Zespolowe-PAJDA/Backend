@@ -236,19 +236,19 @@ public class TipServiceTest {
   @Test
   public void shouldSuccessWhenGetRealAmountTest1() throws JsonProcessingException {
 
-    Assertions.assertEquals("453", tipService.getRealAmount("501", "dpkl", "PLN"));
+    Assertions.assertEquals("453", tipService.getRealAmount("501", "dpkl"));
   }
 
   @Test
   public void shouldSuccessWhenGetRealAmountTest2() throws JsonProcessingException {
 
-    Assertions.assertEquals("452", tipService.getRealAmount("500", "dpkl", "PLN"));
+    Assertions.assertEquals("452", tipService.getRealAmount("500", "dpkl"));
   }
 
   @Test
   public void shouldSuccessWhenGetRealAmountTest3() throws JsonProcessingException {
 
-    Assertions.assertEquals("452", tipService.getRealAmount("499", "dpkl", "PLN"));
+    Assertions.assertEquals("452", tipService.getRealAmount("499", "dpkl"));
   }
 
   @Test
@@ -277,51 +277,5 @@ public class TipServiceTest {
 
     Assertions.assertEquals(
         response, tipService.changeBearerAuth(headers, null, "link", HttpMethod.POST));
-  }
-
-  @Test
-  public void shouldSuccessWhenCheckMinOfCurrencyTest1() throws JsonProcessingException {
-    String body =
-        "{ \"currencyPairs\": [{\"baseCurrency\": \"USD\", \"termCurrency\": \"PLN\", \"exchangeRate\": \"5.32\"}, {\"baseCurrency\": \"SKK\", \"termCurrency\": \"PLN\", \"exchangeRate\": \"1.32\"}]}";
-    ResponseEntity<String> response = new ResponseEntity<>(body, HttpStatus.OK);
-
-    Mockito.when(
-            restTemplate.exchange(
-                eq(
-                    "https://secure.snd.payu.com/api/v2_1/mcp-partners/6283a549-8b1a-430d-8a62-eea64327440e/fx-table"),
-                eq(HttpMethod.GET),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.<Class<String>>any()))
-        .thenReturn(response);
-
-    Assertions.assertTrue(tipService.checkMinOfCurrency("USD", 40));
-  }
-
-  @Test
-  public void shouldSuccessWhenCheckMinOfCurrencyTest2() throws JsonProcessingException {
-    String body =
-        "{ \"currencyPairs\": [{\"baseCurrency\": \"USD\", \"termCurrency\": \"PLN\", \"exchangeRate\": \"1.32\"}, {\"baseCurrency\": \"SKK\", \"termCurrency\": \"PLN\", \"exchangeRate\": \"1.32\"}]}";
-    ResponseEntity<String> response = new ResponseEntity<>(body, HttpStatus.OK);
-
-    Mockito.when(
-            restTemplate.exchange(
-                eq(
-                    "https://secure.snd.payu.com/api/v2_1/mcp-partners/6283a549-8b1a-430d-8a62-eea64327440e/fx-table"),
-                eq(HttpMethod.GET),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.<Class<String>>any()))
-        .thenReturn(response);
-
-    Assertions.assertFalse(tipService.checkMinOfCurrency("USD", 40));
-  }
-
-  @Test
-  public void shouldSuccessWhenCheckMinOfCurrencyTest3() throws JsonProcessingException {
-    Assertions.assertTrue(tipService.checkMinOfCurrency("PLN", 80));
-  }
-
-  @Test
-  public void shouldSuccessWhenCheckMinOfCurrencyTest4() throws JsonProcessingException {
-    Assertions.assertFalse(tipService.checkMinOfCurrency("PLN", 79));
   }
 }

@@ -27,6 +27,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
+import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.OpinionService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
@@ -89,8 +90,10 @@ public class OpinionControllerTest {
     opinionPostDTO.setClientName("Adrian");
     opinionPostDTO.setAmount(500);
     opinionPostDTO.setCurrency("PLN");
+    User user = new User();
 
-    Mockito.when(reviewService.validateTime(any(OpinionPostDTO.class))).thenReturn(true);
+    Mockito.when(reviewService.getUser(1)).thenReturn(user);
+    Mockito.when(reviewService.validateTime(user, opinionPostDTO.getHashRevID())).thenReturn(true);
     Mockito.when(opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500)))
         .thenReturn(new ResponseEntity<>(HttpStatus.OK));
     Mockito.when(tipService.checkMinOfCurrency("PLN", 500)).thenReturn(true);
@@ -116,7 +119,7 @@ public class OpinionControllerTest {
     opinionPostDTO.setAmount(500);
     opinionPostDTO.setCurrency("PLN");
 
-    Mockito.when(reviewService.validateTime(any(OpinionPostDTO.class))).thenReturn(true);
+    Mockito.when(reviewService.validateTime(any(User.class), any(String.class))).thenReturn(true);
     Mockito.when(opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500)))
         .thenReturn(null);
     Mockito.when(tipService.checkMinOfCurrency("PLN", 500)).thenReturn(true);

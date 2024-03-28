@@ -236,19 +236,19 @@ public class TipServiceTest {
   @Test
   public void shouldSuccessWhenGetRealAmountTest1() throws JsonProcessingException {
 
-    Assertions.assertEquals("453", tipService.getRealAmount("501", "dpkl"));
+    Assertions.assertEquals("453", tipService.getRealAmount("501", "dpkl", "PLN"));
   }
 
   @Test
   public void shouldSuccessWhenGetRealAmountTest2() throws JsonProcessingException {
 
-    Assertions.assertEquals("452", tipService.getRealAmount("500", "dpkl"));
+    Assertions.assertEquals("452", tipService.getRealAmount("500", "dpkl", "PLN"));
   }
 
   @Test
   public void shouldSuccessWhenGetRealAmountTest3() throws JsonProcessingException {
 
-    Assertions.assertEquals("452", tipService.getRealAmount("499", "dpkl"));
+    Assertions.assertEquals("452", tipService.getRealAmount("499", "dpkl", "PLN"));
   }
 
   @Test

@@ -113,14 +113,13 @@ public class ReviewService {
     return true;
   }
 
-  public boolean validateTime(OpinionPostDTO opinionPostDTO) {
+  public boolean validateTime(User user, String hashRevId) {
     Review review = null;
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
           reviewRepository.findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
-              userRepository.findById(opinionPostDTO.getUserID()).get(),
-              opinionPostDTO.getHashRevID());
+              user, hashRevId);
       logger.info(String.valueOf(review));
       if (review == null) {
         return true;
@@ -145,5 +144,16 @@ public class ReviewService {
       return false;
     }
     return true;
+  }
+
+  public User getUser(int id) {
+    User user;
+    try {
+      user = userRepository.findById(id).get();
+    } catch (Exception e) {
+      logger.error("getting error - ", e);
+      return null;
+    }
+    return user;
   }
 }

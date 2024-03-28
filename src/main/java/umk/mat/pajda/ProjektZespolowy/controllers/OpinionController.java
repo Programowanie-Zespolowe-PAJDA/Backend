@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
+import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.services.OpinionService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 import umk.mat.pajda.ProjektZespolowy.services.TipService;
@@ -66,7 +67,12 @@ public class OpinionController {
     }
     String ip = opinionPostDTO.getHashRevID();
     opinionPostDTO.setHashRevID(BCrypt.hashpw(opinionPostDTO.getHashRevID(), fixedSalt));
-    if ("prod".equals(profile) && !reviewService.validateTime(opinionPostDTO)) {
+    User user = reviewService.getUser(opinionPostDTO.getUserID());
+    if (user == null) {
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed - no such id");
+    }
+    if ("prod".equals(profile)
+        && !reviewService.validateTime(user, opinionPostDTO.getHashRevID())) {
 
       return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
           .body("adding failed - too many requests wait 10 minutes");

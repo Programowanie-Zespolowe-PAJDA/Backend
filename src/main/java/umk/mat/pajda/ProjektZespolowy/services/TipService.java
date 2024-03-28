@@ -359,8 +359,15 @@ public class TipService {
     return objectMapper.readTree(requestBody).get("order").get("totalAmount").asText();
   }
 
-  public String getRealAmount(String totalAmount, String paidWith) {
-    int amount = Integer.parseInt(totalAmount);
+  public String getRealAmount(String totalAmount, String paidWith, String currency)
+      throws JsonProcessingException {
+    int amount;
+    if (currency.equals("PLN")) {
+      amount = Integer.parseInt(totalAmount);
+    } else {
+      String exchangeRate = getExchangeRate(currency);
+      amount = Math.round(Integer.parseInt(totalAmount) * Float.parseFloat(exchangeRate));
+    }
     float commissionFee;
     switch (paidWith) {
       case "blik" -> {

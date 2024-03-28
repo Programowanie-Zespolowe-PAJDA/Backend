@@ -47,7 +47,7 @@ public class TipController {
           tipService.cancelPayout(orderId);
           return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with paidWith");
         }
-        String lastAmount = tipService.getRealAmount(amount, paidWith);
+        String lastAmount = tipService.getRealAmount(amount, paidWith, currency);
         String payoutId = tipService.makePayout(orderId, lastAmount);
         if (payoutId != null) {
           if (tipService.addTip(payoutId, orderId, lastAmount, paidWith, currency)) {

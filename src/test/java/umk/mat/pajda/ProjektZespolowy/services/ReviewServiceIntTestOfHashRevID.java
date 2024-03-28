@@ -69,7 +69,7 @@ public class ReviewServiceIntTestOfHashRevID {
     reviewRepository.save(review);
 
     // Then
-    assertTrue(reviewService.validateTime(opinionPostDTO));
+    assertTrue(reviewService.validateTime(user, opinionPostDTO.getHashRevID()));
   }
 
   @Test
@@ -98,7 +98,7 @@ public class ReviewServiceIntTestOfHashRevID {
     review.setEnabled(true);
     reviewRepository.save(review);
     // Then
-    assertFalse(reviewService.validateTime(opinionPostDTO));
+    assertFalse(reviewService.validateTime(user, opinionPostDTO.getHashRevID()));
   }
 
   @Test
@@ -123,6 +123,6 @@ public class ReviewServiceIntTestOfHashRevID {
     opinionPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.105", fixedSalt));
 
     // Then
-    assertTrue(reviewService.validateTime(opinionPostDTO));
+    assertTrue(reviewService.validateTime(user, opinionPostDTO.getHashRevID()));
   }
 }

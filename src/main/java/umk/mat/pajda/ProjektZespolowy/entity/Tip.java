@@ -27,5 +27,4 @@ public class Tip {
   @ManyToOne
   @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
   private User user;
-
 }

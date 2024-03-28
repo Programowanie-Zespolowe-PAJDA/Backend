@@ -1,6 +1,7 @@
 package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,8 +30,8 @@ import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.OpinionService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
+import umk.mat.pajda.ProjektZespolowy.services.TipService;
 import umk.mat.pajda.ProjektZespolowy.services.impl.AuthenticationServiceImpl;
-
 
 @WebMvcTest(OpinionController.class)
 @AutoConfigureMockMvc
@@ -59,7 +60,7 @@ public class OpinionControllerTest {
   @MockBean private AuthenticationServiceImpl authenticationService;
 
   @MockBean private ReviewService reviewService;
-
+  @MockBean private TipService tipService;
   @MockBean private BindingResult bindingResult;
 
   @Autowired private ObjectMapper objectMapper;
@@ -90,8 +91,9 @@ public class OpinionControllerTest {
     opinionPostDTO.setCurrency("PLN");
 
     Mockito.when(reviewService.validateTime(any(OpinionPostDTO.class))).thenReturn(true);
-    Mockito.when(opinionService.addOpinion(any(OpinionPostDTO.class), any(String.class)))
+    Mockito.when(opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500)))
         .thenReturn(new ResponseEntity<>(HttpStatus.OK));
+    Mockito.when(tipService.checkMinOfCurrency("PLN", 500)).thenReturn(true);
 
     mockMvc
         .perform(
@@ -100,8 +102,6 @@ public class OpinionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(opinionPostDTO)))
         .andExpect(status().isOk());
-
-
   }
 
   @Test
@@ -117,8 +117,9 @@ public class OpinionControllerTest {
     opinionPostDTO.setCurrency("PLN");
 
     Mockito.when(reviewService.validateTime(any(OpinionPostDTO.class))).thenReturn(true);
-    Mockito.when(opinionService.addOpinion(any(OpinionPostDTO.class), any(String.class)))
+    Mockito.when(opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500)))
         .thenReturn(null);
+    Mockito.when(tipService.checkMinOfCurrency("PLN", 500)).thenReturn(true);
 
     mockMvc
         .perform(
@@ -127,9 +128,5 @@ public class OpinionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(opinionPostDTO)))
         .andExpect(status().isNotAcceptable());
-
-
   }
 }
-
-

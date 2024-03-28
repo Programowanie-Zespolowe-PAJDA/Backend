@@ -8,18 +8,14 @@ import org.springframework.stereotype.Component;
 import umk.mat.pajda.ProjektZespolowy.DTO.TipGetDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Tip;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
-import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Component
 public class TipConverter {
 
-  private final UserRepository userRepository;
-
   private final ReviewRepository reviewRepository;
 
   @Autowired
-  public TipConverter(UserRepository userRepository, ReviewRepository reviewRepository) {
-    this.userRepository = userRepository;
+  public TipConverter(ReviewRepository reviewRepository) {
     this.reviewRepository = reviewRepository;
   }
 

@@ -1,6 +1,10 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDateTime;
+import java.time.Month;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +19,8 @@ import umk.mat.pajda.ProjektZespolowy.misc.TipConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.TipRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
+@Transactional
+@Rollback
 @SpringBootTest
 @ActiveProfiles("tests")
 @TestPropertySource(
@@ -35,11 +41,8 @@ public class TipServiceStatTest {
 
   @Autowired private UserRepository userRepository;
 
-  @Test
-  @Transactional
-  @Rollback
-  public void testCreationOfTipStatisticsGetDTOManual() {
-
+  @BeforeEach
+  public void init() {
     User user = new User();
     user.setId(1000);
     user.setMail("test@gmail.com");
@@ -80,6 +83,83 @@ public class TipServiceStatTest {
     tip4.setUser(userRepository.findByMail("test@gmail.com").get());
     tip4.setCreatedAt(LocalDateTime.now().minusMonths(13));
     tipRepository.save(tip4);
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOReturnValueOfNumberOfTipsValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(tipStatisticsGetDTO.getNumberOfTips() == 4);
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOValidReturnValueOfMinTipAmountValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(tipStatisticsGetDTO.getMinTipAmount() == 2000);
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOValidReturnValueOfMaxTipAmountValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(tipStatisticsGetDTO.getMaxTipAmount() == 20000);
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOValidReturnValueOfAvgTipAmountValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(tipStatisticsGetDTO.getAvgTipAmount() == 10375.0);
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOValidReturnValueOfNumberOfTipsValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(tipStatisticsGetDTO.getNumberOfTips() == 4);
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOValidReturnSumTipValueForEveryMonthGet0MonthValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(
+        Month.of(LocalDateTime.now().getMonthValue())
+            .toString()
+            .equals(tipStatisticsGetDTO.getSumTipValueForEveryMonth().get(0).getMonth()));
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOValidReturnSumTipValueForEveryMonthGet0YearValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(
+        String.valueOf(LocalDateTime.now().getYear())
+            .equals(tipStatisticsGetDTO.getSumTipValueForEveryMonth().get(0).getYear()));
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOValidReturnSumTipValueForEveryMonthGet2MonthValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(
+        Month.of(LocalDateTime.now().minusMonths(13).getMonthValue())
+            .toString()
+            .equals(tipStatisticsGetDTO.getSumTipValueForEveryMonth().get(2).getMonth()));
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOValidReturnSumTipValueForEveryMonthGet2YearValid() {
+    TipStatisticsGetDTO tipStatisticsGetDTO =
+        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+    assertTrue(
+        String.valueOf(LocalDateTime.now().minusMonths(13).getYear())
+            .equals(tipStatisticsGetDTO.getSumTipValueForEveryMonth().get(2).getYear()));
+  }
+
+  @Test
+  public void testCreationOfTipStatisticsGetDTOManual() {
 
     TipStatisticsGetDTO tipStatisticsGetDTO =
         tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());

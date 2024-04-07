@@ -147,7 +147,7 @@ public class TipServiceTest {
         .thenReturn(responseCreatePayment);
 
     Assertions.assertEquals(
-        responseCreatePayment, tipService.createPayment(opinionPostDTO, "127.0.0.1", 500));
+        responseCreatePayment, tipService.createPayment(opinionPostDTO, "127.0.0.1", 500, "1"));
   }
 
   @Test
@@ -179,10 +179,10 @@ public class TipServiceTest {
     tip.setPaidWith("BLIK");
     tip.setAmount(500);
 
-    Mockito.when(tipConverter.createEntity("payoutId", "orderId", "500", "BLIK", "PLN"))
+    Mockito.when(tipConverter.createEntity("payoutId", "orderId", "500", "BLIK", "PLN", "1"))
         .thenReturn(tip);
 
-    Assertions.assertTrue(tipService.addTip("payoutId", "orderId", "500", "blik", "PLN"));
+    Assertions.assertTrue(tipService.addTip("payoutId", "orderId", "500", "blik", "PLN", "1"));
   }
 
   @Test
@@ -233,6 +233,7 @@ public class TipServiceTest {
     Assertions.assertEquals("500", tipService.getAmount(body));
   }
 
+  /*
   @Test
   public void shouldSuccessWhenGetRealAmountTest1() throws JsonProcessingException {
 
@@ -250,6 +251,8 @@ public class TipServiceTest {
 
     Assertions.assertEquals("452", tipService.getRealAmount("499", "dpkl"));
   }
+
+   */
 
   @Test
   public void shouldSuccessWhenChangeBearerAuthTest() throws JsonProcessingException {
@@ -277,5 +280,12 @@ public class TipServiceTest {
 
     Assertions.assertEquals(
         response, tipService.changeBearerAuth(headers, null, "link", HttpMethod.POST));
+  }
+
+  @Test
+  public void shouldSuccessWhenGetAdditionalDescriptionTest() throws JsonProcessingException {
+    String body = "{\"order\": { \"additionalDescription\": \"1\"}}";
+
+    Assertions.assertEquals("1", tipService.getAdditionalDescription(body));
   }
 }

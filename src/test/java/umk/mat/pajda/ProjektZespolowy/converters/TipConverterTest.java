@@ -69,7 +69,7 @@ public class TipConverterTest {
     expectedTip.setAmount(500);
 
     Mockito.when(reviewRepository.findById("orderId")).thenReturn(Optional.of(review));
-    Tip tip = tipConverter.createEntity("payoutId", "orderId", "500", "BLIK", "PLN");
+    Tip tip = tipConverter.createEntity("payoutId", "orderId", "500", "BLIK", "PLN", "1");
 
     Assertions.assertEquals(expectedTip.getId(), tip.getId());
     Assertions.assertEquals(expectedTip.getUser(), tip.getUser());

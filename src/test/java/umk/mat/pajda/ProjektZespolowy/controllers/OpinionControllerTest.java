@@ -94,7 +94,8 @@ public class OpinionControllerTest {
 
     Mockito.when(reviewService.getUser(1)).thenReturn(user);
     Mockito.when(reviewService.validateTime(user, opinionPostDTO.getHashRevID())).thenReturn(true);
-    Mockito.when(opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500)))
+    Mockito.when(
+            opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500), eq("1")))
         .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
     mockMvc
@@ -119,7 +120,8 @@ public class OpinionControllerTest {
     opinionPostDTO.setCurrency("PLN");
 
     Mockito.when(reviewService.validateTime(any(User.class), any(String.class))).thenReturn(true);
-    Mockito.when(opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500)))
+    Mockito.when(
+            opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500), eq("1")))
         .thenReturn(null);
 
     mockMvc

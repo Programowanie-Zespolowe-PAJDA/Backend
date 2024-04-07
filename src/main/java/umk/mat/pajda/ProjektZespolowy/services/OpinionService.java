@@ -23,9 +23,10 @@ public class OpinionService {
   }
 
   public ResponseEntity<String> addOpinion(
-      OpinionPostDTO opinionPostDTO, String ip, int lastAmount) {
+      OpinionPostDTO opinionPostDTO, String ip, int lastAmount, String exchangeRate) {
     try {
-      ResponseEntity<String> response = tipService.createPayment(opinionPostDTO, ip, lastAmount);
+      ResponseEntity<String> response =
+          tipService.createPayment(opinionPostDTO, ip, lastAmount, exchangeRate);
       if (response == null) {
         return null;
       }

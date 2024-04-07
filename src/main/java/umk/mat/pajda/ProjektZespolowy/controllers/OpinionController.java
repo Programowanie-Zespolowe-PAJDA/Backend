@@ -62,8 +62,9 @@ public class OpinionController {
     }
     Integer lastAmount = opinionPostDTO.getAmount();
     String currency = opinionPostDTO.getCurrency();
+    String exchangeRate = "1";
     if (!currency.equals("PLN")) {
-      String exchangeRate = tipService.getExchangeRate(currency);
+      exchangeRate = tipService.getExchangeRate(currency);
       if (exchangeRate == null) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
       }
@@ -85,7 +86,8 @@ public class OpinionController {
       return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
           .body("adding failed - too many requests wait 10 minutes");
     }
-    ResponseEntity<String> response = opinionService.addOpinion(opinionPostDTO, ip, lastAmount);
+    ResponseEntity<String> response =
+        opinionService.addOpinion(opinionPostDTO, ip, lastAmount, exchangeRate);
     if (response == null) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
     } else {

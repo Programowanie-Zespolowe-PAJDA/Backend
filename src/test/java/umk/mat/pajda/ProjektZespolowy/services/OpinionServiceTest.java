@@ -39,8 +39,10 @@ public class OpinionServiceTest {
         new ResponseEntity<>("{\"orderId\": \"dsa4324\"}", HttpStatus.OK);
 
     Mockito.when(reviewService.addReview(opinionPostDTO, "dsa4324")).thenReturn(true);
-    Mockito.when(tipService.createPayment(opinionPostDTO, "127.0.0.1", 500)).thenReturn(response);
+    Mockito.when(tipService.createPayment(opinionPostDTO, "127.0.0.1", 500, "1"))
+        .thenReturn(response);
 
-    Assertions.assertEquals(opinionService.addOpinion(opinionPostDTO, "127.0.0.1", 500), response);
+    Assertions.assertEquals(
+        opinionService.addOpinion(opinionPostDTO, "127.0.0.1", 500, "1"), response);
   }
 }

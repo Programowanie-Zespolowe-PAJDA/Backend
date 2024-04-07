@@ -47,10 +47,11 @@ public class TipController {
           tipService.cancelPayout(orderId);
           return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with paidWith");
         }
+        String exchangeRate = tipService.getAdditionalDescription(requestBody);
         String lastAmount = tipService.getRealAmount(amount, paidWith);
         String payoutId = tipService.makePayout(orderId, lastAmount);
         if (payoutId != null) {
-          if (tipService.addTip(payoutId, orderId, lastAmount, paidWith, currency)) {
+          if (tipService.addTip(payoutId, orderId, lastAmount, paidWith, currency, exchangeRate)) {
             if (!reviewService.setEnabled(orderId)) {
               reviewService.deleteSelectReview(orderId);
               return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with setEnabled");

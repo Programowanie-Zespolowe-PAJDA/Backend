@@ -31,7 +31,12 @@ public class TipConverter {
   }
 
   public Tip createEntity(
-      String payoutId, String orderId, String realAmount, String paidWith, String currency) {
+      String payoutId,
+      String orderId,
+      String realAmount,
+      String paidWith,
+      String currency,
+      String exchangeRate) {
     Tip tip = new Tip();
     tip.setId(payoutId);
     tip.setUser(reviewRepository.findById(orderId).get().getUser());
@@ -39,6 +44,7 @@ public class TipConverter {
     tip.setCreatedAt(LocalDateTime.now());
     tip.setPaidWith(paidWith);
     tip.setAmount(Integer.valueOf(realAmount));
+    tip.setRealAmount(Math.round(Integer.valueOf(realAmount) / Float.valueOf(exchangeRate)));
     return tip;
   }
 

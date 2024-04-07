@@ -183,7 +183,8 @@ public class TipService {
   }
 
   public ResponseEntity<String> createPayment(
-      OpinionPostDTO opinionPostDTO, String ip, int lastAmount) throws JsonProcessingException {
+      OpinionPostDTO opinionPostDTO, String ip, int lastAmount, String exchangeRate)
+      throws JsonProcessingException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -200,7 +201,7 @@ public class TipService {
     } else {
       body.put("continueUrl", "http://localhost:5173/thankyou");
     }
-    logger.info(String.valueOf(lastAmount));
+    body.put("additionalDescription", exchangeRate);
     body.put("totalAmount", String.valueOf(lastAmount));
     products.put("unitPrice", String.valueOf(lastAmount));
     body.put("description", opinionPostDTO.getCurrency());
@@ -262,7 +263,12 @@ public class TipService {
   }
 
   public boolean addTip(
-      String payoutId, String orderId, String realAmount, String paidWith, String currency) {
+      String payoutId,
+      String orderId,
+      String realAmount,
+      String paidWith,
+      String currency,
+      String exchangeRate) {
     try {
       String nameOfPaidWith =
           switch (paidWith) {
@@ -273,7 +279,8 @@ public class TipService {
             default -> null;
           };
       tipRepository.save(
-          tipConverter.createEntity(payoutId, orderId, realAmount, nameOfPaidWith, currency));
+          tipConverter.createEntity(
+              payoutId, orderId, realAmount, nameOfPaidWith, currency, exchangeRate));
     } catch (Exception e) {
       logger.error("addTip", e);
       return false;
@@ -365,24 +372,16 @@ public class TipService {
     float commissionFee;
     switch (paidWith) {
       case "blik" -> {
-        commissionFee = (float) (amount * 0.034);
-        amount = amount - 70 - Math.round(commissionFee);
+        commissionFee = (float) (amount * 0.032);
+        amount = amount - 50 - Math.round(commissionFee);
       }
-      case "c" -> {
-        commissionFee = (float) (amount * 0.031);
-        amount = amount - 40 - Math.round(commissionFee);
-      }
-      case "p", "o" -> {
+      case "c", "dpkl", "p", "o" -> {
         commissionFee = (float) (amount * 0.029);
         amount = amount - 30 - Math.round(commissionFee);
       }
       case "m" -> {
-        commissionFee = (float) (amount * 0.028);
-        amount = amount - 50 - Math.round(commissionFee);
-      }
-      case "dpkl" -> {
-        commissionFee = (float) (amount * 0.025);
-        amount = amount - 35 - Math.round(commissionFee);
+        commissionFee = (float) (amount * 0.026);
+        amount = amount - 40 - Math.round(commissionFee);
       }
       default -> {}
     }
@@ -425,5 +424,10 @@ public class TipService {
       updateRequest = new HttpEntity<>(body, headers);
     }
     return restTemplate.exchange(link, method, updateRequest, String.class);
+  }
+
+  public String getAdditionalDescription(String requestBody) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    return objectMapper.readTree(requestBody).get("order").get("additionalDescription").asText();
   }
 }

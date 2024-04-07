@@ -74,18 +74,20 @@ public class TipControllerTest {
     tip.setCreatedAt(LocalDateTime.of(2017, Month.SEPTEMBER, 18, 18, 20));
     tip.setPaidWith("BLIK");
     String json =
-        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"COMPLETED\", \"totalAmount\": \"500\", \"description\" \"PLN\"} }";
+        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"COMPLETED\", \"totalAmount\": \"500\", \"description\": \"PLN\", \"additionalDescription\": \"1\"} }";
     String header = "header";
 
     Mockito.when(tipService.verifyNotification(json, header)).thenReturn(true);
     Mockito.when(tipService.getStatus(json)).thenReturn("COMPLETED");
     Mockito.when(tipService.getOrderId(json)).thenReturn("orderId");
     Mockito.when(tipService.getAmount(json)).thenReturn("500");
+    Mockito.when(tipService.getAdditionalDescription(json)).thenReturn("1");
     Mockito.when(tipService.getCurrency(json)).thenReturn("PLN");
     Mockito.when(tipService.getPaidWith("orderId")).thenReturn("BLIK");
     Mockito.when(tipService.getRealAmount("500", "BLIK")).thenReturn("553");
     Mockito.when(tipService.makePayout("orderId", "553")).thenReturn("payoutId");
-    Mockito.when(tipService.addTip("payoutId", "orderId", "553", "BLIK", "PLN")).thenReturn(true);
+    Mockito.when(tipService.addTip("payoutId", "orderId", "553", "BLIK", "PLN", "1"))
+        .thenReturn(true);
     Mockito.when(reviewService.setEnabled("orderId")).thenReturn(true);
 
     mockMvc
@@ -110,7 +112,7 @@ public class TipControllerTest {
     tip.setCreatedAt(LocalDateTime.of(2017, Month.SEPTEMBER, 18, 18, 20));
     tip.setPaidWith("BLIK");
     String json =
-        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"CANCELED\", \"totalAmount\": \"500\", \"description\" \"PLN\"} }";
+        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"CANCELED\", \"totalAmount\": \"500\", \"description\": \"PLN\", \"additionalDescription\": \"1\"} }";
     String header = "header";
 
     Mockito.when(tipService.verifyNotification(json, header)).thenReturn(true);
@@ -139,7 +141,7 @@ public class TipControllerTest {
     tip.setCreatedAt(LocalDateTime.of(2017, Month.SEPTEMBER, 18, 18, 20));
     tip.setPaidWith("BLIK");
     String json =
-        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"CANCELED\", \"totalAmount\": \"500\", \"description\" \"PLN\"} }";
+        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"CANCELED\", \"totalAmount\": \"500\", \"description\": \"PLN\", \"additionalDescription\": \"1\"} }";
     String header = "headerBad";
 
     Mockito.when(tipService.verifyNotification(json, header)).thenReturn(false);

@@ -228,7 +228,7 @@ public class TipService {
     if (!response.getStatusCode().equals(HttpStatus.FOUND)) {
       return null;
     }
-
+    logger.info(response.getBody());
     return response;
   }
 

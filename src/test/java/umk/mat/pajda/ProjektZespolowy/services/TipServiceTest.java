@@ -227,32 +227,20 @@ public class TipServiceTest {
   }
 
   @Test
-  public void shouldSuccessWhenGetAmountTest() throws JsonProcessingException {
-    String body = "{\"order\": {\"totalAmount\": \"500\"}}";
+  public void shouldSuccessWhenGetRealAmountTest() throws JsonProcessingException {
+    String body = "{\"balance\": {\"available\": \"500\"}}";
+    ResponseEntity<String> response = new ResponseEntity<>(body, HttpStatus.OK);
 
-    Assertions.assertEquals("500", tipService.getAmount(body));
+    Mockito.when(
+            restTemplate.exchange(
+                eq("https://secure.snd.payu.com/api/v2_1/shops/" + null),
+                eq(HttpMethod.GET),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(response);
+
+    Assertions.assertEquals("500", tipService.getRealAmount());
   }
-
-  /*
-  @Test
-  public void shouldSuccessWhenGetRealAmountTest1() throws JsonProcessingException {
-
-    Assertions.assertEquals("453", tipService.getRealAmount("501", "dpkl"));
-  }
-
-  @Test
-  public void shouldSuccessWhenGetRealAmountTest2() throws JsonProcessingException {
-
-    Assertions.assertEquals("452", tipService.getRealAmount("500", "dpkl"));
-  }
-
-  @Test
-  public void shouldSuccessWhenGetRealAmountTest3() throws JsonProcessingException {
-
-    Assertions.assertEquals("452", tipService.getRealAmount("499", "dpkl"));
-  }
-
-   */
 
   @Test
   public void shouldSuccessWhenChangeBearerAuthTest() throws JsonProcessingException {
@@ -287,5 +275,21 @@ public class TipServiceTest {
     String body = "{\"order\": { \"additionalDescription\": \"1\"}}";
 
     Assertions.assertEquals("1", tipService.getAdditionalDescription(body));
+  }
+
+  @Test
+  public void shouldSuccessWhenSetCompletedTest() throws JsonProcessingException {
+    String body = "{\"status\": {\"statusCode\": \"SUCCESS\"}}";
+    ResponseEntity<String> response = new ResponseEntity<>(body, HttpStatus.OK);
+
+    Mockito.when(
+            restTemplate.exchange(
+                eq("https://secure.snd.payu.com/api/v2_1/orders/orderId/captures"),
+                eq(HttpMethod.POST),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(response);
+
+    Assertions.assertTrue(tipService.setCompleted("orderId"));
   }
 }

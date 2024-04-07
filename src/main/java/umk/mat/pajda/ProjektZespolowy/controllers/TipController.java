@@ -34,21 +34,27 @@ public class TipController {
     if (tipService.verifyNotification(requestBody, header)) {
       String status = tipService.getStatus(requestBody);
       String orderId = tipService.getOrderId(requestBody);
-      logger.info(status);
-      if (status.equals("CANCELED")) {
+      if (status.equals("WAITING_FOR_CONFIRMATION")) {
+        if (!tipService.setCompleted(orderId)) {
+          reviewService.deleteSelectReview(orderId);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("not completed");
+      } else if (status.equals("CANCELED")) {
         reviewService.deleteSelectReview(orderId);
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("bad status");
       } else if (status.equals("COMPLETED")) {
-        String amount = tipService.getAmount(requestBody);
         String currency = tipService.getCurrency(requestBody);
         String paidWith = tipService.getPaidWith(orderId);
         if (paidWith == null) {
-
           tipService.cancelPayout(orderId);
           return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with paidWith");
         }
         String exchangeRate = tipService.getAdditionalDescription(requestBody);
-        String lastAmount = tipService.getRealAmount(amount, paidWith);
+        String lastAmount = tipService.getRealAmount();
+        if (lastAmount == null) {
+          tipService.cancelPayout(orderId);
+          return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with getRealAmount");
+        }
         String payoutId = tipService.makePayout(orderId, lastAmount);
         if (payoutId != null) {
           if (tipService.addTip(payoutId, orderId, lastAmount, paidWith, currency, exchangeRate)) {

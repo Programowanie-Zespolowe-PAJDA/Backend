@@ -8,6 +8,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,8 @@ public class TipService {
   private String profile;
 
   private String token = null;
+
+  private final Semaphore semaphore = new Semaphore(1, true);
 
   public TipService(
       TipConverter tipConverter,
@@ -113,6 +117,7 @@ public class TipService {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode = objectMapper.readTree(response.getBody());
     if (jsonNode.get("status").get("statusCode").asText().equals("SUCCESS")) {
+      semaphore.release();
       return jsonNode.get("payout").get("payoutId").asText();
     } else {
       return null;
@@ -223,6 +228,7 @@ public class TipService {
     if (!response.getStatusCode().equals(HttpStatus.FOUND)) {
       return null;
     }
+
     return response;
   }
 
@@ -362,30 +368,33 @@ public class TipService {
     return objectMapper.readTree(requestBody).get("order").get("description").asText();
   }
 
-  public String getAmount(String requestBody) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    return objectMapper.readTree(requestBody).get("order").get("totalAmount").asText();
-  }
-
-  public String getRealAmount(String totalAmount, String paidWith) {
-    int amount = Integer.parseInt(totalAmount);
-    float commissionFee;
-    switch (paidWith) {
-      case "blik" -> {
-        commissionFee = (float) (amount * 0.032);
-        amount = amount - 50 - Math.round(commissionFee);
-      }
-      case "c", "dpkl", "p", "o" -> {
-        commissionFee = (float) (amount * 0.029);
-        amount = amount - 30 - Math.round(commissionFee);
-      }
-      case "m" -> {
-        commissionFee = (float) (amount * 0.026);
-        amount = amount - 40 - Math.round(commissionFee);
-      }
-      default -> {}
+  public String getRealAmount() throws JsonProcessingException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBearerAuth(token);
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpEntity<Object> request = new HttpEntity<>(headers);
+    ResponseEntity<String> response;
+    try {
+      response =
+          restTemplate.exchange(
+              "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
+              HttpMethod.GET,
+              request,
+              String.class);
+    } catch (HttpClientErrorException.Unauthorized e) {
+      response =
+          changeBearerAuth(
+              headers,
+              null,
+              "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
+              HttpMethod.GET);
     }
-    return String.valueOf(amount);
+    if (!response.getStatusCode().equals(HttpStatus.OK)) {
+      return null;
+    }
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode jsonNode = objectMapper.readTree(response.getBody());
+    return jsonNode.get("balance").get("available").asText();
   }
 
   public void cancelPayout(String orderId) throws JsonProcessingException {
@@ -429,5 +438,45 @@ public class TipService {
   public String getAdditionalDescription(String requestBody) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.readTree(requestBody).get("order").get("additionalDescription").asText();
+  }
+
+  public boolean setCompleted(String orderId) throws JsonProcessingException {
+    try {
+      if (!semaphore.tryAcquire(10, TimeUnit.MINUTES)) {
+        return false;
+      }
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      headers.setBearerAuth(token);
+      HttpEntity<Object> request = new HttpEntity<>(headers);
+      ResponseEntity<String> response;
+      try {
+        response =
+            restTemplate.exchange(
+                "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/captures",
+                HttpMethod.POST,
+                request,
+                String.class);
+      } catch (HttpClientErrorException.Unauthorized e) {
+        response =
+            changeBearerAuth(
+                headers,
+                null,
+                "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/captures",
+                HttpMethod.POST);
+      }
+      if (!response.getStatusCode().equals(HttpStatus.OK)) {
+        return false;
+      }
+      ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper
+          .readTree(response.getBody())
+          .get("status")
+          .get("statusCode")
+          .asText()
+          .equals("SUCCESS");
+    } catch (InterruptedException e) {
+      return false;
+    }
   }
 }

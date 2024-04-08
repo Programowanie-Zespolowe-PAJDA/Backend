@@ -191,6 +191,10 @@ public class TipServiceTest {
     String body = "{ \"transactions\": [{ \"payMethod\": { \"value\": \"blik\"}}]}";
     ResponseEntity<String> response = new ResponseEntity<>(body, HttpStatus.OK);
 
+    String body2 =
+        "{ \"payByLinks\": [{ \"value\": \"blik\", \"status\": \"ENABLED\", \"name\": \"BLIK\" }]}";
+    ResponseEntity<String> response2 = new ResponseEntity<>(body2, HttpStatus.OK);
+
     Mockito.when(
             restTemplate.exchange(
                 eq("https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/transactions"),
@@ -199,7 +203,15 @@ public class TipServiceTest {
                 ArgumentMatchers.<Class<String>>any()))
         .thenReturn(response);
 
-    Assertions.assertEquals("blik", tipService.getPaidWith(orderId));
+    Mockito.when(
+            restTemplate.exchange(
+                eq("https://secure.snd.payu.com/api/v2_1/paymethods"),
+                eq(HttpMethod.GET),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(response2);
+
+    Assertions.assertEquals("BLIK", tipService.getPaidWith(orderId));
   }
 
   @Test

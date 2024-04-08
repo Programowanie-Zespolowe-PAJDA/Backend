@@ -64,7 +64,7 @@ public class TipControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void shouldStatusCreatedWhenAddTipTest() throws Exception {
+  public void shouldStatusOkWhenAddTipTest() throws Exception {
     User user = new User();
     Tip tip = new Tip();
     tip.setUser(user);
@@ -96,36 +96,7 @@ public class TipControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .header("OpenPayu-Signature", "header"))
-        .andExpect(status().isCreated());
-  }
-
-  @Test
-  @WithMockUser(roles = "")
-  public void shouldStatusNotAcceptableWhenAddTipTest() throws Exception {
-    User user = new User();
-    Tip tip = new Tip();
-    tip.setUser(user);
-    tip.setAmount(500);
-    tip.setId("ID1");
-    tip.setCurrency("PLN");
-    tip.setCreatedAt(LocalDateTime.of(2017, Month.SEPTEMBER, 18, 18, 20));
-    tip.setPaidWith("BLIK");
-    String json =
-        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"CANCELED\", \"totalAmount\": \"500\", \"description\": \"PLN\", \"additionalDescription\": \"1\"} }";
-    String header = "header";
-
-    Mockito.when(tipService.verifyNotification(json, header)).thenReturn(true);
-    Mockito.when(tipService.getStatus(json)).thenReturn("CANCELED");
-    Mockito.when(tipService.getOrderId(json)).thenReturn("orderId");
-
-    mockMvc
-        .perform(
-            post("/tip")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json)
-                .header("OpenPayu-Signature", "header"))
-        .andExpect(status().isNotAcceptable());
+        .andExpect(status().isOk());
   }
 
   @Test

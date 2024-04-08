@@ -228,7 +228,6 @@ public class TipService {
     if (!response.getStatusCode().equals(HttpStatus.FOUND)) {
       return null;
     }
-    logger.info(response.getBody());
     return response;
   }
 
@@ -276,17 +275,9 @@ public class TipService {
       String currency,
       String exchangeRate) {
     try {
-      String nameOfPaidWith =
-          switch (paidWith) {
-            case "blik" -> "BLIK";
-            case "c" -> "KARTA_PŁATNICZA";
-            case "p", "o", "m" -> "PRZELEW";
-            case "dpkl" -> "KLARNA";
-            default -> null;
-          };
       tipRepository.save(
           tipConverter.createEntity(
-              payoutId, orderId, realAmount, nameOfPaidWith, currency, exchangeRate));
+              payoutId, orderId, realAmount, paidWith, currency, exchangeRate));
     } catch (Exception e) {
       logger.error("addTip", e);
       return false;
@@ -321,7 +312,27 @@ public class TipService {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode node = objectMapper.readTree(response.getBody());
     for (JsonNode jsonNode : node.get("transactions")) {
-      return jsonNode.get("payMethod").get("value").asText();
+      try {
+        response =
+            restTemplate.exchange(
+                "https://secure.snd.payu.com/api/v2_1/paymethods",
+                HttpMethod.GET,
+                request,
+                String.class);
+      } catch (HttpClientErrorException.Unauthorized e) {
+        response =
+            changeBearerAuth(
+                headers, null, "https://secure.snd.payu.com/api/v2_1/paymethods", HttpMethod.GET);
+      }
+      if (!response.getStatusCode().equals(HttpStatus.OK)) {
+        return null;
+      }
+      for (JsonNode jsonNode2 : objectMapper.readTree(response.getBody()).get("payByLinks")) {
+        if (jsonNode2.get("value").asText().equals(jsonNode.get("payMethod").get("value").asText())
+            && jsonNode2.get("status").asText().equals("ENABLED")) {
+          return jsonNode2.get("name").asText();
+        }
+      }
     }
     return null;
   }

@@ -39,51 +39,34 @@ public class TipController {
         if (!tipService.setCompleted(orderId)) {
           reviewService.deleteSelectReview(orderId);
         }
-        logger.info("wait");
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("not completed");
       } else if (status.equals("CANCELED")) {
         reviewService.deleteSelectReview(orderId);
-        logger.info("canceled");
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("bad status");
       } else if (status.equals("COMPLETED")) {
         String currency = tipService.getCurrency(requestBody);
         String paidWith = tipService.getPaidWith(orderId);
         if (paidWith == null) {
           tipService.cancelPayout(orderId);
-          logger.info("paidwith");
-          return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with paidWith");
         }
         String exchangeRate = tipService.getAdditionalDescription(requestBody);
         String lastAmount = tipService.getRealAmount();
         if (lastAmount == null) {
           tipService.cancelPayout(orderId);
-          logger.info("realamount");
-          return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with getRealAmount");
         }
         String payoutId = tipService.makePayout(orderId, lastAmount);
         if (payoutId != null) {
           if (tipService.addTip(payoutId, orderId, lastAmount, paidWith, currency, exchangeRate)) {
             if (!reviewService.setEnabled(orderId)) {
               reviewService.deleteSelectReview(orderId);
-              logger.info("enabled");
-              return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with setEnabled");
-            } else {
-              logger.info("adding");
-              return ResponseEntity.status(HttpStatus.CREATED).body("adding successful");
             }
           } else {
             reviewService.deleteSelectReview(orderId);
-            logger.info("error addtip");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with addTip");
           }
         } else {
           tipService.cancelPayout(orderId);
-          logger.info("makepayout");
-          return ResponseEntity.status(HttpStatus.NO_CONTENT).body("error with makePayout");
         }
       }
+      return ResponseEntity.status(HttpStatus.OK).body("correct notification");
     }
-    logger.info("verifcation");
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("bad verification");
   }
 }

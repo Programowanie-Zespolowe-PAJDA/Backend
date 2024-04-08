@@ -49,14 +49,14 @@ public class ReviewService {
   }
 
   public List<ReviewGetDTO> getAllReviews() {
-    return reviewConverter.createReviewDTOList(reviewRepository.findAllByEnabledIsTrue());
+    return reviewConverter.createReviewDTOList(reviewRepository.findAllByStatus("COMPLETED"));
   }
 
   public List<ReviewGetDTO> getAllReviews(String email) {
     Optional<User> user = userRepository.findByMail(email);
     if (user.isPresent()) {
       return reviewConverter.createReviewDTOList(
-          reviewRepository.findAllByUserAndEnabledIsTrue(user.get()));
+          reviewRepository.findAllByUserAndStatus(user.get(), "COMPLETED"));
     }
     return null;
   }
@@ -64,7 +64,7 @@ public class ReviewService {
   public ReviewGetDTO getReview(String id) {
     Review review = null;
     try {
-      review = reviewRepository.findById(id).get();
+      review = reviewRepository.findByIdAndStatus(id, "COMPLETED").get();
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -76,8 +76,8 @@ public class ReviewService {
     Review review = null;
     try {
       review =
-          reviewRepository.findByIdAndUserAndEnabledIsTrue(
-              id, userRepository.findByMail(email).get());
+          reviewRepository.findByIdAndUserAndStatus(
+              id, userRepository.findByMail(email).get(), "COMPLETED");
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -101,7 +101,7 @@ public class ReviewService {
 
   public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, String id) {
     try {
-      Review review = reviewRepository.findById(id).get();
+      Review review = reviewRepository.findByIdAndStatus(id, "COMPLETED").get();
       review.setClientName(reviewPatchDTO.getClientName());
       review.setComment(reviewPatchDTO.getComment());
       review.setRating(reviewPatchDTO.getRating());
@@ -118,9 +118,8 @@ public class ReviewService {
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
-          reviewRepository.findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
-              user, hashRevId);
-      logger.info(String.valueOf(review));
+          reviewRepository.findFirstByUserAndStatusAndHashRevIDOrderByCreatedAtDesc(
+              user, "COMPLETED", hashRevId);
       if (review == null) {
         return true;
       }
@@ -134,13 +133,13 @@ public class ReviewService {
     }
   }
 
-  public boolean setEnabled(String id) {
+  public boolean setStatus(String id, String status) {
     try {
       Review review = reviewRepository.findById(id).get();
-      review.setEnabled(true);
+      review.setStatus(status);
       reviewRepository.save(review);
     } catch (Exception e) {
-      logger.error("setEnabled", e);
+      logger.error("setStatus", e);
       return false;
     }
     return true;
@@ -155,5 +154,16 @@ public class ReviewService {
       return null;
     }
     return user;
+  }
+
+  public Review getReviewById(String id) {
+    Review review = null;
+    try {
+      review = reviewRepository.findById(id).get();
+    } catch (NoSuchElementException e) {
+      logger.error("getReview", e);
+      return null;
+    }
+    return review;
   }
 }

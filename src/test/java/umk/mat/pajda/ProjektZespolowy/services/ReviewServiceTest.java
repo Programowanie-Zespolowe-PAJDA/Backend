@@ -27,21 +27,21 @@ public class ReviewServiceTest {
   }
 
   @Test
-  public void shouldSuccessWhenSetEnabledTest() {
+  public void shouldSuccessWhenSetStatusTest() {
     Review review = new Review();
     review.setId("reviewId");
-    review.setEnabled(false);
+    review.setStatus("PENDING");
 
     Mockito.when(reviewRepository.findById("reviewId")).thenReturn(Optional.of(review));
 
-    Assertions.assertTrue(reviewService.setEnabled("reviewId"));
+    Assertions.assertTrue(reviewService.setStatus("reviewId", "COMPLETED"));
   }
 
   @Test
-  public void shouldFailWhenSetEnabledTest() {
+  public void shouldFailWhenSetStatusTest() {
     Mockito.when(reviewRepository.findById("reviewId")).thenReturn(null);
 
-    Assertions.assertFalse(reviewService.setEnabled("reviewId"));
+    Assertions.assertFalse(reviewService.setStatus("orderId", "PENDING"));
   }
 
   @Test
@@ -58,5 +58,25 @@ public class ReviewServiceTest {
     Mockito.when(userRepository.findById(1)).thenReturn(null);
 
     Assertions.assertNull(reviewService.getUser(1));
+  }
+
+  @Test
+  public void shouldSuccessWhenGetReviewById() {
+    Review review = new Review();
+
+    Mockito.when(reviewRepository.findById("id")).thenReturn(Optional.of(review));
+
+    Assertions.assertEquals(review, reviewService.getReviewById("id"));
+  }
+
+  @Test
+  public void shouldFailWhenGetReviewById() {
+    Mockito.when(reviewRepository.findById("id")).thenReturn(null);
+
+    Assertions.assertThrows(
+        NullPointerException.class,
+        () -> {
+          reviewService.getReviewById("id");
+        });
   }
 }

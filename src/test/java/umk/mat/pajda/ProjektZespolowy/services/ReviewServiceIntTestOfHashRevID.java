@@ -29,7 +29,8 @@ import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
       "CLIENT_SECRET = client_secret",
       "CLIENT_ID = client_id",
       "profile = tests",
-      "KEY_MD5 = key_md5"
+      "KEY_MD5 = key_md5",
+      "ngrok.link = link"
     })
 public class ReviewServiceIntTestOfHashRevID {
 
@@ -95,7 +96,7 @@ public class ReviewServiceIntTestOfHashRevID {
 
     Review review = reviewConverter.createEntity(opinionPostDTO, "fsad4234ffsda");
     review.setCreatedAt(LocalDateTime.now().minusMinutes(5));
-    review.setEnabled(true);
+    review.setStatus("COMPLETED");
     reviewRepository.save(review);
     // Then
     assertFalse(reviewService.validateTime(user, opinionPostDTO.getHashRevID()));

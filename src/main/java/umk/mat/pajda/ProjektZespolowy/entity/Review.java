@@ -32,7 +32,7 @@ public class Review {
 
   @NotNull private String hashRevID;
 
-  private boolean enabled;
+  private String status;
 
   @NotNull
   @ManyToOne

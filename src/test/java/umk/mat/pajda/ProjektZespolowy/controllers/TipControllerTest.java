@@ -21,6 +21,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
+import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.Tip;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
@@ -77,6 +78,9 @@ public class TipControllerTest {
         "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"COMPLETED\", \"totalAmount\": \"500\", \"description\": \"PLN\", \"additionalDescription\": \"1\"} }";
     String header = "header";
 
+    Review review = new Review();
+    review.setStatus("COMPLETED");
+
     Mockito.when(tipService.verifyNotification(json, header)).thenReturn(true);
     Mockito.when(tipService.getStatus(json)).thenReturn("COMPLETED");
     Mockito.when(tipService.getOrderId(json)).thenReturn("orderId");
@@ -87,7 +91,8 @@ public class TipControllerTest {
     Mockito.when(tipService.makePayout("orderId", "553")).thenReturn("payoutId");
     Mockito.when(tipService.addTip("payoutId", "orderId", "553", "BLIK", "PLN", "1"))
         .thenReturn(true);
-    Mockito.when(reviewService.setEnabled("orderId")).thenReturn(true);
+    Mockito.when(reviewService.setStatus("orderId", "COMPLETED")).thenReturn(true);
+    Mockito.when(reviewService.getReviewById("orderId")).thenReturn(review);
 
     mockMvc
         .perform(

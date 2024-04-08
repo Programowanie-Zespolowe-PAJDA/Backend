@@ -14,7 +14,8 @@ import org.springframework.test.context.TestPropertySource;
       "CLIENT_SECRET = client_secret",
       "CLIENT_ID = client_id",
       "profile = tests",
-      "KEY_MD5 = key_md5"
+      "KEY_MD5 = key_md5",
+      "ngrok.link = link"
     })
 class ProjektZespolowyApplicationTests {
 

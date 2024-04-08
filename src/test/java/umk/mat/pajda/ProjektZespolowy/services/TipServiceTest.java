@@ -215,23 +215,6 @@ public class TipServiceTest {
   }
 
   @Test
-  public void shouldSuccessWhenMakeRefundTest() throws JsonProcessingException {
-    String orderId = "orderId";
-    String body = "{ \"status\": { \"statusCode\": \"SUCCESS\"}}";
-    ResponseEntity<String> response = new ResponseEntity<>(body, HttpStatus.OK);
-
-    Mockito.when(
-            restTemplate.exchange(
-                eq("https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/refunds"),
-                eq(HttpMethod.POST),
-                ArgumentMatchers.any(),
-                ArgumentMatchers.<Class<String>>any()))
-        .thenReturn(response);
-
-    Assertions.assertTrue(tipService.makeRefund(orderId));
-  }
-
-  @Test
   public void shouldSuccessWhenGetCurrencyTest() throws JsonProcessingException {
     String body = "{\"order\": { \"description\": \"PLN\"}}";
 

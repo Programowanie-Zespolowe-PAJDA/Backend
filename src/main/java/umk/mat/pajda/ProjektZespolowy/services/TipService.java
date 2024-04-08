@@ -60,6 +60,9 @@ public class TipService {
 
   private String token = null;
 
+  @Value("${ngrok.link}")
+  private String link;
+
   private final Semaphore semaphore = new Semaphore(1, true);
 
   public TipService(
@@ -111,7 +114,6 @@ public class TipService {
               headers, body, "https://secure.snd.payu.com/api/v2_1/payouts", HttpMethod.POST);
     }
     if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
-      logger.info(response.getBody());
       return null;
     }
     ObjectMapper objectMapper = new ObjectMapper();
@@ -138,6 +140,9 @@ public class TipService {
 
   public boolean verifyNotification(String requestBody, String header)
       throws NoSuchAlgorithmException {
+    if (requestBody == null || header == null) {
+      return false;
+    }
     String[] valuesOfHeader = header.split(";");
     Map<String, String> map = new HashMap<>();
     for (String value : valuesOfHeader) {
@@ -205,6 +210,7 @@ public class TipService {
       body.put("continueUrl", "https://enapiwek.onrender.com/thankyou");
     } else {
       body.put("continueUrl", "http://localhost:5173/thankyou");
+      body.put("notifyUrl", link + "tip");
     }
     body.put("additionalDescription", exchangeRate);
     body.put("totalAmount", String.valueOf(lastAmount));
@@ -341,39 +347,6 @@ public class TipService {
     this.restTemplate = restTemplate;
   }
 
-  public boolean makeRefund(String orderId) throws JsonProcessingException {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setBearerAuth(token);
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    Map<String, Object> body = new HashMap<>();
-    Map<String, String> description = new HashMap<>();
-    description.put("description", "Refund");
-    body.put("refund", description);
-    HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response;
-    try {
-      response =
-          restTemplate.exchange(
-              "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/refunds",
-              HttpMethod.POST,
-              request,
-              String.class);
-    } catch (HttpClientErrorException.Unauthorized e) {
-      response =
-          changeBearerAuth(
-              headers,
-              body,
-              "https://secure.snd.payu.com/api/v2_1/orders/" + orderId + "/refunds",
-              HttpMethod.POST);
-    }
-    if (!response.getStatusCode().equals(HttpStatus.OK)) {
-      return false;
-    }
-    ObjectMapper objectMapper = new ObjectMapper();
-    JsonNode jsonNode = objectMapper.readTree(response.getBody());
-    return jsonNode.get("status").get("statusCode").asText().equals("SUCCESS");
-  }
-
   public String getCurrency(String requestBody) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.readTree(requestBody).get("order").get("description").asText();
@@ -408,27 +381,9 @@ public class TipService {
     return jsonNode.get("balance").get("available").asText();
   }
 
-  public void cancelPayout(String orderId) throws JsonProcessingException {
+  public void cancelPayout(String orderId) {
     reviewService.deleteSelectReview(orderId);
-    if (token == null) {
-      cancelRefund(orderId);
-    } else if (!makeRefund(orderId)) {
-      cancelRefund(orderId);
-    }
-  }
-
-  public void cancelRefund(String orderId) {
-    logger.error("makeRefund - failed");
-    if ("prod".equals(profile)) {
-      try {
-        emailService.send(
-            userRepository.findByMail("enapiwek@gmail.com").get(),
-            "Refund",
-            "refund failed for order: " + orderId);
-      } catch (Exception e) {
-        logger.error("sendMail - failed", e);
-      }
-    }
+    logger.error("cancel Payout");
   }
 
   public ResponseEntity<String> changeBearerAuth(
@@ -489,5 +444,10 @@ public class TipService {
     } catch (InterruptedException e) {
       return false;
     }
+  }
+
+  public boolean isRefund(String requestBody) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    return objectMapper.readTree(requestBody).has("refund");
   }
 }

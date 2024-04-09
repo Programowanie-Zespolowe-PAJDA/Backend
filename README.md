@@ -54,6 +54,8 @@ Users for testing:<br><br>
 
 **[POST] /opinion** - (for everyone) add a opinion <br>
 
+**[POST] /tip** - (only for PayU) payout and add tip<br>
+
 
 ## Commands:
 **mvn spotless:check** - Formatter check <br>

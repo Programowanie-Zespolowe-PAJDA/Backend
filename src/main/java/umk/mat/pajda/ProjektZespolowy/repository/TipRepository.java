@@ -25,7 +25,7 @@ public interface TipRepository extends JpaRepository<Tip, Integer> {
       "select new umk.mat.pajda.ProjektZespolowy.DTO.TipMonthDTO(SUM(t.amount),"
           + "EXTRACT(month from t.createdAt),EXTRACT(year from t.createdAt),t.currency) "
           + "from Tip t where t.user.id = :userid "
-          + "group by EXTRACT(month from t.createdAt), EXTRACT(year from t.createdAt) "
+          + "group by EXTRACT(month from t.createdAt), EXTRACT(year from t.createdAt),t.currency "
           + "order by EXTRACT(year from t.createdAt) desc,EXTRACT(month from t.createdAt) desc")
   List<TipMonthDTO> getSumAmountForEachMonth(@Param("userid") Integer userid);
 }

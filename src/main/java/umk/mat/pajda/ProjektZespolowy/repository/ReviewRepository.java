@@ -29,4 +29,5 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
   Optional<Review> findByIdAndStatus(String id, Status status);
 
   Optional<Review> findById(String id);
+
 }

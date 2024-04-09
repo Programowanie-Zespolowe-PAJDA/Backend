@@ -54,6 +54,8 @@ Users for testing:<br><br>
 
 
 **[POST] /opinion** - (for everyone) add a opinion <br>
+**[GET] /opinion** - (only for authenticated) get all owner opinions <br>
+
 
 
 **[GET] /tip/stats** - (for authenticated) get a statistics about tips <br>

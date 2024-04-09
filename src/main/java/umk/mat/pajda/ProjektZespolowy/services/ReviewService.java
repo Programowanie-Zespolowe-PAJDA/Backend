@@ -57,8 +57,8 @@ public class ReviewService {
   public List<ReviewGetDTO> getAllReviews(String email) {
     Optional<User> user = userRepository.findByMail(email);
     if (user.isPresent()) {
-      return reviewConverter.createReviewDTOList(
-          reviewRepository.findAllByUserAndStatus(user.get(), Status.COMPLETED));
+      return reviewConverter.createReviewDTOList(reviewRepository.findAllByUserAndStatus(user.get(), Status.COMPLETED));
+
     }
     return null;
   }
@@ -78,8 +78,7 @@ public class ReviewService {
     Review review = null;
     try {
       review =
-          reviewRepository.findByIdAndUserAndStatus(
-              id, userRepository.findByMail(email).get(), Status.COMPLETED);
+          reviewRepository.findByIdAndUserAndStatus(id, userRepository.findByMail(email).get(), Status.COMPLETED);
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -120,8 +119,7 @@ public class ReviewService {
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
-          reviewRepository.findFirstByUserAndStatusAndHashRevIDOrderByCreatedAtDesc(
-              user, Status.COMPLETED, hashRevId);
+          reviewRepository.findFirstByUserAndStatusAndHashRevIDOrderByCreatedAtDesc(user, Status.COMPLETED, hashRevId);
       if (review == null) {
         return true;
       }
@@ -170,13 +168,21 @@ public class ReviewService {
   }
 
   public Review getReviewById(String id) {
-    Review review = null;
-    try {
-      review = reviewRepository.findById(id).get();
-    } catch (NoSuchElementException e) {
-      logger.error("getReview", e);
-      return null;
+      Review review = null;
+      try {
+          review = reviewRepository.findById(id).get();
+      } catch (NoSuchElementException e) {
+          logger.error("getReview", e);
+          return null;
+      }
+      return review;
+  }
+
+  public List<Review> getAllReviewsByEmail(String email) {
+    Optional<User> user = userRepository.findByMail(email);
+    if (user.isPresent()) {
+      return reviewRepository.findAllByUserAndStatus(user.get(), Status.COMPLETED);
     }
-    return review;
+    return null;
   }
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Setter
@@ -29,4 +31,9 @@ public class Tip {
   @ManyToOne
   @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
   private User user;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "review_id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Review review;
 }

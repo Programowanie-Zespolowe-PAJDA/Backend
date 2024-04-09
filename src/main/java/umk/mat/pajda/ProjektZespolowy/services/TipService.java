@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.TipConverter;
+import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.TipRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -32,9 +33,9 @@ public class TipService {
   private final TipConverter tipConverter;
   private final TipRepository tipRepository;
 
-  private final UserRepository userRepository;
-
   private final ReviewService reviewService;
+
+  private final ReviewRepository reviewRepository;
 
   @Autowired(required = false)
   private EmailService emailService;
@@ -70,10 +71,11 @@ public class TipService {
       TipRepository tipRepository,
       UserRepository userRepository,
       ReviewService reviewService,
+      ReviewRepository reviewRepository,
       UserService userService) {
     this.tipConverter = tipConverter;
     this.tipRepository = tipRepository;
-    this.userRepository = userRepository;
+    this.reviewRepository = reviewRepository;
     this.reviewService = reviewService;
     this.userService = userService;
     this.restTemplate = new RestTemplate();

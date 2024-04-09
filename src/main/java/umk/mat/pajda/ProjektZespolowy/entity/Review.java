@@ -38,4 +38,7 @@ public class Review {
   @ManyToOne
   @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
   private User user;
+
+  @OneToOne(mappedBy = "review", fetch = FetchType.LAZY)
+  private Tip tip;
 }

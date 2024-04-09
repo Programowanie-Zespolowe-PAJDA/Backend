@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import umk.mat.pajda.ProjektZespolowy.DTO.TipGetDTO;
+import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.Tip;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 
@@ -36,15 +37,18 @@ public class TipConverter {
       String realAmount,
       String paidWith,
       String currency,
-      String exchangeRate) {
+      String exchangeRate)
+      throws NullPointerException {
+    Review review = reviewRepository.findById(orderId).get();
     Tip tip = new Tip();
     tip.setId(payoutId);
-    tip.setUser(reviewRepository.findById(orderId).get().getUser());
+    tip.setUser(review.getUser());
     tip.setCurrency(currency);
     tip.setCreatedAt(LocalDateTime.now());
     tip.setPaidWith(paidWith);
     tip.setAmount(Integer.valueOf(realAmount));
     tip.setRealAmount(Math.round(Integer.valueOf(realAmount) / Float.valueOf(exchangeRate)));
+    tip.setReview(review);
     return tip;
   }
 

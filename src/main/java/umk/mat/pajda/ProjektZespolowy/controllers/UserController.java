@@ -69,11 +69,15 @@ public class UserController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed - no user");
     }
     if (!BCrypt.checkpw(userPatchPasswordDTO.getOldPassword(), user.getPassword())) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("bad password");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("modifying failed - bad password");
     }
     if (!(userPatchPasswordDTO.getPassword().equals(userPatchPasswordDTO.getRetypedPassword()))) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("modifying failed - passwords don't match");
+    }
+    if (userPatchPasswordDTO.getOldPassword().equals(userPatchPasswordDTO.getPassword())) {
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+          .body("modifying failed - password are the same");
     }
     if (userService.patchPasswordOfUser(userPatchPasswordDTO, userDetails.getUsername())) {
       return ResponseEntity.status(HttpStatus.OK).body("modifying successful");

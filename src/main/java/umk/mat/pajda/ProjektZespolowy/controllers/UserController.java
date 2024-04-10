@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
+import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.services.UserService;
 
 @RequestMapping("/user")
@@ -62,8 +64,12 @@ public class UserController {
     if (bindingResult.hasErrors()) {
       return ResponseEntity.badRequest().body("Validation failed: " + bindingResult.getAllErrors());
     }
-    if (userService.getUser(userDetails.getUsername()) == null) {
+    User user = userService.getUser(userDetails.getUsername());
+    if (user == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed - no user");
+    }
+    if (!BCrypt.checkpw(userPatchPasswordDTO.getOldPassword(), user.getPassword())) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("bad password");
     }
     if (!(userPatchPasswordDTO.getPassword().equals(userPatchPasswordDTO.getRetypedPassword()))) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
@@ -159,7 +165,7 @@ public class UserController {
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(summary = "GET - get \"Owner\"", description = "Following endpoint returns a Owner")
   public ResponseEntity<UserGetDTO> readUser(@AuthenticationPrincipal UserDetails userDetails) {
-    UserGetDTO returnData = userService.getUser(userDetails.getUsername());
+    UserGetDTO returnData = userService.getUserDTO(userDetails.getUsername());
     if (returnData != null) {
       return ResponseEntity.status(HttpStatus.OK).body(returnData);
     } else {

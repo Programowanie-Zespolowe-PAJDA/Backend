@@ -54,7 +54,22 @@ public class UserService {
     return userConverter.createDTO(returnData);
   }
 
-  public UserGetDTO getUser(String mail) {
+  public User getUser(String mail) {
+    User returnData = null;
+    try {
+      returnData = userRepository.findByMail(mail).get();
+    } catch (NoSuchElementException e) {
+      logger.error("getUser(String)", e);
+      return null;
+    }
+    if (returnData == null) {
+      return null;
+    }
+
+    return returnData;
+  }
+
+  public UserGetDTO getUserDTO(String mail) {
     User returnData = null;
     try {
       returnData = userRepository.findByMail(mail).get();

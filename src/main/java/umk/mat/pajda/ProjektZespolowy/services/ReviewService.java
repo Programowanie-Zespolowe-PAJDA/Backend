@@ -16,6 +16,7 @@ import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -49,14 +50,14 @@ public class ReviewService {
   }
 
   public List<ReviewGetDTO> getAllReviews() {
-    return reviewConverter.createReviewDTOList(reviewRepository.findAllByStatus("COMPLETED"));
+    return reviewConverter.createReviewDTOList(reviewRepository.findAllByStatus(Status.COMPLETED));
   }
 
   public List<ReviewGetDTO> getAllReviews(String email) {
     Optional<User> user = userRepository.findByMail(email);
     if (user.isPresent()) {
       return reviewConverter.createReviewDTOList(
-          reviewRepository.findAllByUserAndStatus(user.get(), "COMPLETED"));
+          reviewRepository.findAllByUserAndStatus(user.get(), Status.COMPLETED));
     }
     return null;
   }
@@ -64,7 +65,7 @@ public class ReviewService {
   public ReviewGetDTO getReview(String id) {
     Review review = null;
     try {
-      review = reviewRepository.findByIdAndStatus(id, "COMPLETED").get();
+      review = reviewRepository.findByIdAndStatus(id, Status.COMPLETED).get();
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -77,7 +78,7 @@ public class ReviewService {
     try {
       review =
           reviewRepository.findByIdAndUserAndStatus(
-              id, userRepository.findByMail(email).get(), "COMPLETED");
+              id, userRepository.findByMail(email).get(), Status.COMPLETED);
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -101,7 +102,7 @@ public class ReviewService {
 
   public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, String id) {
     try {
-      Review review = reviewRepository.findByIdAndStatus(id, "COMPLETED").get();
+      Review review = reviewRepository.findByIdAndStatus(id, Status.COMPLETED).get();
       review.setClientName(reviewPatchDTO.getClientName());
       review.setComment(reviewPatchDTO.getComment());
       review.setRating(reviewPatchDTO.getRating());
@@ -119,7 +120,7 @@ public class ReviewService {
     try {
       review =
           reviewRepository.findFirstByUserAndStatusAndHashRevIDOrderByCreatedAtDesc(
-              user, "COMPLETED", hashRevId);
+              user, Status.COMPLETED, hashRevId);
       if (review == null) {
         return true;
       }
@@ -133,7 +134,7 @@ public class ReviewService {
     }
   }
 
-  public boolean setStatus(String id, String status) {
+  public boolean setStatus(String id, Status status) {
     try {
       Review review = reviewRepository.findById(id).get();
       review.setStatus(status);

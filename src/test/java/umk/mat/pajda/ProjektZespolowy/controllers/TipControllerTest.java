@@ -24,6 +24,7 @@ import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.Tip;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.OpinionService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
@@ -79,7 +80,7 @@ public class TipControllerTest {
     String header = "header";
 
     Review review = new Review();
-    review.setStatus("COMPLETED");
+    review.setStatus(Status.COMPLETED);
 
     Mockito.when(tipService.verifyNotification(json, header)).thenReturn(true);
     Mockito.when(tipService.getStatus(json)).thenReturn("COMPLETED");
@@ -91,7 +92,7 @@ public class TipControllerTest {
     Mockito.when(tipService.makePayout("orderId", "553")).thenReturn("payoutId");
     Mockito.when(tipService.addTip("payoutId", "orderId", "553", "BLIK", "PLN", "1"))
         .thenReturn(true);
-    Mockito.when(reviewService.setStatus("orderId", "COMPLETED")).thenReturn(true);
+    Mockito.when(reviewService.setStatus("orderId", Status.COMPLETED)).thenReturn(true);
     Mockito.when(reviewService.getReviewById("orderId")).thenReturn(review);
 
     mockMvc

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 import umk.mat.pajda.ProjektZespolowy.services.TipService;
 
@@ -34,17 +35,17 @@ public class TipController {
     if (tipService.verifyNotification(requestBody, header)) {
       String status = tipService.getStatus(requestBody);
       String orderId = tipService.getOrderId(requestBody);
-      String orderStatus = reviewService.getReviewById(orderId).getStatus();
-      if ("COMPLETED".equals(orderStatus)) {
+      Status orderStatus = reviewService.getReviewById(orderId).getStatus();
+      if (Status.COMPLETED.equals(orderStatus)) {
         return ResponseEntity.status(HttpStatus.OK).body("correct notification");
-      } else if (status.equals(orderStatus)) {
+      } else if (Status.valueOf(status).equals(orderStatus)) {
         return ResponseEntity.status(HttpStatus.OK).body("correct notification");
       } else if (status.equals("PENDING")) {
         return ResponseEntity.status(HttpStatus.OK).body("correct notification");
       }
       switch (status) {
         case "WAITING_FOR_CONFIRMATION" -> {
-          if (!reviewService.setStatus(orderId, "WAITING_FOR_CONFIRMATION")) {
+          if (!reviewService.setStatus(orderId, Status.WAITING_FOR_CONFIRMATION)) {
             reviewService.deleteSelectReview(orderId);
           }
           if (!tipService.setCompleted(orderId)) {
@@ -53,7 +54,7 @@ public class TipController {
         }
         case "CANCELED" -> reviewService.deleteSelectReview(orderId);
         case "COMPLETED" -> {
-          if (!reviewService.setStatus(orderId, "COMPLETED")) {
+          if (!reviewService.setStatus(orderId, Status.COMPLETED)) {
             reviewService.deleteSelectReview(orderId);
           }
           String currency = tipService.getCurrency(requestBody);

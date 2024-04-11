@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -30,18 +31,18 @@ public class ReviewServiceTest {
   public void shouldSuccessWhenSetStatusTest() {
     Review review = new Review();
     review.setId("reviewId");
-    review.setStatus("PENDING");
+    review.setStatus(Status.PENDING);
 
     Mockito.when(reviewRepository.findById("reviewId")).thenReturn(Optional.of(review));
 
-    Assertions.assertTrue(reviewService.setStatus("reviewId", "COMPLETED"));
+    Assertions.assertTrue(reviewService.setStatus("reviewId", Status.COMPLETED));
   }
 
   @Test
   public void shouldFailWhenSetStatusTest() {
     Mockito.when(reviewRepository.findById("reviewId")).thenReturn(null);
 
-    Assertions.assertFalse(reviewService.setStatus("orderId", "PENDING"));
+    Assertions.assertFalse(reviewService.setStatus("orderId", Status.PENDING));
   }
 
   @Test

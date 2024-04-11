@@ -90,7 +90,6 @@ public class ReviewServiceTest {
 
     Mockito.when(userRepository.findByMail("email")).thenReturn(Optional.of(user));
     Mockito.when(reviewRepository.findAllByUserAndStatus(user, Status.COMPLETED)).thenReturn(reviews);
-
     Assertions.assertEquals(reviews, reviewService.getAllReviewsByEmail("email"));
   }
 

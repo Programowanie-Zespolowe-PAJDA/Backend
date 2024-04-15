@@ -35,11 +35,14 @@ public class OpinionServiceTest {
     opinionPostDTO.setClientName("Adrian");
     opinionPostDTO.setAmount(500);
     opinionPostDTO.setCurrency("PLN");
-    ResponseEntity response = new ResponseEntity<>("{\"orderId\": \"dsa4324\"}", HttpStatus.OK);
+    ResponseEntity<String> response =
+        new ResponseEntity<>("{\"orderId\": \"dsa4324\"}", HttpStatus.OK);
 
     Mockito.when(reviewService.addReview(opinionPostDTO, "dsa4324")).thenReturn(true);
-    Mockito.when(tipService.createPayment(opinionPostDTO, "127.0.0.1")).thenReturn(response);
+    Mockito.when(tipService.createPayment(opinionPostDTO, "127.0.0.1", 500, "1"))
+        .thenReturn(response);
 
-    Assertions.assertEquals(opinionService.addOpinion(opinionPostDTO, "127.0.0.1"), response);
+    Assertions.assertEquals(
+        opinionService.addOpinion(opinionPostDTO, "127.0.0.1", 500, "1"), response);
   }
 }

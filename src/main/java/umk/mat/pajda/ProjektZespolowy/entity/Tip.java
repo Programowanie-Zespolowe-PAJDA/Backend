@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Setter
@@ -14,13 +16,14 @@ public class Tip {
 
   @Id @NotNull private String id;
 
-  @Pattern(regexp = "^(CHF|CZK|DKK|EUR|GBP|HUF|NOK|PLN|RON|SEK|USD)$")
+  @Pattern(regexp = "^(PLN|EUR|USD|GBP|CHF|DKK|SEK)$")
   private String currency;
 
-  @Min(value = 80)
   private Integer amount;
 
-  @FutureOrPresent private LocalDateTime createdAt;
+  private Integer realAmount;
+
+  private LocalDateTime createdAt;
 
   private String paidWith;
 
@@ -28,4 +31,9 @@ public class Tip {
   @ManyToOne
   @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
   private User user;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "review_id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Review review;
 }

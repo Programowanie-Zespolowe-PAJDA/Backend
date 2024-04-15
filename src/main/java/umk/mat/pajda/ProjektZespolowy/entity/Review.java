@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 
 @Entity
 @Setter
@@ -32,10 +33,13 @@ public class Review {
 
   @NotNull private String hashRevID;
 
-  private boolean enabled;
+  private Status status;
 
   @NotNull
   @ManyToOne
   @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
   private User user;
+
+  @OneToOne(mappedBy = "review", fetch = FetchType.LAZY)
+  private Tip tip;
 }

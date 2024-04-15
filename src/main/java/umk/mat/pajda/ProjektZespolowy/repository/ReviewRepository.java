@@ -1,19 +1,27 @@
 package umk.mat.pajda.ProjektZespolowy.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
-  List<Review> findAllByUserAndEnabledIsTrue(User user);
+  List<Review> findAllByUserAndStatus(User user, Status status);
 
-  List<Review> findAllByEnabledIsTrue();
+  List<Review> findAllByStatus(Status status);
 
-  Review findByIdAndUserAndEnabledIsTrue(String id, User user);
+  Review findByIdAndUserAndStatus(String id, User user, Status status);
 
-  Review findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
-      User user, String hashRevID);
+  Review findFirstByUserAndStatusAndHashRevIDOrderByCreatedAtDesc(
+      User user, Status status, String hashRevID);
+
+  void deleteById(String id);
+
+  Optional<Review> findByIdAndStatus(String id, Status status);
+
+  Optional<Review> findById(String id);
 }

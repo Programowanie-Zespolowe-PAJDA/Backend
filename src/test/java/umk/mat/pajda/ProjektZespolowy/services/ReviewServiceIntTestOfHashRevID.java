@@ -17,6 +17,7 @@ import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -28,7 +29,9 @@ import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
       "SHOP_ID = shop_id",
       "CLIENT_SECRET = client_secret",
       "CLIENT_ID = client_id",
-      "profile = tests"
+      "profile = tests",
+      "KEY_MD5 = key_md5",
+      "ngrok.link = link"
     })
 public class ReviewServiceIntTestOfHashRevID {
 
@@ -68,7 +71,7 @@ public class ReviewServiceIntTestOfHashRevID {
     reviewRepository.save(review);
 
     // Then
-    assertTrue(reviewService.validateTime(opinionPostDTO));
+    assertTrue(reviewService.validateTime(user, opinionPostDTO.getHashRevID()));
   }
 
   @Test
@@ -94,10 +97,10 @@ public class ReviewServiceIntTestOfHashRevID {
 
     Review review = reviewConverter.createEntity(opinionPostDTO, "fsad4234ffsda");
     review.setCreatedAt(LocalDateTime.now().minusMinutes(5));
-    review.setEnabled(true);
+    review.setStatus(Status.COMPLETED);
     reviewRepository.save(review);
     // Then
-    assertFalse(reviewService.validateTime(opinionPostDTO));
+    assertFalse(reviewService.validateTime(user, opinionPostDTO.getHashRevID()));
   }
 
   @Test
@@ -122,6 +125,6 @@ public class ReviewServiceIntTestOfHashRevID {
     opinionPostDTO.setHashRevID(BCrypt.hashpw("192.168.0.105", fixedSalt));
 
     // Then
-    assertTrue(reviewService.validateTime(opinionPostDTO));
+    assertTrue(reviewService.validateTime(user, opinionPostDTO.getHashRevID()));
   }
 }

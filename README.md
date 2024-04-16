@@ -40,6 +40,7 @@ Users for testing:<br><br>
 **[GET] /review/{id}** - (for everyone) get a review <br>
 **[GET] /review/owner** - (only for authenticated) get all owner reviews <br>
 **[GET] /review/owner/{id}** - (only for authenticated) get a owner review <br>
+**[GET] /review/avgRating** - (only for authenticated) get a owner avg rating for all Reviews <br>
 
 **[PATCH] /user/editInformations** - (only for authenticated) mod informations of user <br>
 **[PATCH] /user/editPassword** - (only for authenticated) mod password of user <br>
@@ -54,6 +55,8 @@ Users for testing:<br><br>
 
 **[POST] /opinion** - (for everyone) add a opinion <br>
 
+
+**[GET] /tip/stats** - (for authenticated) get a statistics about tips <br>
 **[POST] /tip** - (only for PayU) payout and add tip<br>
 
 

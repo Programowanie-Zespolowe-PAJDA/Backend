@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.TipStatisticsGetDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.TipConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
@@ -32,6 +32,7 @@ public class TipService {
   private final Logger logger = LoggerFactory.getLogger(TipService.class);
   private final TipConverter tipConverter;
   private final TipRepository tipRepository;
+  private final UserRepository userRepository;
 
   private final ReviewService reviewService;
 
@@ -78,6 +79,7 @@ public class TipService {
     this.reviewRepository = reviewRepository;
     this.reviewService = reviewService;
     this.userService = userService;
+    this.userRepository = userRepository;
     this.restTemplate = new RestTemplate();
   }
 
@@ -347,6 +349,28 @@ public class TipService {
 
   public void setRestTemplate(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
+  }
+
+  public TipStatisticsGetDTO getStatistics(String userName, String currency) {
+    try {
+      User user = userRepository.findByMail(userName).get();
+      TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
+      tipStatisticsGetDTO.setMaxTipAmount(
+          tipRepository.findFirstByUserAndCurrencyOrderByAmountDesc(user, currency).getAmount());
+
+      tipStatisticsGetDTO.setMinTipAmount(
+          tipRepository.findFirstByUserAndCurrencyOrderByAmountAsc(user, currency).getAmount());
+      tipStatisticsGetDTO.setAvgTipAmount(
+          tipRepository.getAvgAmountForAllTips(user.getId(), currency));
+      tipStatisticsGetDTO.setSumTipValueForEveryMonth(
+          tipRepository.getSumAmountForEachMonth(user.getId(), currency));
+      tipStatisticsGetDTO.setNumberOfTips(tipRepository.getNumberOfTips(user.getId(), currency));
+
+      return tipStatisticsGetDTO;
+    } catch (Exception e) {
+      logger.error("getStatistics", e);
+      return null;
+    }
   }
 
   public String getCurrency(String requestBody) throws JsonProcessingException {

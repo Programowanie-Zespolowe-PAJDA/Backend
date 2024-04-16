@@ -138,7 +138,7 @@ public class ReviewService {
   public ReviewAvgRatingGetDTO getAvgRatingOfReview(String username) {
     try {
       ReviewAvgRatingGetDTO reviewAvgRatingGetDTO = new ReviewAvgRatingGetDTO();
-      reviewAvgRatingGetDTO.setAvgRating(reviewRepository.getAvgRating(username));
+      reviewAvgRatingGetDTO.setAvgRating(reviewRepository.getAvgRating(username, Status.COMPLETED));
       return reviewAvgRatingGetDTO;
     } catch (Exception e) {
       logger.error("getAvgRatingOfReview", e);

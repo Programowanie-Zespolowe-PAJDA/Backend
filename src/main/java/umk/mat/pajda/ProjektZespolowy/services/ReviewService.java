@@ -57,7 +57,8 @@ public class ReviewService {
   public List<ReviewGetDTO> getAllReviews(String email) {
     Optional<User> user = userRepository.findByMail(email);
     if (user.isPresent()) {
-      return reviewConverter.createReviewDTOList(reviewRepository.findAllByUserAndStatus(user.get(), Status.COMPLETED));
+      return reviewConverter.createReviewDTOList(
+          reviewRepository.findAllByUserAndStatus(user.get(), Status.COMPLETED));
     }
     return null;
   }
@@ -76,7 +77,9 @@ public class ReviewService {
   public ReviewGetDTO getReview(String id, String email) {
     Review review = null;
     try {
-      review = reviewRepository.findByIdAndUserAndStatus(id, userRepository.findByMail(email).get(), Status.COMPLETED);
+      review =
+          reviewRepository.findByIdAndUserAndStatus(
+              id, userRepository.findByMail(email).get(), Status.COMPLETED);
 
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
@@ -117,7 +120,9 @@ public class ReviewService {
     Review review = null;
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
-      review = reviewRepository.findFirstByUserAndStatusAndHashRevIDOrderByCreatedAtDesc(user, Status.COMPLETED, hashRevId);
+      review =
+          reviewRepository.findFirstByUserAndStatusAndHashRevIDOrderByCreatedAtDesc(
+              user, Status.COMPLETED, hashRevId);
       if (review == null) {
         return true;
       }
@@ -166,14 +171,14 @@ public class ReviewService {
   }
 
   public Review getReviewById(String id) {
-      Review review = null;
-      try {
-          review = reviewRepository.findById(id).get();
-      } catch (NoSuchElementException e) {
-          logger.error("getReview", e);
-          return null;
-      }
-      return review;
+    Review review = null;
+    try {
+      review = reviewRepository.findById(id).get();
+    } catch (NoSuchElementException e) {
+      logger.error("getReview", e);
+      return null;
+    }
+    return review;
   }
 
   public List<Review> getAllReviewsByEmail(String email) {

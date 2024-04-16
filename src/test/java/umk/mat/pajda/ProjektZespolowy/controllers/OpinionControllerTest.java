@@ -101,7 +101,6 @@ public class OpinionControllerTest {
     Mockito.when(reviewService.validateTime(user, opinionPostDTO.getHashRevID())).thenReturn(true);
     Mockito.when(
             opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500), eq("1")))
-
         .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
     mockMvc

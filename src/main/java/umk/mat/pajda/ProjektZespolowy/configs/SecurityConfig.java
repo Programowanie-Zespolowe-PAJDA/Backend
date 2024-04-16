@@ -56,7 +56,7 @@ public class SecurityConfig {
                         "/tip/stats",
                         "review/avgRating",
                         "/user/profile",
-                            "/opinion")
+                        "/opinion")
                     .authenticated()
                     .requestMatchers(HttpMethod.PATCH, "/review/{id}")
                     .hasRole("ADMIN")

@@ -17,7 +17,7 @@ import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @ActiveProfiles("tests")
-public class UserTest {
+public class UserConverterTest {
 
   private UserConverter userConverter;
 

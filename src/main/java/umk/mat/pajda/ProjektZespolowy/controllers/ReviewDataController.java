@@ -39,7 +39,7 @@ public class ReviewDataController {
   public ResponseEntity<String> modReview(
       @Valid @RequestBody ReviewPatchDTO reviewPatchDTO,
       BindingResult bindingResult,
-      @PathVariable int id) {
+      @PathVariable String id) {
     if (bindingResult.hasErrors()) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
           .body("Validation failed: " + bindingResult.getAllErrors());
@@ -62,7 +62,7 @@ public class ReviewDataController {
   @Operation(
       summary = "DELETE - delete \"Review\"",
       description = "Following endpoint deletes a Review of id")
-  public ResponseEntity<String> delReview(@PathVariable int id) {
+  public ResponseEntity<String> delReview(@PathVariable String id) {
     if (reviewService.deleteSelectReview(id)) {
       return ResponseEntity.status(HttpStatus.OK).body("delete successful");
     } else {
@@ -94,7 +94,7 @@ public class ReviewDataController {
   @Operation(
       summary = "GET - get \"Review\"",
       description = "Following endpoint returns a Review of id")
-  public ResponseEntity<ReviewGetDTO> readReview(@PathVariable int id) {
+  public ResponseEntity<ReviewGetDTO> readReview(@PathVariable String id) {
     ReviewGetDTO reviewGetDTO = null;
     reviewGetDTO = reviewService.getReview(id);
     if (reviewGetDTO != null) {

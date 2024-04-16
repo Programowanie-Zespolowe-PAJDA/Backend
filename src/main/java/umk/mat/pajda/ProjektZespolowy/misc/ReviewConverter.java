@@ -40,7 +40,7 @@ public class ReviewConverter {
     review.setUser(userRepository.findById(opinionPostDTO.getUserID()).get());
     review.setClientName(opinionPostDTO.getClientName());
     review.setHashRevID(opinionPostDTO.getHashRevID());
-    review.setEnabled(false);
+    review.setStatus(Status.PENDING);
     return review;
   }
 

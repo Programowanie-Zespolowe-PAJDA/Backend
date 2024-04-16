@@ -1,5 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -16,6 +17,7 @@ import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
@@ -49,27 +51,24 @@ public class ReviewService {
   }
 
   public List<ReviewGetDTO> getAllReviews() {
-    return reviewConverter.createReviewDTOList(reviewRepository.findAllByEnabledIsTrue());
+    return reviewConverter.createReviewDTOList(reviewRepository.findAllByStatus(Status.COMPLETED));
   }
 
   public List<ReviewGetDTO> getAllReviews(String email) {
     Optional<User> user = userRepository.findByMail(email);
     if (user.isPresent()) {
       return reviewConverter.createReviewDTOList(
-          reviewRepository.findAllByUserAndEnabledIsTrue(user.get()));
+          reviewRepository.findAllByUserAndStatus(user.get(), Status.COMPLETED));
     }
     return null;
   }
 
-  public ReviewGetDTO getReview(int id) {
+  public ReviewGetDTO getReview(String id) {
     Review review = null;
     try {
-      review = reviewRepository.findById(id).get();
+      review = reviewRepository.findByIdAndStatus(id, Status.COMPLETED).get();
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
-      return null;
-    }
-    if (review == null) {
       return null;
     }
     return reviewConverter.createDTO(review);
@@ -79,8 +78,8 @@ public class ReviewService {
     Review review = null;
     try {
       review =
-          reviewRepository.findByIdAndUserAndEnabledIsTrue(
-              id, userRepository.findByMail(email).get());
+          reviewRepository.findByIdAndUserAndStatus(
+              id, userRepository.findByMail(email).get(), Status.COMPLETED);
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -91,7 +90,8 @@ public class ReviewService {
     return reviewConverter.createDTO(review);
   }
 
-  public Boolean deleteSelectReview(int id) {
+  @Transactional
+  public Boolean deleteSelectReview(String id) {
     try {
       reviewRepository.deleteById(id);
     } catch (Exception e) {
@@ -101,9 +101,9 @@ public class ReviewService {
     return true;
   }
 
-  public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, int id) {
+  public Boolean patchSelectReview(ReviewPatchDTO reviewPatchDTO, String id) {
     try {
-      Review review = reviewRepository.findById(id).get();
+      Review review = reviewRepository.findByIdAndStatus(id, Status.COMPLETED).get();
       review.setClientName(reviewPatchDTO.getClientName());
       review.setComment(reviewPatchDTO.getComment());
       review.setRating(reviewPatchDTO.getRating());
@@ -115,15 +115,13 @@ public class ReviewService {
     return true;
   }
 
-  public boolean validateTime(OpinionPostDTO opinionPostDTO) {
+  public boolean validateTime(User user, String hashRevId) {
     Review review = null;
     LocalDateTime currentDateTime = LocalDateTime.now();
     try {
       review =
-          reviewRepository.findFirstByUserAndEnabledIsTrueAndHashRevIDOrderByCreatedAtDesc(
-              userRepository.findById(opinionPostDTO.getUserID()).get(),
-              opinionPostDTO.getHashRevID());
-      logger.info(String.valueOf(review));
+          reviewRepository.findFirstByUserAndStatusAndHashRevIDOrderByCreatedAtDesc(
+              user, Status.COMPLETED, hashRevId);
       if (review == null) {
         return true;
       }
@@ -137,6 +135,7 @@ public class ReviewService {
     }
   }
 
+
   public ReviewAvgRatingGetDTO getAvgRatingOfReview(String username) {
     try {
       ReviewAvgRatingGetDTO reviewAvgRatingGetDTO = new ReviewAvgRatingGetDTO();
@@ -146,5 +145,39 @@ public class ReviewService {
       logger.error("getAvgRatingOfReview", e);
       return null;
     }
+
+  public boolean setStatus(String id, Status status) {
+    try {
+      Review review = reviewRepository.findById(id).get();
+      review.setStatus(status);
+      reviewRepository.save(review);
+    } catch (Exception e) {
+      logger.error("setStatus", e);
+      return false;
+    }
+    return true;
+  }
+
+  public User getUser(int id) {
+    User user;
+    try {
+      user = userRepository.findById(id).get();
+    } catch (Exception e) {
+      logger.error("getting error - ", e);
+      return null;
+    }
+    return user;
+  }
+
+  public Review getReviewById(String id) {
+    Review review = null;
+    try {
+      review = reviewRepository.findById(id).get();
+    } catch (NoSuchElementException e) {
+      logger.error("getReview", e);
+      return null;
+    }
+    return review;
+
   }
 }

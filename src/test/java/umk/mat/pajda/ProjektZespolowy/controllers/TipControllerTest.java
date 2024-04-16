@@ -1,11 +1,10 @@
 package umk.mat.pajda.ProjektZespolowy.controllers;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
+import java.time.Month;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,39 +14,28 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.client.RestTemplate;
-import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
+import umk.mat.pajda.ProjektZespolowy.entity.Review;
+import umk.mat.pajda.ProjektZespolowy.entity.Tip;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
+import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.OpinionService;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 import umk.mat.pajda.ProjektZespolowy.services.TipService;
 import umk.mat.pajda.ProjektZespolowy.services.impl.AuthenticationServiceImpl;
 
-@WebMvcTest(OpinionController.class)
+@WebMvcTest(TipController.class)
 @AutoConfigureMockMvc
-@TestPropertySource(
-    properties = {
-      "FIXEDSALT_IPHASH = $2a$10$9elrbM0La5ooQgMP7i9yjO",
-      "SHOP_ID = shop_id",
-      "CLIENT_SECRET = client_secret",
-      "CLIENT_ID = client_id",
-      "profile = tests"
-    })
-public class OpinionControllerTest {
+public class TipControllerTest {
 
-  @Autowired private MockMvc mockMvc;
-
+  @Autowired MockMvc mockMvc;
   @MockBean private OpinionService opinionService;
 
   @MockBean private RestTemplate restTemplate;
@@ -62,9 +50,6 @@ public class OpinionControllerTest {
 
   @MockBean private ReviewService reviewService;
   @MockBean private TipService tipService;
-  @MockBean private BindingResult bindingResult;
-
-  @Autowired private ObjectMapper objectMapper;
 
   @TestConfiguration
   static class TestConfig {
@@ -81,55 +66,69 @@ public class OpinionControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void shouldStatusOkWhenAddNewReviewTest() throws Exception {
-    OpinionPostDTO opinionPostDTO = new OpinionPostDTO();
-    opinionPostDTO.setHashRevID("127.0.0.1");
-    opinionPostDTO.setComment("fajne");
-    opinionPostDTO.setRating(5);
-    opinionPostDTO.setUserID(1);
-    opinionPostDTO.setClientName("Adrian");
-    opinionPostDTO.setAmount(500);
-    opinionPostDTO.setCurrency("PLN");
+  public void shouldStatusOkWhenAddTipTest() throws Exception {
     User user = new User();
+    Tip tip = new Tip();
+    tip.setUser(user);
+    tip.setAmount(500);
+    tip.setId("ID1");
+    tip.setCurrency("PLN");
+    tip.setCreatedAt(LocalDateTime.of(2017, Month.SEPTEMBER, 18, 18, 20));
+    tip.setPaidWith("BLIK");
+    String json =
+        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"COMPLETED\", \"totalAmount\": \"500\", \"description\": \"PLN\", \"additionalDescription\": \"1\"} }";
+    String header = "header";
 
-    Mockito.when(reviewService.getUser(1)).thenReturn(user);
-    Mockito.when(reviewService.validateTime(user, opinionPostDTO.getHashRevID())).thenReturn(true);
-    Mockito.when(
-            opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500), eq("1")))
-        .thenReturn(new ResponseEntity<>(HttpStatus.OK));
+    Review review = new Review();
+    review.setStatus(Status.COMPLETED);
+
+    Mockito.when(tipService.verifyNotification(json, header)).thenReturn(true);
+    Mockito.when(tipService.getStatus(json)).thenReturn("COMPLETED");
+    Mockito.when(tipService.getOrderId(json)).thenReturn("orderId");
+    Mockito.when(tipService.getAdditionalDescription(json)).thenReturn("1");
+    Mockito.when(tipService.getCurrency(json)).thenReturn("PLN");
+    Mockito.when(tipService.getPaidWith("orderId")).thenReturn("BLIK");
+    Mockito.when(tipService.getRealAmount()).thenReturn("553");
+    Mockito.when(tipService.makePayout("orderId", "553")).thenReturn("payoutId");
+    Mockito.when(tipService.addTip("payoutId", "orderId", "553", "BLIK", "PLN", "1"))
+        .thenReturn(true);
+    Mockito.when(reviewService.setStatus("orderId", Status.COMPLETED)).thenReturn(true);
+    Mockito.when(reviewService.getReviewById("orderId")).thenReturn(review);
 
     mockMvc
         .perform(
-            post("/opinion")
+            post("/tip")
                 .with(SecurityMockMvcRequestPostProcessors.csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(opinionPostDTO)))
+                .content(json)
+                .header("OpenPayu-Signature", "header"))
         .andExpect(status().isOk());
   }
 
   @Test
   @WithMockUser(roles = "")
-  public void shouldStatusNotAcceptableWhenAddNewReviewTest() throws Exception {
-    OpinionPostDTO opinionPostDTO = new OpinionPostDTO();
-    opinionPostDTO.setHashRevID("127.0.0.1");
-    opinionPostDTO.setComment("fajne");
-    opinionPostDTO.setRating(5);
-    opinionPostDTO.setUserID(1);
-    opinionPostDTO.setClientName("Adrian");
-    opinionPostDTO.setAmount(500);
-    opinionPostDTO.setCurrency("PLN");
+  public void shouldStatusUnauthorizedWhenAddTipTest() throws Exception {
+    User user = new User();
+    Tip tip = new Tip();
+    tip.setUser(user);
+    tip.setAmount(500);
+    tip.setId("ID1");
+    tip.setCurrency("PLN");
+    tip.setCreatedAt(LocalDateTime.of(2017, Month.SEPTEMBER, 18, 18, 20));
+    tip.setPaidWith("BLIK");
+    String json =
+        "{ \"order\": { \"orderId\": \"orderId\", \"status\": \"CANCELED\", \"totalAmount\": \"500\", \"description\": \"PLN\", \"additionalDescription\": \"1\"} }";
+    String header = "headerBad";
 
-    Mockito.when(reviewService.validateTime(any(User.class), any(String.class))).thenReturn(true);
-    Mockito.when(
-            opinionService.addOpinion(any(OpinionPostDTO.class), eq("127.0.0.1"), eq(500), eq("1")))
-        .thenReturn(null);
+    Mockito.when(tipService.verifyNotification(json, header)).thenReturn(false);
 
     mockMvc
         .perform(
-            post("/opinion")
+            post("/tip")
                 .with(SecurityMockMvcRequestPostProcessors.csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(opinionPostDTO)))
-        .andExpect(status().isNotAcceptable());
+                .content(json)
+                .header("OpenPayu-Signature", "header"))
+        .andExpect(status().isUnauthorized());
   }
 }

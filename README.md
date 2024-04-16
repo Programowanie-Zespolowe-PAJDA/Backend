@@ -4,10 +4,10 @@ backend as part of team programming<br>
 To gain access to the application, add environmental variables and profile:
 Example in intelije:
 1. Open Run/Debug Configurations
-2. add profile: dev
+2. Add profile: dev
 3. Click alt + e, to add field for enviromental variables
-4. add variables:<br> FIXEDSALT_IPHASH=$2a$10$Lmqw7nJI8P.klorFNe.3Ye;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK;SHOP_ID=10I7CfvA;CLIENT_ID=476823;CLIENT_SECRET=20ae328bb9e5ab99a51b414a3acfa83b
-
+4. Add variables:<br> FIXEDSALT_IPHASH=$2a$10$Lmqw7nJI8P.klorFNe.3Ye;DATABASE_PASSWORD=AVNS_US-WP65ljSfhX_VOouj;DATABASE_USERNAME=avnadmin;DATABASE_URL=jdbc:postgresql://pg-264bc158-thevailopl-d029.a.aivencloud.com:13374/defaultdb;SECRET_KEY=F3UA1DRAPNET330X78IHJW3UE6Q3MIV8D2573YAYY0BKZ31IXK;SHOP_ID=10I7CfvA;CLIENT_ID=476823;CLIENT_SECRET=20ae328bb9e5ab99a51b414a3acfa83b;KEY_MD5=5abf05a3e4c95a8046eeff214b1608d3
+5. PayU cannot send to localhost, so download ngrok and add ngrok.link in application-dev.properties
 
 Users for testing:<br><br>
 **USER**<br>
@@ -55,7 +55,9 @@ Users for testing:<br><br>
 
 **[POST] /opinion** - (for everyone) add a opinion <br>
 
+
 **[GET] /tip/stats** - (for authenticated) get a statistics about tips <br>
+**[POST] /tip** - (only for PayU) payout and add tip<br>
 
 
 ## Commands:

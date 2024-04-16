@@ -1,12 +1,5 @@
 package umk.mat.pajda.ProjektZespolowy.controllers;
 
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import umk.mat.pajda.ProjektZespolowy.DTO.TipStatisticsGetDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,7 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import umk.mat.pajda.ProjektZespolowy.DTO.TipStatisticsGetDTO;
 import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 import umk.mat.pajda.ProjektZespolowy.services.TipService;
@@ -35,8 +31,8 @@ public class TipController {
     this.tipService = tipService;
     this.reviewService = reviewService;
   }
-  
-   @GetMapping("/stats")
+
+  @GetMapping("/stats")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "GET - get \"tip statistics\"",
@@ -49,6 +45,7 @@ public class TipController {
     } else {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
     }
+  }
 
   @PostMapping
   public ResponseEntity<String> addTip(
@@ -105,6 +102,5 @@ public class TipController {
       return ResponseEntity.status(HttpStatus.OK).body("correct notification");
     }
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("bad verification");
-
   }
 }

@@ -21,9 +21,7 @@ public class Tip {
 
   private Integer amount;
 
-
   private Integer realAmount;
-
 
   private LocalDateTime createdAt;
 

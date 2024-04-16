@@ -3,10 +3,12 @@ package umk.mat.pajda.ProjektZespolowy.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.*;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,6 @@ public class TipService {
   @Value("${profile}")
   private String profile;
 
-
   private String token = null;
 
   @Value("${ngrok.link}")
@@ -79,6 +80,7 @@ public class TipService {
     this.reviewRepository = reviewRepository;
     this.reviewService = reviewService;
     this.userService = userService;
+    this.userRepository = userRepository;
     this.restTemplate = new RestTemplate();
   }
 
@@ -350,7 +352,6 @@ public class TipService {
     this.restTemplate = restTemplate;
   }
 
-
   public TipStatisticsGetDTO getStatistics(String userName) {
     try {
       User user = userRepository.findByMail(userName).get();
@@ -371,6 +372,7 @@ public class TipService {
       logger.error("getStatistics", e);
       return null;
     }
+  }
 
   public String getCurrency(String requestBody) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
@@ -474,6 +476,5 @@ public class TipService {
   public boolean isRefund(String requestBody) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.readTree(requestBody).has("refund");
-
   }
 }

@@ -135,7 +135,6 @@ public class ReviewService {
     }
   }
 
-
   public ReviewAvgRatingGetDTO getAvgRatingOfReview(String username) {
     try {
       ReviewAvgRatingGetDTO reviewAvgRatingGetDTO = new ReviewAvgRatingGetDTO();
@@ -145,6 +144,7 @@ public class ReviewService {
       logger.error("getAvgRatingOfReview", e);
       return null;
     }
+  }
 
   public boolean setStatus(String id, Status status) {
     try {
@@ -178,6 +178,5 @@ public class ReviewService {
       return null;
     }
     return review;
-
   }
 }

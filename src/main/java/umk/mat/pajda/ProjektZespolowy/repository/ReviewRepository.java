@@ -18,7 +18,6 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
   Review findByIdAndUserAndStatus(String id, User user, Status status);
 
-
   @Query("select AVG(r.rating) from Review r where r.user.mail = :mail")
   Double getAvgRating(@Param("mail") String mail);
 
@@ -30,5 +29,4 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
   Optional<Review> findByIdAndStatus(String id, Status status);
 
   Optional<Review> findById(String id);
-
 }

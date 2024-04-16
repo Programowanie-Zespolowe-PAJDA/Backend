@@ -33,7 +33,6 @@ public class TipServiceTest {
   @Mock private ReviewService reviewService;
 
   @Mock private RestTemplate restTemplate;
-  @Mock private UserRepository userRepository;
 
   @InjectMocks private TipService tipService;
 

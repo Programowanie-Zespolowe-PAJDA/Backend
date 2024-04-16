@@ -11,12 +11,10 @@ public class TipMonthDTO {
   private Long amount;
   private String month;
   private String year;
-  private String currency;
 
-  public TipMonthDTO(Long amount, Integer month, Integer year, String currency) {
+  public TipMonthDTO(Long amount, Integer month, Integer year) {
     this.amount = amount;
     this.month = Month.of(month).toString();
     this.year = String.valueOf(year);
-    this.currency = currency;
   }
 }

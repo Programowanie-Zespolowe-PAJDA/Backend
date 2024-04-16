@@ -13,6 +13,5 @@ public class TipStatisticsGetDTO {
   private Integer minTipAmount;
   private Integer maxTipAmount;
   private Double avgTipAmount;
-  private String currency;
   private List<TipMonthDTO> sumTipValueForEveryMonth;
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import umk.mat.pajda.ProjektZespolowy.DTO.CurrencyGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.TipStatisticsGetDTO;
 import umk.mat.pajda.ProjektZespolowy.misc.Status;
 import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
@@ -38,8 +41,14 @@ public class TipController {
       summary = "GET - get \"tip statistics\"",
       description = "Following endpoint returns tip statistics of user")
   public ResponseEntity<TipStatisticsGetDTO> getTipStatistics(
+      @Valid CurrencyGetDTO currencyGetDTO,
+      BindingResult bindingResult,
       @AuthenticationPrincipal UserDetails userDetails) {
-    TipStatisticsGetDTO returnData = tipService.getStatistics(userDetails.getUsername());
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+    }
+    TipStatisticsGetDTO returnData =
+        tipService.getStatistics(userDetails.getUsername(), currencyGetDTO.getCurrency());
     if (returnData != null) {
       return ResponseEntity.status(HttpStatus.OK).body(returnData);
     } else {

@@ -11,21 +11,25 @@ import umk.mat.pajda.ProjektZespolowy.entity.User;
 
 @Repository
 public interface TipRepository extends JpaRepository<Tip, Integer> {
-  Tip findFirstByUserOrderByAmountDesc(User user);
+  Tip findFirstByUserAndCurrencyOrderByAmountDesc(User user, String targetCurrency);
 
-  Tip findFirstByUserOrderByAmountAsc(User user);
-
-  @Query("select AVG(t.amount) from Tip t where t.user.id = :userid")
-  Double getAvgAmountForAllTips(@Param("userid") Integer userid);
-
-  @Query("select count(*) from Tip t where t.user.id = :userid")
-  Integer getNumberOfTips(@Param("userid") Integer userid);
+  Tip findFirstByUserAndCurrencyOrderByAmountAsc(User user, String targetCurrency);
 
   @Query(
-      "select new umk.mat.pajda.ProjektZespolowy.DTO.TipMonthDTO(SUM(t.amount),"
-          + "EXTRACT(month from t.createdAt),EXTRACT(year from t.createdAt),t.currency) "
-          + "from Tip t where t.user.id = :userid "
-          + "group by EXTRACT(month from t.createdAt), EXTRACT(year from t.createdAt),t.currency "
-          + "order by EXTRACT(year from t.createdAt) desc,EXTRACT(month from t.createdAt) desc")
-  List<TipMonthDTO> getSumAmountForEachMonth(@Param("userid") Integer userid);
+      "SELECT AVG(t.amount) FROM Tip t WHERE t.user.id = :userid AND t.currency = :targetCurrency ")
+  Double getAvgAmountForAllTips(
+      @Param("userid") Integer userid, @Param("targetCurrency") String targetCurrency);
+
+  @Query("SELECT count(*) FROM Tip t WHERE t.user.id = :userid AND t.currency = :targetCurrency ")
+  Integer getNumberOfTips(
+      @Param("userid") Integer userid, @Param("targetCurrency") String targetCurrency);
+
+  @Query(
+      "SELECT new umk.mat.pajda.ProjektZespolowy.DTO.TipMonthDTO(SUM(t.amount),"
+          + "EXTRACT(month from t.createdAt),EXTRACT(year from t.createdAt)) "
+          + "FROM Tip t WHERE t.user.id = :userid AND t.currency = :targetCurrency "
+          + "GROUP BY EXTRACT(month from t.createdAt), EXTRACT(year from t.createdAt) "
+          + "ORDER BY EXTRACT(year from t.createdAt) DESC,EXTRACT(month from t.createdAt) DESC ")
+  List<TipMonthDTO> getSumAmountForEachMonth(
+      @Param("userid") Integer userid, @Param("targetCurrency") String targetCurrency);
 }

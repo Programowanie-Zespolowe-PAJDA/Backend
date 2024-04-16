@@ -21,7 +21,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.TipStatisticsGetDTO;
-import umk.mat.pajda.ProjektZespolowy.entity.Tip;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.TipConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
@@ -352,20 +351,20 @@ public class TipService {
     this.restTemplate = restTemplate;
   }
 
-  public TipStatisticsGetDTO getStatistics(String userName) {
+  public TipStatisticsGetDTO getStatistics(String userName, String currency) {
     try {
       User user = userRepository.findByMail(userName).get();
       TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
-      Tip tipMin = tipRepository.findFirstByUserOrderByAmountDesc(user);
-      tipStatisticsGetDTO.setMaxTipAmount(tipMin.getAmount());
-      tipStatisticsGetDTO.setCurrency(tipMin.getCurrency());
+      tipStatisticsGetDTO.setMaxTipAmount(
+          tipRepository.findFirstByUserAndCurrencyOrderByAmountDesc(user, currency).getAmount());
 
       tipStatisticsGetDTO.setMinTipAmount(
-          tipRepository.findFirstByUserOrderByAmountAsc(user).getAmount());
-      tipStatisticsGetDTO.setAvgTipAmount(tipRepository.getAvgAmountForAllTips(user.getId()));
+          tipRepository.findFirstByUserAndCurrencyOrderByAmountAsc(user, currency).getAmount());
+      tipStatisticsGetDTO.setAvgTipAmount(
+          tipRepository.getAvgAmountForAllTips(user.getId(), currency));
       tipStatisticsGetDTO.setSumTipValueForEveryMonth(
-          tipRepository.getSumAmountForEachMonth(user.getId()));
-      tipStatisticsGetDTO.setNumberOfTips(tipRepository.getNumberOfTips(user.getId()));
+          tipRepository.getSumAmountForEachMonth(user.getId(), currency));
+      tipStatisticsGetDTO.setNumberOfTips(tipRepository.getNumberOfTips(user.getId(), currency));
 
       return tipStatisticsGetDTO;
     } catch (Exception e) {

@@ -43,6 +43,8 @@ public class TipServiceStatTest {
 
   @Autowired private UserRepository userRepository;
 
+  private static String currency = "PLN";
+
   @BeforeEach
   public void init() {
     User user = new User();
@@ -90,42 +92,48 @@ public class TipServiceStatTest {
   @Test
   public void testCreationOfTipStatisticsGetDTOReturnValueOfNumberOfTipsValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(tipStatisticsGetDTO.getNumberOfTips() == 4);
   }
 
   @Test
   public void testCreationOfTipStatisticsGetDTOValidReturnValueOfMinTipAmountValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(tipStatisticsGetDTO.getMinTipAmount() == 2000);
   }
 
   @Test
   public void testCreationOfTipStatisticsGetDTOValidReturnValueOfMaxTipAmountValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(tipStatisticsGetDTO.getMaxTipAmount() == 20000);
   }
 
   @Test
   public void testCreationOfTipStatisticsGetDTOValidReturnValueOfAvgTipAmountValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(tipStatisticsGetDTO.getAvgTipAmount() == 10375.0);
   }
 
   @Test
   public void testCreationOfTipStatisticsGetDTOValidReturnValueOfNumberOfTipsValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(tipStatisticsGetDTO.getNumberOfTips() == 4);
   }
 
   @Test
   public void testCreationOfTipStatisticsGetDTOValidReturnSumTipValueForEveryMonthGet0MonthValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(
         Month.of(LocalDateTime.now().getMonthValue())
             .toString()
@@ -135,7 +143,8 @@ public class TipServiceStatTest {
   @Test
   public void testCreationOfTipStatisticsGetDTOValidReturnSumTipValueForEveryMonthGet0YearValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(
         String.valueOf(LocalDateTime.now().getYear())
             .equals(tipStatisticsGetDTO.getSumTipValueForEveryMonth().get(0).getYear()));
@@ -144,7 +153,8 @@ public class TipServiceStatTest {
   @Test
   public void testCreationOfTipStatisticsGetDTOValidReturnSumTipValueForEveryMonthGet2MonthValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(
         Month.of(LocalDateTime.now().minusMonths(13).getMonthValue())
             .toString()
@@ -154,7 +164,8 @@ public class TipServiceStatTest {
   @Test
   public void testCreationOfTipStatisticsGetDTOValidReturnSumTipValueForEveryMonthGet2YearValid() {
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(
         String.valueOf(LocalDateTime.now().minusMonths(13).getYear())
             .equals(tipStatisticsGetDTO.getSumTipValueForEveryMonth().get(2).getYear()));
@@ -164,7 +175,8 @@ public class TipServiceStatTest {
   public void testCreationOfTipStatisticsGetDTOManual() {
 
     TipStatisticsGetDTO tipStatisticsGetDTO =
-        tipService.getStatistics(userRepository.findByMail("test@gmail.com").get().getMail());
+        tipService.getStatistics(
+            userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     System.out.println(tipStatisticsGetDTO);
     System.out.println(tipStatisticsGetDTO.getNumberOfTips());
     System.out.println(tipStatisticsGetDTO.getMinTipAmount());

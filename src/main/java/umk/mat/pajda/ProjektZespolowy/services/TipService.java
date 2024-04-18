@@ -356,15 +356,38 @@ public class TipService {
       User user = userRepository.findByMail(userName).get();
       TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
       tipStatisticsGetDTO.setMaxTipAmount(
-          tipRepository.findFirstByUserAndCurrencyOrderByAmountDesc(user, currency).getAmount());
+          tipRepository
+              .findFirstByUserAndCurrencyOrderByAmountDesc(user, currency)
+              .getRealAmount());
 
       tipStatisticsGetDTO.setMinTipAmount(
-          tipRepository.findFirstByUserAndCurrencyOrderByAmountAsc(user, currency).getAmount());
+          tipRepository.findFirstByUserAndCurrencyOrderByAmountAsc(user, currency).getRealAmount());
       tipStatisticsGetDTO.setAvgTipAmount(
           tipRepository.getAvgAmountForAllTips(user.getId(), currency));
       tipStatisticsGetDTO.setSumTipValueForEveryMonth(
           tipRepository.getSumAmountForEachMonth(user.getId(), currency));
       tipStatisticsGetDTO.setNumberOfTips(tipRepository.getNumberOfTips(user.getId(), currency));
+
+      return tipStatisticsGetDTO;
+    } catch (Exception e) {
+      logger.error("getStatistics", e);
+      return null;
+    }
+  }
+
+  public TipStatisticsGetDTO getStatisticsAll(String userName) {
+    try {
+      User user = userRepository.findByMail(userName).get();
+      TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
+      tipStatisticsGetDTO.setMaxTipAmount(
+          tipRepository.findFirstByUserOrderByAmountDesc(user).getAmount());
+
+      tipStatisticsGetDTO.setMinTipAmount(
+          tipRepository.findFirstByUserOrderByAmountAsc(user).getAmount());
+      tipStatisticsGetDTO.setAvgTipAmount(tipRepository.getAvgAmountForAllTips(user.getId()));
+      tipStatisticsGetDTO.setSumTipValueForEveryMonth(
+          tipRepository.getSumAmountForEachMonth(user.getId()));
+      tipStatisticsGetDTO.setNumberOfTips(tipRepository.getNumberOfTips(user.getId()));
 
       return tipStatisticsGetDTO;
     } catch (Exception e) {

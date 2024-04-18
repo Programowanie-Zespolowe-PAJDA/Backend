@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CurrencyGetDTO {
 
-  @Pattern(regexp = "^(PLN|EUR|USD|GBP|CHF|DKK|SEK)$")
+  @Pattern(regexp = "^(PLN|EUR|USD|GBP|CHF|DKK|SEK|NULL)$")
   private String currency;
 }

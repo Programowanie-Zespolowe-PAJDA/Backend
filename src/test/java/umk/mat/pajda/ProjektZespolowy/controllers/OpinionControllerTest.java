@@ -2,10 +2,13 @@ package umk.mat.pajda.ProjektZespolowy.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +26,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.client.RestTemplate;
+import umk.mat.pajda.ProjektZespolowy.DTO.OpinionGetDTO;
 import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
 import umk.mat.pajda.ProjektZespolowy.configs.JwtAuthenticationFilter;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
@@ -131,5 +136,25 @@ public class OpinionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(opinionPostDTO)))
         .andExpect(status().isNotAcceptable());
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  public void shouldStatusOkWhenGetOpinionsTest() throws Exception {
+    List<OpinionGetDTO> list = List.of(new OpinionGetDTO(500, "USD", "komentarz", "klient"));
+
+    Mockito.when(opinionService.getOpinions(any(String.class))).thenReturn(list);
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                get("/opinion")
+                    .with(SecurityMockMvcRequestPostProcessors.csrf())
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    Assertions.assertEquals(
+        "[{\"amount\":500,\"currency\":\"USD\",\"comment\":\"komentarz\",\"clientName\":\"klient\"}]",
+        mvcResult.getResponse().getContentAsString());
   }
 }

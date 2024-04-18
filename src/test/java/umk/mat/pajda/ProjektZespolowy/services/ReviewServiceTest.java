@@ -1,5 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.services;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,6 +79,28 @@ public class ReviewServiceTest {
         NullPointerException.class,
         () -> {
           reviewService.getReviewById("id");
+        });
+  }
+
+  @Test
+  public void shouldSuccessWhenGetAllReviewsByEmailTest() {
+    User user = new User();
+    List<Review> reviews = List.of(new Review(), new Review());
+
+    Mockito.when(userRepository.findByMail("email")).thenReturn(Optional.of(user));
+    Mockito.when(reviewRepository.findAllByUserAndStatus(user, Status.COMPLETED))
+        .thenReturn(reviews);
+    Assertions.assertEquals(reviews, reviewService.getAllReviewsByEmail("email"));
+  }
+
+  @Test
+  public void shouldFailWhenGetAllReviewsByEmailTest() {
+    Mockito.when(userRepository.findByMail("email")).thenReturn(null);
+
+    Assertions.assertThrows(
+        NullPointerException.class,
+        () -> {
+          reviewService.getAllReviewsByEmail("email");
         });
   }
 }

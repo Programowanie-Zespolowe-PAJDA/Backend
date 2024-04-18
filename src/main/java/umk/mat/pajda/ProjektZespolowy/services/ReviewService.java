@@ -80,6 +80,7 @@ public class ReviewService {
       review =
           reviewRepository.findByIdAndUserAndStatus(
               id, userRepository.findByMail(email).get(), Status.COMPLETED);
+
     } catch (NoSuchElementException e) {
       logger.error("getReview", e);
       return null;
@@ -178,5 +179,13 @@ public class ReviewService {
       return null;
     }
     return review;
+  }
+
+  public List<Review> getAllReviewsByEmail(String email) {
+    Optional<User> user = userRepository.findByMail(email);
+    if (user.isPresent()) {
+      return reviewRepository.findAllByUserAndStatus(user.get(), Status.COMPLETED);
+    }
+    return null;
   }
 }

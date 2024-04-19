@@ -50,10 +50,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private String activeProfile;
 
   public AuthenticationServiceImpl(
-          UserRepository userRepository,
-          AuthenticationManager authenticationManager,
-          UserConverter userConverter,
-          JWTService jwtService, EmailService emailService) {
+      UserRepository userRepository,
+      AuthenticationManager authenticationManager,
+      UserConverter userConverter,
+      JWTService jwtService,
+      EmailService emailService) {
     this.userRepository = userRepository;
     this.authenticationManager = authenticationManager;
     this.userConverter = userConverter;

@@ -12,10 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReportDTO {
-    @NotNull
-    @Size(min = 1, max = 20)
-    private String nick;
-    @NotNull
-    @Size(min = 1, max = 1500)
-    private String text;
+  @NotNull
+  @Size(min = 1, max = 20)
+  private String nick;
+
+  @NotNull
+  @Size(min = 1, max = 1500)
+  private String text;
 }

@@ -16,8 +16,7 @@ import org.springframework.test.context.TestPropertySource;
       "profile = tests",
       "KEY_MD5 = key_md5",
       "ngrok.link = link",
-            "GMAIL_APP_PASSWORD = gmail_app_password"
-
+      "GMAIL_APP_PASSWORD = gmail_app_password"
     })
 class ProjektZespolowyApplicationTests {
 

@@ -13,9 +13,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReportDTO {
     @NotNull
-    @Size(max = 20)
+    @Size(min = 1, max = 20)
     private String nick;
     @NotNull
-    @Size(max = 1500)
+    @Size(min = 1, max = 1500)
     private String text;
 }

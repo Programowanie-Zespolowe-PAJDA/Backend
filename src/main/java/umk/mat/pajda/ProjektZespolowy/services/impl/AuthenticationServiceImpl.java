@@ -39,8 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Autowired(required = false)
   private TokenRepository tokenRepository;
 
-  @Autowired(required = false)
-  private EmailService emailService;
+  private final EmailService emailService;
 
   @Autowired(required = false)
   private TokenService tokenService;
@@ -51,14 +50,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private String activeProfile;
 
   public AuthenticationServiceImpl(
-      UserRepository userRepository,
-      AuthenticationManager authenticationManager,
-      UserConverter userConverter,
-      JWTService jwtService) {
+          UserRepository userRepository,
+          AuthenticationManager authenticationManager,
+          UserConverter userConverter,
+          JWTService jwtService, EmailService emailService) {
     this.userRepository = userRepository;
     this.authenticationManager = authenticationManager;
     this.userConverter = userConverter;
     this.jwtService = jwtService;
+    this.emailService = emailService;
   }
 
   public Boolean register(RegisterDTO registerDTO) {

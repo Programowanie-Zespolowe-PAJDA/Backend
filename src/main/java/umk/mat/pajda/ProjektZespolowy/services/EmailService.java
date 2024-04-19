@@ -13,7 +13,6 @@ import umk.mat.pajda.ProjektZespolowy.entity.User;
 
 
 @Service
-@Profile("prod")
 public class EmailService {
   private JavaMailSender javaMailSender;
 

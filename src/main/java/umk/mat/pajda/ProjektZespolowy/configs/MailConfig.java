@@ -9,7 +9,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
-@Profile("prod")
 public class MailConfig {
 
   @Value("${GMAIL_APP_PASSWORD}")

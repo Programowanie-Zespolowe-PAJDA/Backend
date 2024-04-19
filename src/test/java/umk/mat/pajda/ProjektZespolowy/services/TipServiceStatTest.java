@@ -59,6 +59,7 @@ public class TipServiceStatTest {
     Tip tip = new Tip();
     tip.setId("4");
     tip.setAmount(2000);
+    tip.setRealAmount(2000);
     tip.setCurrency("PLN");
     tip.setUser(userRepository.findByMail("test@gmail.com").get());
     tip.setCreatedAt(LocalDateTime.now());
@@ -67,6 +68,7 @@ public class TipServiceStatTest {
     Tip tip2 = new Tip();
     tip2.setId("5");
     tip2.setAmount(4500);
+    tip2.setRealAmount(4500);
     tip2.setCurrency("PLN");
     tip2.setUser(userRepository.findByMail("test@gmail.com").get());
     tip2.setCreatedAt(LocalDateTime.now().minusMonths(2));
@@ -75,6 +77,7 @@ public class TipServiceStatTest {
     Tip tip3 = new Tip();
     tip3.setId("6");
     tip3.setAmount(20000);
+    tip3.setRealAmount(20000);
     tip3.setCurrency("PLN");
     tip3.setUser(userRepository.findByMail("test@gmail.com").get());
     tip3.setCreatedAt(LocalDateTime.now().minusMonths(2));
@@ -83,6 +86,7 @@ public class TipServiceStatTest {
     Tip tip4 = new Tip();
     tip4.setId("1");
     tip4.setAmount(15000);
+    tip4.setRealAmount(15000);
     tip4.setCurrency("PLN");
     tip4.setUser(userRepository.findByMail("test@gmail.com").get());
     tip4.setCreatedAt(LocalDateTime.now().minusMonths(13));

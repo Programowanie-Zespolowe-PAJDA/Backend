@@ -39,7 +39,8 @@ public class TipController {
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "GET - get \"tip statistics\"",
-      description = "Following endpoint returns tip statistics of user")
+      description =
+          "Following endpoint returns tip statistics of user for all(NULL) and for specific currency")
   public ResponseEntity<TipStatisticsGetDTO> getTipStatistics(
       @Valid CurrencyGetDTO currencyGetDTO,
       BindingResult bindingResult,
@@ -47,8 +48,13 @@ public class TipController {
     if (bindingResult.hasErrors()) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
     }
-    TipStatisticsGetDTO returnData =
-        tipService.getStatistics(userDetails.getUsername(), currencyGetDTO.getCurrency());
+    TipStatisticsGetDTO returnData = null;
+    if ("NULL".equals(currencyGetDTO.getCurrency())) {
+      returnData = tipService.getStatisticsAll(userDetails.getUsername());
+    } else {
+      returnData =
+          tipService.getStatistics(userDetails.getUsername(), currencyGetDTO.getCurrency());
+    }
     if (returnData != null) {
       return ResponseEntity.status(HttpStatus.OK).body(returnData);
     } else {

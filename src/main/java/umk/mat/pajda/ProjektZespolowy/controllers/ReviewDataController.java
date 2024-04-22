@@ -135,8 +135,9 @@ public class ReviewDataController {
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "GET - get number of each rating of all \"Review\"",
-      description = "Following endpoint returns number of each rating of all owner Reviews " +
-              "in form of a array from 0 to 10 rating")
+      description =
+          "Following endpoint returns number of each rating of all owner Reviews "
+              + "in form of a array from 0 to 10 rating")
   public ResponseEntity<List<Integer>> getNumberOfEachRatings(
       @AuthenticationPrincipal UserDetails userDetails) {
     return ResponseEntity.status(HttpStatus.OK)

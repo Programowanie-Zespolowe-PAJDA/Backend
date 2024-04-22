@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,17 +144,18 @@ public class ReviewService {
 
   public List<Integer> getNumberOfEachRatings(String username) {
     try {
-      List<RatingDTO> ratingsDTO = reviewRepository.getNumberOfEachRatings(username, Status.COMPLETED);
+      List<RatingDTO> ratingsDTO =
+          reviewRepository.getNumberOfEachRatings(username, Status.COMPLETED);
       System.out.println(ratingsDTO.toString());
-      List<Integer>  numberOfEachRatings = new ArrayList<>();
-      for(int i=0;i<=10;i++){
-           numberOfEachRatings.add(i, 0);
-          for(int k=0;k<ratingsDTO.size();k++){
-            if(ratingsDTO.get(k).getRating() == i){
-              numberOfEachRatings.set(i, ratingsDTO.get(k).getCount());
-            }
+      List<Integer> numberOfEachRatings = new ArrayList<>();
+      for (int i = 0; i <= 10; i++) {
+        numberOfEachRatings.add(i, 0);
+        for (int k = 0; k < ratingsDTO.size(); k++) {
+          if (ratingsDTO.get(k).getRating() == i) {
+            numberOfEachRatings.set(i, ratingsDTO.get(k).getCount());
           }
-       }
+        }
+      }
       return numberOfEachRatings;
     } catch (Exception e) {
       logger.error("getNumberOfEachRatings", e);

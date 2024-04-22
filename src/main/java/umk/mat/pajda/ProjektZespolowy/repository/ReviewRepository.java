@@ -1,11 +1,13 @@
 package umk.mat.pajda.ProjektZespolowy.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import umk.mat.pajda.ProjektZespolowy.DTO.RatingDTO;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.Status;
@@ -29,4 +31,11 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
   Optional<Review> findByIdAndStatus(String id, Status status);
 
   Optional<Review> findById(String id);
+
+  @Query(
+      "select new umk.mat.pajda.ProjektZespolowy.DTO.RatingDTO(r.rating,Count(*)) " +
+              "from Review r where r.user.mail = :mail and r.status = :status " +
+              "group by r.rating order by r.rating ASC")
+  List<RatingDTO> getNumberOfEachRatings(
+      @Param("mail") String mail, @Param("status") Status completed);
 }

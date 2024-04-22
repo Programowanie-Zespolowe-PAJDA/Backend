@@ -3,17 +3,13 @@ package umk.mat.pajda.ProjektZespolowy.services;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import umk.mat.pajda.ProjektZespolowy.DTO.OpinionPostDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewAvgRatingGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewGetDTO;
-import umk.mat.pajda.ProjektZespolowy.DTO.ReviewPatchDTO;
+import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.Review;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.ReviewConverter;
@@ -143,6 +139,26 @@ public class ReviewService {
       return reviewAvgRatingGetDTO;
     } catch (Exception e) {
       logger.error("getAvgRatingOfReview", e);
+      return null;
+    }
+  }
+
+  public List<Integer> getNumberOfEachRatings(String username) {
+    try {
+      List<RatingDTO> ratingsDTO = reviewRepository.getNumberOfEachRatings(username, Status.COMPLETED);
+      System.out.println(ratingsDTO.toString());
+      List<Integer>  numberOfEachRatings = new ArrayList<>();
+      for(int i=0;i<=10;i++){
+           numberOfEachRatings.add(i, 0);
+          for(int k=0;k<ratingsDTO.size();k++){
+            if(ratingsDTO.get(k).getRating() == i){
+              numberOfEachRatings.set(i, ratingsDTO.get(k).getCount());
+            }
+          }
+       }
+      return numberOfEachRatings;
+    } catch (Exception e) {
+      logger.error("getNumberOfEachRatings", e);
       return null;
     }
   }

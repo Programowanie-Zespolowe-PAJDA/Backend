@@ -1,8 +1,8 @@
 package umk.mat.pajda.ProjektZespolowy.converters;
 
-import java.time.LocalDateTime;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +26,6 @@ public class TipConverterTest {
   @Mock private ReviewRepository reviewRepository;
   @Mock private UserRepository userRepository;
 
-
   @InjectMocks private TipConverter tipConverter;
 
   @BeforeEach
@@ -35,7 +34,6 @@ public class TipConverterTest {
 
     tipConverter = new TipConverter(reviewRepository);
   }
-
 
   @Test
   public void shouldSuccessWhenCreateDTOTest() {
@@ -87,6 +85,7 @@ public class TipConverterTest {
     Assertions.assertEquals(expectedTip.getPaidWith(), tip.getPaidWith());
     Assertions.assertEquals(expectedTip.getAmount(), tip.getAmount());
   }
+
   @Test
   public void shouldCreateTipDTO() {
     LocalDateTime localDateTime = LocalDateTime.now();
@@ -138,17 +137,10 @@ public class TipConverterTest {
     review.setStatus(Status.COMPLETED);
     review.setUser(user);
 
-    //when(userRepository.findById(231)).thenReturn(Optional.of(user));
+    // when(userRepository.findById(231)).thenReturn(Optional.of(user));
     when(reviewRepository.findById("2222")).thenReturn(Optional.of(review));
 
-    Tip tip = tipConverter.createEntity(
-            "222",
-            "2222",
-            "13213",
-            "dasfas",
-            "PLN",
-            "2.3"
-    );
+    Tip tip = tipConverter.createEntity("222", "2222", "13213", "dasfas", "PLN", "2.3");
 
     Tip tipShouldBe = new Tip();
 
@@ -158,7 +150,7 @@ public class TipConverterTest {
     tipShouldBe.setPaidWith("dasfas");
     tipShouldBe.setCurrency("PLN");
     tipShouldBe.setAmount(13213);
-    tipShouldBe.setRealAmount(Math.round(13213/(float)2.3));
+    tipShouldBe.setRealAmount(Math.round(13213 / (float) 2.3));
     tipShouldBe.setReview(review);
 
     Assertions.assertEquals(tip.toString2(), tipShouldBe.toString2());

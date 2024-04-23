@@ -39,14 +39,24 @@ public class Tip {
   private Review review;
 
   public String toString2() {
-    return "Tip{" +
-            "id='" + id + '\'' +
-            ", currency='" + currency + '\'' +
-            ", amount=" + amount +
-            ", realAmount=" + realAmount +
-            ", paidWith='" + paidWith + '\'' +
-            ", user=" + user.toString2() +
-            ", review=" + review +
-            '}';
+    return "Tip{"
+        + "id='"
+        + id
+        + '\''
+        + ", currency='"
+        + currency
+        + '\''
+        + ", amount="
+        + amount
+        + ", realAmount="
+        + realAmount
+        + ", paidWith='"
+        + paidWith
+        + '\''
+        + ", user="
+        + user.toString2()
+        + ", review="
+        + review
+        + '}';
   }
 }

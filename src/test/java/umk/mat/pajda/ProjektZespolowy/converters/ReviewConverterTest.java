@@ -84,7 +84,7 @@ public class ReviewConverterTest {
 
     when(userRepository.findById(231)).thenReturn(Optional.of(user));
 
-    Review review = reviewConverter.createEntity(opinionPostDTO,"888");
+    Review review = reviewConverter.createEntity(opinionPostDTO, "888");
 
     Review reviewShouldBe = new Review();
 

@@ -1,5 +1,6 @@
 package umk.mat.pajda.ProjektZespolowy.DTO;
 
+import lombok.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

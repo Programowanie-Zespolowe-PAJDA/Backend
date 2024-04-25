@@ -39,8 +39,10 @@ public class TipConverter {
       String currency,
       String exchangeRate)
       throws NullPointerException {
+
     Review review = reviewRepository.findById(orderId).get();
     Tip tip = new Tip();
+
     tip.setId(payoutId);
     tip.setUser(review.getUser());
     tip.setCurrency(currency);
@@ -49,6 +51,7 @@ public class TipConverter {
     tip.setAmount(Integer.valueOf(realAmount));
     tip.setRealAmount(Math.round(Integer.valueOf(realAmount) / Float.valueOf(exchangeRate)));
     tip.setReview(review);
+
     return tip;
   }
 

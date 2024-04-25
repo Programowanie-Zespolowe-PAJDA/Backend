@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Tip {
 
   @Id @NotNull private String id;
@@ -36,4 +37,26 @@ public class Tip {
   @JoinColumn(name = "review_id")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Review review;
+
+  public String toString2() {
+    return "Tip{"
+        + "id='"
+        + id
+        + '\''
+        + ", currency='"
+        + currency
+        + '\''
+        + ", amount="
+        + amount
+        + ", realAmount="
+        + realAmount
+        + ", paidWith='"
+        + paidWith
+        + '\''
+        + ", user="
+        + user.toString2()
+        + ", review="
+        + review
+        + '}';
+  }
 }

@@ -164,4 +164,17 @@ public class AuthenticationControllerTest {
 
     mockMvc.perform(get("/confirm?token=token")).andExpect(status().isOk());
   }
+
+  @Test
+  @WithMockUser(roles = "")
+  public void authenticationControllerTestConfirmVerificationTokenStatusOkAfterChangeEmail() throws Exception {
+    String token = "token";
+    Token confirmToken = new Token();
+    confirmToken.setNewEmail("email");
+    when(tokenService.getToken(token)).thenReturn(confirmToken);
+    when(tokenService.isExpired(confirmToken)).thenReturn(false);
+    when(userService.setEmail(confirmToken)).thenReturn(true);
+
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isOk());
+  }
 }

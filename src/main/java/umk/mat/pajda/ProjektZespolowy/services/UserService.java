@@ -24,6 +24,7 @@ public class UserService {
 
   private final UserConverter userConverter;
   private final ReviewRepository reviewRepository;
+
   @Autowired(required = false)
   private TokenRepository tokenRepository;
 
@@ -41,8 +42,9 @@ public class UserService {
 
   @Autowired
   public UserService(
-          UserConverter userConverter,
-          ReviewRepository reviewRepository, UserRepository userRepository) {
+      UserConverter userConverter,
+      ReviewRepository reviewRepository,
+      UserRepository userRepository) {
     this.userConverter = userConverter;
     this.reviewRepository = reviewRepository;
     this.userRepository = userRepository;
@@ -144,14 +146,15 @@ public class UserService {
     try {
       User user = userRepository.findByMail(email).get();
       if ("prod".equals(activeProfile)) {
-        Token token = tokenRepository.save(tokenService.updateToken(userPatchEmailDTO.getMail(), user));
+        Token token =
+            tokenRepository.save(tokenService.updateToken(userPatchEmailDTO.getMail(), user));
         emailService.send(
-                userPatchEmailDTO.getMail(),
-                "Change your email",
-                "Please click the following link to change your email.\n"
-                        + "https://enapiwek-api.onrender.com/confirm?token="
-                        + token.getToken());
-      }else {
+            userPatchEmailDTO.getMail(),
+            "Change your email",
+            "Please click the following link to change your email.\n"
+                + "https://enapiwek-api.onrender.com/confirm?token="
+                + token.getToken());
+      } else {
         userRepository.save(userConverter.updateEmailOfEntity(userPatchEmailDTO, user));
       }
     } catch (Exception e) {
@@ -181,15 +184,14 @@ public class UserService {
     }
   }
 
-  public boolean setEmail(Token token){
+  public boolean setEmail(Token token) {
     try {
       User user = token.getUser();
       user.setMail(token.getNewEmail());
       userRepository.save(user);
       token.setNewEmail(null);
       tokenRepository.save(token);
-    }
-    catch (Exception e){
+    } catch (Exception e) {
       return false;
     }
     return true;

@@ -14,5 +14,4 @@ public class UserPatchEmailDTO {
   @Email private String mail;
 
   @Email private String retypedMail;
-
 }

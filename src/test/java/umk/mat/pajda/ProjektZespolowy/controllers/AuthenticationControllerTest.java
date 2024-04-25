@@ -167,7 +167,8 @@ public class AuthenticationControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTestConfirmVerificationTokenStatusOkAfterChangeEmail() throws Exception {
+  public void authenticationControllerTestConfirmVerificationTokenStatusOkAfterChangeEmail()
+      throws Exception {
     String token = "token";
     Token confirmToken = new Token();
     confirmToken.setNewEmail("email");

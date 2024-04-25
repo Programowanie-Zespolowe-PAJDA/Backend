@@ -102,18 +102,18 @@ public class AuthenticationController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body("confirming failed - token is expired");
     }
-    if(confirmToken.getNewEmail()==null) {
+    if (confirmToken.getNewEmail() == null) {
       if (tokenService.confirm(confirmToken)) {
         return ResponseEntity.status(HttpStatus.OK).body("confirming success");
       } else {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("confirming failed");
       }
-    }else{
-        if(userService.setEmail(confirmToken)){
-          return ResponseEntity.status(HttpStatus.OK).body("confirming success");
-        }else {
-          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("confirming failed");
-        }
+    } else {
+      if (userService.setEmail(confirmToken)) {
+        return ResponseEntity.status(HttpStatus.OK).body("confirming success");
+      } else {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("confirming failed");
+      }
     }
   }
 }

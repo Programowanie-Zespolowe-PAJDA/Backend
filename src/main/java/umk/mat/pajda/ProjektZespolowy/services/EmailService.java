@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.ReportDTO;
-import umk.mat.pajda.ProjektZespolowy.entity.User;
 
 @Service
 public class EmailService {

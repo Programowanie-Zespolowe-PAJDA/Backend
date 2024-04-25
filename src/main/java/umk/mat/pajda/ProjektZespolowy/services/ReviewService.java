@@ -146,7 +146,6 @@ public class ReviewService {
     try {
       List<RatingDTO> ratingsDTO =
           reviewRepository.getNumberOfEachRatings(username, Status.COMPLETED);
-      System.out.println(ratingsDTO.toString());
       List<Integer> numberOfEachRatings = new ArrayList<>();
       for (int i = 0; i <= 10; i++) {
         numberOfEachRatings.add(i, 0);

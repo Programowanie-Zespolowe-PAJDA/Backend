@@ -27,6 +27,7 @@ import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.TokenService;
+import umk.mat.pajda.ProjektZespolowy.services.UserService;
 
 @WebMvcTest(AuthenticationController.class)
 @AutoConfigureMockMvc
@@ -45,6 +46,8 @@ public class AuthenticationControllerTest {
   @MockBean private RestTemplate restTemplate;
 
   @MockBean private TokenService tokenService;
+
+  @MockBean private UserService userService;
 
   @Autowired private ObjectMapper objectMapper;
 

@@ -231,7 +231,7 @@ public class UserConverterTest {
 
     when(userRepository.findByMail(email)).thenReturn(Optional.of(user));
 
-    User userFromMethod = userConverter.updateEmailOfEntity(userPatchEmailDTO, email);
+    User userFromMethod = userConverter.updateEmailOfEntity(userPatchEmailDTO, user);
 
     User userShouldBe = new User();
     userShouldBe.setId(123);

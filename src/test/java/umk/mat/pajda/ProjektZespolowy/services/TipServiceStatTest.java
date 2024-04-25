@@ -31,7 +31,8 @@ import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
       "CLIENT_ID = client_id",
       "profile = tests",
       "KEY_MD5 = key_md5",
-      "ngrok.link = link"
+      "ngrok.link = link",
+      "GMAIL_APP_PASSWORD = gmail_app_password"
     })
 public class TipServiceStatTest {
 

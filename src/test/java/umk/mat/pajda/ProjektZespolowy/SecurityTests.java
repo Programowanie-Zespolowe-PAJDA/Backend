@@ -23,7 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
       "CLIENT_ID = client_id",
       "profile = tests",
       "KEY_MD5 = key_md5",
-      "ngrok.link = link"
+      "ngrok.link = link",
+      "GMAIL_APP_PASSWORD = gmail_app_password"
     })
 class SecurityConfigTest {
 

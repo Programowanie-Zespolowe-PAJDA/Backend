@@ -22,9 +22,9 @@ public class EmailService {
   }
 
   @Async
-  public void send(User user, String subject, String text) {
+  public void send(String email, String subject, String text) {
     SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-    simpleMailMessage.setTo(user.getMail());
+    simpleMailMessage.setTo(email);
     simpleMailMessage.setSubject(subject);
     simpleMailMessage.setText(text);
     javaMailSender.send(simpleMailMessage);

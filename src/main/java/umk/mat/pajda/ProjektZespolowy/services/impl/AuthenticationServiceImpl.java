@@ -46,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   private final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
-  @Value("${spring.profiles.active}")
+  @Value("${profile}")
   private String activeProfile;
 
   public AuthenticationServiceImpl(
@@ -68,7 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       if ("prod".equals(activeProfile)) {
         Token token = tokenRepository.save(tokenService.createToken(user));
         emailService.send(
-            user,
+            user.getMail(),
             "Verify your email",
             "Thanks for creating account. \n Please click the following link to activate your account.\n"
                 + "https://enapiwek-api.onrender.com/confirm?token="

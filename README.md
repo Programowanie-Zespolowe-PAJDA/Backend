@@ -41,6 +41,7 @@ Users for testing:<br><br>
 **[GET] /review/owner** - (only for authenticated) get all owner reviews <br>
 **[GET] /review/owner/{id}** - (only for authenticated) get a owner review <br>
 **[GET] /review/avgRating** - (only for authenticated) get a owner avg rating for all Reviews <br>
+**[GET] /review/numberOfEachRating** - (only for authenticated) get number of each rating of all owner Reviews <br>
 
 **[PATCH] /user/editInformations** - (only for authenticated) mod informations of user <br>
 **[PATCH] /user/editPassword** - (only for authenticated) mod password of user <br>

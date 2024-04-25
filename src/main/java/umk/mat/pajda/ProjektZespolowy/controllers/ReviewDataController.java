@@ -124,10 +124,23 @@ public class ReviewDataController {
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "GET - get avg rating of all \"Review\"",
-      description = "Following endpoint returns avg rating of all Reviews")
+      description = "Following endpoint returns avg rating of all owner Reviews")
   public ResponseEntity<ReviewAvgRatingGetDTO> getAvgRating(
       @AuthenticationPrincipal UserDetails userDetails) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(reviewService.getAvgRatingOfReview(userDetails.getUsername()));
+  }
+
+  @GetMapping("/numberOfEachRating")
+  @SecurityRequirement(name = "Bearer Authentication")
+  @Operation(
+      summary = "GET - get number of each rating of all \"Review\"",
+      description =
+          "Following endpoint returns number of each rating of all owner Reviews "
+              + "in form of a array from 0 to 10 rating")
+  public ResponseEntity<List<Integer>> getNumberOfEachRatings(
+      @AuthenticationPrincipal UserDetails userDetails) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(reviewService.getNumberOfEachRatings(userDetails.getUsername()));
   }
 }

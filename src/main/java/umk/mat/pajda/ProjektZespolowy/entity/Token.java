@@ -23,4 +23,6 @@ public class Token {
   private User user;
 
   @FutureOrPresent private LocalDateTime expiryDate;
+
+  private String newEmail;
 }

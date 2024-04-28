@@ -6,12 +6,15 @@ import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
+import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.entity.User;
 import umk.mat.pajda.ProjektZespolowy.misc.UserConverter;
 import umk.mat.pajda.ProjektZespolowy.repository.ReviewRepository;
+import umk.mat.pajda.ProjektZespolowy.repository.TokenRepository;
 import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
 
 @Service
@@ -22,8 +25,20 @@ public class UserService {
   private final UserConverter userConverter;
   private final ReviewRepository reviewRepository;
 
+  @Autowired(required = false)
+  private TokenRepository tokenRepository;
+
+  @Autowired(required = false)
+  private EmailService emailService;
+
+  @Autowired(required = false)
+  private TokenService tokenService;
+
   private final UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
+
+  @Value("${profile}")
+  private String activeProfile;
 
   @Autowired
   public UserService(
@@ -129,7 +144,19 @@ public class UserService {
 
   public boolean patchEmailOfUser(UserPatchEmailDTO userPatchEmailDTO, String email) {
     try {
-      userRepository.save(userConverter.updateEmailOfEntity(userPatchEmailDTO, email));
+      User user = userRepository.findByMail(email).get();
+      if ("prod".equals(activeProfile)) {
+        Token token =
+            tokenRepository.save(tokenService.updateToken(userPatchEmailDTO.getMail(), user));
+        emailService.send(
+            userPatchEmailDTO.getMail(),
+            "Change your email",
+            "Please click the following link to change your email.\n"
+                + "https://enapiwek-api.onrender.com/confirm?token="
+                + token.getToken());
+      } else {
+        userRepository.save(userConverter.updateEmailOfEntity(userPatchEmailDTO, user));
+      }
     } catch (Exception e) {
       logger.error("patchEmailOfUser", e);
       return false;
@@ -155,5 +182,18 @@ public class UserService {
     } catch (Exception e) {
       return null;
     }
+  }
+
+  public boolean setEmail(Token token) {
+    try {
+      User user = token.getUser();
+      user.setMail(token.getNewEmail());
+      userRepository.save(user);
+      token.setNewEmail(null);
+      tokenRepository.save(token);
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
   }
 }

@@ -66,8 +66,7 @@ public class UserConverter {
     return user;
   }
 
-  public User updateEmailOfEntity(UserPatchEmailDTO userPatchEmailDTO, String mail) {
-    User user = userRepository.findByMail(mail).get();
+  public User updateEmailOfEntity(UserPatchEmailDTO userPatchEmailDTO, User user) {
     user.setMail(userPatchEmailDTO.getMail());
     return user;
   }

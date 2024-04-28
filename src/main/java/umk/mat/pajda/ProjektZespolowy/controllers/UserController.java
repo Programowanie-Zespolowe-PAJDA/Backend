@@ -101,6 +101,14 @@ public class UserController {
     if (userService.getUser(userDetails.getUsername()) == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("modifying failed - no user");
     }
+    if (!userPatchEmailDTO.getMail().equals(userPatchEmailDTO.getRetypedMail())) {
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+          .body("modifying failed - emails aren't the same");
+    }
+    if (userPatchEmailDTO.getMail().equals(userDetails.getUsername())) {
+      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+          .body("modifying failed - emails are the same");
+    }
     if (userService.patchEmailOfUser(userPatchEmailDTO, userDetails.getUsername())) {
       return ResponseEntity.status(HttpStatus.OK).body("modifying successful");
     } else {

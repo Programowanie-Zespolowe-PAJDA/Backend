@@ -35,6 +35,19 @@ public class TokenService {
     return token;
   }
 
+  public Token updateToken(String email, User user) {
+    Token token = null;
+    try {
+      token = tokenRepository.findByUser(user).get();
+      token.setNewEmail(email);
+      token.setToken(UUID.randomUUID().toString());
+      token.setExpiryDate(LocalDateTime.now().plusHours(24));
+    } catch (NoSuchElementException e) {
+      return null;
+    }
+    return token;
+  }
+
   public Token getToken(String token) {
     Token confirmToken = null;
     try {
@@ -58,6 +71,9 @@ public class TokenService {
     User user = null;
     try {
       user = userRepository.findByToken(token).get();
+      if (user.isEnabled()) {
+        return false;
+      }
       user.setEnabled(true);
       userRepository.save(user);
     } catch (NoSuchElementException e) {

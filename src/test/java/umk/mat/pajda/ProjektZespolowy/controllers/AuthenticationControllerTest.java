@@ -27,6 +27,7 @@ import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
 import umk.mat.pajda.ProjektZespolowy.services.JWTService;
 import umk.mat.pajda.ProjektZespolowy.services.TokenService;
+import umk.mat.pajda.ProjektZespolowy.services.UserService;
 
 @WebMvcTest(AuthenticationController.class)
 @AutoConfigureMockMvc
@@ -45,6 +46,8 @@ public class AuthenticationControllerTest {
   @MockBean private RestTemplate restTemplate;
 
   @MockBean private TokenService tokenService;
+
+  @MockBean private UserService userService;
 
   @Autowired private ObjectMapper objectMapper;
 
@@ -158,6 +161,20 @@ public class AuthenticationControllerTest {
     when(tokenService.getToken(token)).thenReturn(confirmToken);
     when(tokenService.isExpired(confirmToken)).thenReturn(false);
     when(tokenService.confirm(confirmToken)).thenReturn(true);
+
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(roles = "")
+  public void authenticationControllerTestConfirmVerificationTokenStatusOkAfterChangeEmail()
+      throws Exception {
+    String token = "token";
+    Token confirmToken = new Token();
+    confirmToken.setNewEmail("email");
+    when(tokenService.getToken(token)).thenReturn(confirmToken);
+    when(tokenService.isExpired(confirmToken)).thenReturn(false);
+    when(userService.setEmail(confirmToken)).thenReturn(true);
 
     mockMvc.perform(get("/confirm?token=token")).andExpect(status().isOk());
   }

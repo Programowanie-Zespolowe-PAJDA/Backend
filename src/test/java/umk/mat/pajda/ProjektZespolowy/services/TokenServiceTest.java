@@ -67,4 +67,14 @@ public class TokenServiceTest {
 
     Assertions.assertFalse(tokenService.confirm(token));
   }
+
+  @Test
+  public void shouldSuccessWhenUpdateToken() {
+    Token token = new Token();
+    User user = new User();
+
+    Mockito.when(tokenRepository.findByUser(user)).thenReturn(Optional.of(token));
+
+    Assertions.assertEquals("email", tokenService.updateToken("email", user).getNewEmail());
+  }
 }

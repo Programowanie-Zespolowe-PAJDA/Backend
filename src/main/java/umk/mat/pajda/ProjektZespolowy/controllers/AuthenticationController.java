@@ -16,6 +16,7 @@ import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
 import umk.mat.pajda.ProjektZespolowy.services.TokenService;
+import umk.mat.pajda.ProjektZespolowy.services.UserService;
 
 @RestController
 @Tag(name = "Authentication Endpoints", description = "Controller for login/register/refresh")
@@ -26,6 +27,12 @@ public class AuthenticationController {
 
   @Autowired(required = false)
   private TokenService tokenService;
+
+  private final UserService userService;
+
+  public AuthenticationController(UserService userService) {
+    this.userService = userService;
+  }
 
   @PostMapping("/register")
   @Operation(summary = "POST - Add \"new User\"", description = "Following endpoint adds new User")
@@ -95,10 +102,18 @@ public class AuthenticationController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body("confirming failed - token is expired");
     }
-    if (tokenService.confirm(confirmToken)) {
-      return ResponseEntity.status(HttpStatus.OK).body("confirming success");
+    if (confirmToken.getNewEmail() == null) {
+      if (tokenService.confirm(confirmToken)) {
+        return ResponseEntity.status(HttpStatus.OK).body("confirming success");
+      } else {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("confirming failed");
+      }
     } else {
-      return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("confirming failed");
+      if (userService.setEmail(confirmToken)) {
+        return ResponseEntity.status(HttpStatus.OK).body("confirming success");
+      } else {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("confirming failed");
+      }
     }
   }
 }

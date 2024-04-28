@@ -34,7 +34,7 @@ public class ScheduleTask {
       if (tokenService.isExpired(user.getToken())) {
         userRepository.delete(user);
         emailService.send(
-            user,
+            user.getMail(),
             "Registration canceled",
             "The email verification link has expired, therefore the registration has been canceled.");
       }

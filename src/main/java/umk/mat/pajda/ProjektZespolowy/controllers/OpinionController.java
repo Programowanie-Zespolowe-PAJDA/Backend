@@ -93,7 +93,7 @@ public class OpinionController {
     if (response == null) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("adding failed");
     } else {
-      return response;
+      return ResponseEntity.status(200).body(response.getBody());
     }
   }
 

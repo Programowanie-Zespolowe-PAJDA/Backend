@@ -83,7 +83,8 @@ public class TipService {
     this.restTemplate = new RestTemplate();
   }
 
-  public String makePayout(String orderId, String realAmount) throws JsonProcessingException, InterruptedException {
+  public String makePayout(String orderId, String realAmount)
+      throws JsonProcessingException, InterruptedException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -410,26 +411,26 @@ public class TipService {
     ResponseEntity<String> response;
     boolean exit;
     String value;
-    int count=0;
+    int count = 0;
     do {
       exit = false;
-      if(count==30){
+      if (count == 30) {
         return null;
       }
       try {
         response =
-                restTemplate.exchange(
-                        "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
-                        HttpMethod.GET,
-                        request,
-                        String.class);
+            restTemplate.exchange(
+                "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
+                HttpMethod.GET,
+                request,
+                String.class);
       } catch (HttpClientErrorException.Unauthorized e) {
         response =
-                changeBearerAuth(
-                        headers,
-                        null,
-                        "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
-                        HttpMethod.GET);
+            changeBearerAuth(
+                headers,
+                null,
+                "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
+                HttpMethod.GET);
       }
       if (!response.getStatusCode().equals(HttpStatus.OK)) {
         return null;
@@ -437,17 +438,15 @@ public class TipService {
       ObjectMapper objectMapper = new ObjectMapper();
       JsonNode jsonNode = objectMapper.readTree(response.getBody());
       value = jsonNode.get("balance").get("available").asText();
-      if(mode&&"0".equals(value))
-      {
+      if (mode && "0".equals(value)) {
         Thread.sleep(30000);
-        exit=true;
-      } else if (!mode&&!"0".equals(value)) {
+        exit = true;
+      } else if (!mode && !"0".equals(value)) {
         Thread.sleep(30000);
-        exit=true;
+        exit = true;
       }
       count++;
-    }
-    while (exit);
+    } while (exit);
     return value;
   }
 

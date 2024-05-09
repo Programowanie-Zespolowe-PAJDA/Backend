@@ -38,13 +38,13 @@ public class TipController {
   @GetMapping("/stats")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-          summary = "GET - get \"tip statistics\"",
-          description =
-                  "Following endpoint returns tip statistics of user for all(NULL) and for specific currency")
+      summary = "GET - get \"tip statistics\"",
+      description =
+          "Following endpoint returns tip statistics of user for all(NULL) and for specific currency")
   public ResponseEntity<TipStatisticsGetDTO> getTipStatistics(
-          @Valid CurrencyGetDTO currencyGetDTO,
-          BindingResult bindingResult,
-          @AuthenticationPrincipal UserDetails userDetails) {
+      @Valid CurrencyGetDTO currencyGetDTO,
+      BindingResult bindingResult,
+      @AuthenticationPrincipal UserDetails userDetails) {
     if (bindingResult.hasErrors()) {
       return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
     }
@@ -53,7 +53,7 @@ public class TipController {
       returnData = tipService.getStatisticsAll(userDetails.getUsername());
     } else {
       returnData =
-              tipService.getStatistics(userDetails.getUsername(), currencyGetDTO.getCurrency());
+          tipService.getStatistics(userDetails.getUsername(), currencyGetDTO.getCurrency());
     }
     if (returnData != null) {
       return ResponseEntity.status(HttpStatus.OK).body(returnData);
@@ -64,24 +64,22 @@ public class TipController {
 
   @PostMapping
   public ResponseEntity<String> addTip(
-          @RequestBody String requestBody, @RequestHeader("OpenPayu-Signature") String header)
-          throws NoSuchAlgorithmException, JsonProcessingException, InterruptedException {
+      @RequestBody String requestBody, @RequestHeader("OpenPayu-Signature") String header)
+      throws NoSuchAlgorithmException, JsonProcessingException, InterruptedException {
 
     if (tipService.verifyNotification(requestBody, header)) {
       String status = tipService.getStatus(requestBody);
       String orderId = tipService.getOrderId(requestBody);
       Status orderStatus = reviewService.getReviewById(orderId).getStatus();
-      if(Status.PENDING.equals(orderStatus)){
-        if(!"WAITING_FOR_CONFIRMATION".equals(status)){
+      if (Status.PENDING.equals(orderStatus)) {
+        if (!"WAITING_FOR_CONFIRMATION".equals(status)) {
           return ResponseEntity.status(HttpStatus.OK).body("correct notification");
         }
-      }
-      else if(Status.WAITING_FOR_CONFIRMATION.equals(orderStatus)){
-        if(!"COMPLETED".equals(status)){
+      } else if (Status.WAITING_FOR_CONFIRMATION.equals(orderStatus)) {
+        if (!"COMPLETED".equals(status)) {
           return ResponseEntity.status(HttpStatus.OK).body("correct notification");
         }
-      }
-      else {
+      } else {
         return ResponseEntity.status(HttpStatus.OK).body("correct notification");
       }
       switch (status) {
@@ -111,7 +109,7 @@ public class TipController {
           String payoutId = tipService.makePayout(orderId, lastAmount);
           if (payoutId != null) {
             if (!tipService.addTip(
-                    payoutId, orderId, lastAmount, paidWith, currency, exchangeRate)) {
+                payoutId, orderId, lastAmount, paidWith, currency, exchangeRate)) {
               reviewService.deleteSelectReview(orderId);
             }
           } else {

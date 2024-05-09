@@ -411,7 +411,6 @@ public class TipService {
     boolean exit;
     String value;
     int count=0;
-    Thread.sleep(30000);
     do {
       exit = false;
       if(count==30){

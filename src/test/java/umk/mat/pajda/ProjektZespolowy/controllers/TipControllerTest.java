@@ -88,7 +88,7 @@ public class TipControllerTest {
     Mockito.when(tipService.getAdditionalDescription(json)).thenReturn("1");
     Mockito.when(tipService.getCurrency(json)).thenReturn("PLN");
     Mockito.when(tipService.getPaidWith("orderId")).thenReturn("BLIK");
-    Mockito.when(tipService.getRealAmount()).thenReturn("553");
+    Mockito.when(tipService.getRealAmount(true)).thenReturn("553");
     Mockito.when(tipService.makePayout("orderId", "553")).thenReturn("payoutId");
     Mockito.when(tipService.addTip("payoutId", "orderId", "553", "BLIK", "PLN", "1"))
         .thenReturn(true);

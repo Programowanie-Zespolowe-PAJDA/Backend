@@ -60,7 +60,7 @@ public class TipServiceTest {
   }
 
   @Test
-  public void shouldSuccessWhenMakePayoutTest() throws JsonProcessingException {
+  public void shouldSuccessWhenMakePayoutTest() throws JsonProcessingException, InterruptedException {
     String body =
         "{ \"status\": { \"statusCode\": \"SUCCESS\"}, \"payout\": { \"payoutId\": \"payoutId\"}}";
     ResponseEntity<String> response = new ResponseEntity<>(body, HttpStatus.CREATED);
@@ -72,6 +72,16 @@ public class TipServiceTest {
     user.setName("Andrzej");
     user.setSurname("Kowalski");
 
+    String bodyAmount = "{\"balance\": {\"available\": \"0\"}}";
+    ResponseEntity<String> responseAmount = new ResponseEntity<>(bodyAmount, HttpStatus.OK);
+
+    Mockito.when(
+                    restTemplate.exchange(
+                            eq("https://secure.snd.payu.com/api/v2_1/shops/" + null),
+                            eq(HttpMethod.GET),
+                            ArgumentMatchers.any(),
+                            ArgumentMatchers.<Class<String>>any()))
+            .thenReturn(responseAmount);
     Mockito.when(userService.getUserByReviewId("orderId")).thenReturn(user);
     Mockito.when(
             restTemplate.exchange(
@@ -222,7 +232,7 @@ public class TipServiceTest {
   }
 
   @Test
-  public void shouldSuccessWhenGetRealAmountTest() throws JsonProcessingException {
+  public void shouldSuccessWhenGetRealAmountTest() throws JsonProcessingException, InterruptedException {
     String body = "{\"balance\": {\"available\": \"500\"}}";
     ResponseEntity<String> response = new ResponseEntity<>(body, HttpStatus.OK);
 
@@ -234,7 +244,7 @@ public class TipServiceTest {
                 ArgumentMatchers.<Class<String>>any()))
         .thenReturn(response);
 
-    Assertions.assertEquals("500", tipService.getRealAmount());
+    Assertions.assertEquals("500", tipService.getRealAmount(true));
   }
 
   @Test

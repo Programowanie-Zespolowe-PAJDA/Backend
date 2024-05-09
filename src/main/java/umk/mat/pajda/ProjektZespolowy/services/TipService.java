@@ -477,7 +477,7 @@ public class TipService {
 
   public boolean setCompleted(String orderId) throws JsonProcessingException {
     try {
-      if (!semaphore.tryAcquire(10, TimeUnit.MINUTES)) {
+      if (!semaphore.tryAcquire(1, TimeUnit.HOURS)) {
         return false;
       }
       HttpHeaders headers = new HttpHeaders();

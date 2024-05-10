@@ -65,17 +65,21 @@ public class TipController {
   @PostMapping
   public ResponseEntity<String> addTip(
       @RequestBody String requestBody, @RequestHeader("OpenPayu-Signature") String header)
-      throws NoSuchAlgorithmException, JsonProcessingException {
+      throws NoSuchAlgorithmException, JsonProcessingException, InterruptedException {
 
     if (tipService.verifyNotification(requestBody, header)) {
       String status = tipService.getStatus(requestBody);
       String orderId = tipService.getOrderId(requestBody);
       Status orderStatus = reviewService.getReviewById(orderId).getStatus();
-      if (Status.COMPLETED.equals(orderStatus)) {
-        return ResponseEntity.status(HttpStatus.OK).body("correct notification");
-      } else if (Status.valueOf(status).equals(orderStatus)) {
-        return ResponseEntity.status(HttpStatus.OK).body("correct notification");
-      } else if (status.equals("PENDING")) {
+      if (Status.PENDING.equals(orderStatus)) {
+        if (!"WAITING_FOR_CONFIRMATION".equals(status)) {
+          return ResponseEntity.status(HttpStatus.OK).body("correct notification");
+        }
+      } else if (Status.WAITING_FOR_CONFIRMATION.equals(orderStatus)) {
+        if (!"COMPLETED".equals(status)) {
+          return ResponseEntity.status(HttpStatus.OK).body("correct notification");
+        }
+      } else {
         return ResponseEntity.status(HttpStatus.OK).body("correct notification");
       }
       switch (status) {
@@ -98,7 +102,7 @@ public class TipController {
             reviewService.deleteSelectReview(orderId);
           }
           String exchangeRate = tipService.getAdditionalDescription(requestBody);
-          String lastAmount = tipService.getRealAmount();
+          String lastAmount = tipService.getRealAmount(true);
           if (lastAmount == null) {
             reviewService.deleteSelectReview(orderId);
           }

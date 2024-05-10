@@ -83,7 +83,8 @@ public class TipService {
     this.restTemplate = new RestTemplate();
   }
 
-  public String makePayout(String orderId, String realAmount) throws JsonProcessingException {
+  public String makePayout(String orderId, String realAmount)
+      throws JsonProcessingException, InterruptedException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -123,6 +124,7 @@ public class TipService {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode = objectMapper.readTree(response.getBody());
     if (jsonNode.get("status").get("statusCode").asText().equals("SUCCESS")) {
+      getRealAmount(false);
       semaphore.release();
       return jsonNode.get("payout").get("payoutId").asText();
     } else {
@@ -401,33 +403,51 @@ public class TipService {
     return objectMapper.readTree(requestBody).get("order").get("description").asText();
   }
 
-  public String getRealAmount() throws JsonProcessingException {
+  public String getRealAmount(boolean mode) throws JsonProcessingException, InterruptedException {
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
     headers.setContentType(MediaType.APPLICATION_JSON);
     HttpEntity<Object> request = new HttpEntity<>(headers);
     ResponseEntity<String> response;
-    try {
-      response =
-          restTemplate.exchange(
-              "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
-              HttpMethod.GET,
-              request,
-              String.class);
-    } catch (HttpClientErrorException.Unauthorized e) {
-      response =
-          changeBearerAuth(
-              headers,
-              null,
-              "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
-              HttpMethod.GET);
-    }
-    if (!response.getStatusCode().equals(HttpStatus.OK)) {
-      return null;
-    }
-    ObjectMapper objectMapper = new ObjectMapper();
-    JsonNode jsonNode = objectMapper.readTree(response.getBody());
-    return jsonNode.get("balance").get("available").asText();
+    boolean exit;
+    String value;
+    int count = 0;
+    do {
+      exit = false;
+      if (count == 30) {
+        return null;
+      }
+      try {
+        response =
+            restTemplate.exchange(
+                "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
+                HttpMethod.GET,
+                request,
+                String.class);
+      } catch (HttpClientErrorException.Unauthorized e) {
+        response =
+            changeBearerAuth(
+                headers,
+                null,
+                "https://secure.snd.payu.com/api/v2_1/shops/" + shopId,
+                HttpMethod.GET);
+      }
+      if (!response.getStatusCode().equals(HttpStatus.OK)) {
+        return null;
+      }
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode jsonNode = objectMapper.readTree(response.getBody());
+      value = jsonNode.get("balance").get("available").asText();
+      if (mode && "0".equals(value)) {
+        Thread.sleep(30000);
+        exit = true;
+      } else if (!mode && !"0".equals(value)) {
+        Thread.sleep(30000);
+        exit = true;
+      }
+      count++;
+    } while (exit);
+    return value;
   }
 
   public void cancelPayout(String orderId) {
@@ -457,7 +477,7 @@ public class TipService {
 
   public boolean setCompleted(String orderId) throws JsonProcessingException {
     try {
-      if (!semaphore.tryAcquire(10, TimeUnit.MINUTES)) {
+      if (!semaphore.tryAcquire(1, TimeUnit.HOURS)) {
         return false;
       }
       HttpHeaders headers = new HttpHeaders();

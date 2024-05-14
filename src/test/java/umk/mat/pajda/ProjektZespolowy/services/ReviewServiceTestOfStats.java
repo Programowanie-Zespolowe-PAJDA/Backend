@@ -30,7 +30,8 @@ import umk.mat.pajda.ProjektZespolowy.repository.UserRepository;
       "CLIENT_ID = client_id",
       "profile = tests",
       "KEY_MD5 = key_md5",
-      "ngrok.link = link"
+      "ngrok.link = link",
+      "GMAIL_APP_PASSWORD = password"
     })
 public class ReviewServiceTestOfStats {
   @Autowired private UserRepository userRepository;

@@ -42,7 +42,7 @@ public class TipController {
       description =
           "Following endpoint returns tip statistics of user for all(NULL) and for specific currency")
   public ResponseEntity<TipStatisticsGetDTO> getTipStatistics(
-      @Valid CurrencyGetDTO currencyGetDTO,
+      @RequestBody @Valid CurrencyGetDTO currencyGetDTO,
       BindingResult bindingResult,
       @AuthenticationPrincipal UserDetails userDetails) {
     if (bindingResult.hasErrors()) {

@@ -132,43 +132,46 @@ public class AuthenticationControllerTest {
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTestConfirmVerificationTokenStatusNotFoundWhenTokenNotFound()
-      throws Exception {
+  public void
+      authenticationControllerTestConfirmVerificationTokenStatusRedirectionWhenTokenNotFound()
+          throws Exception {
     String token = "token";
     when(tokenService.getToken(token)).thenReturn(null);
 
-    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isNotFound());
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().is3xxRedirection());
   }
 
   @Test
   @WithMockUser(roles = "")
   public void
-      authenticationControllerTestConfirmVerificationTokenStatusUnathorizedWhenTokenIsExpired()
+      authenticationControllerTestConfirmVerificationTokenStatusRedirectionWhenTokenIsExpired()
           throws Exception {
     String token = "token";
     Token confirmToken = new Token();
     when(tokenService.getToken(token)).thenReturn(confirmToken);
     when(tokenService.isExpired(confirmToken)).thenReturn(true);
 
-    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isUnauthorized());
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().is3xxRedirection());
   }
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTestConfirmVerificationTokenStatusOk() throws Exception {
+  public void authenticationControllerTestConfirmVerificationTokenStatusRedirection()
+      throws Exception {
     String token = "token";
     Token confirmToken = new Token();
     when(tokenService.getToken(token)).thenReturn(confirmToken);
     when(tokenService.isExpired(confirmToken)).thenReturn(false);
     when(tokenService.confirm(confirmToken)).thenReturn(true);
 
-    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isOk());
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().is3xxRedirection());
   }
 
   @Test
   @WithMockUser(roles = "")
-  public void authenticationControllerTestConfirmVerificationTokenStatusOkAfterChangeEmail()
-      throws Exception {
+  public void
+      authenticationControllerTestConfirmVerificationTokenStatusRedirectionAfterChangeEmail()
+          throws Exception {
     String token = "token";
     Token confirmToken = new Token();
     confirmToken.setNewEmail("email");
@@ -176,6 +179,6 @@ public class AuthenticationControllerTest {
     when(tokenService.isExpired(confirmToken)).thenReturn(false);
     when(userService.setEmail(confirmToken)).thenReturn(true);
 
-    mockMvc.perform(get("/confirm?token=token")).andExpect(status().isOk());
+    mockMvc.perform(get("/confirm?token=token")).andExpect(status().is3xxRedirection());
   }
 }

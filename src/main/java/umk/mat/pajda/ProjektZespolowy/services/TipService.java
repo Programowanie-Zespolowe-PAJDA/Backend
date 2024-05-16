@@ -354,9 +354,9 @@ public class TipService {
   }
 
   public TipStatisticsGetDTO getStatistics(String userName, String currency) {
+    TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
     try {
       User user = userRepository.findByMail(userName).get();
-      TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
       tipStatisticsGetDTO.setMaxTipAmount(
           tipRepository
               .findFirstByUserAndCurrencyOrderByAmountDesc(user, currency)
@@ -369,7 +369,13 @@ public class TipService {
       tipStatisticsGetDTO.setSumTipValueForEveryMonth(
           tipRepository.getSumAmountForEachMonth(user.getId(), currency));
       tipStatisticsGetDTO.setNumberOfTips(tipRepository.getNumberOfTips(user.getId(), currency));
-
+      return tipStatisticsGetDTO;
+    } catch (NullPointerException e) {
+      tipStatisticsGetDTO.setSumTipValueForEveryMonth(null);
+      tipStatisticsGetDTO.setAvgTipAmount(0.0);
+      tipStatisticsGetDTO.setMaxTipAmount(0);
+      tipStatisticsGetDTO.setMinTipAmount(0);
+      tipStatisticsGetDTO.setNumberOfTips(0);
       return tipStatisticsGetDTO;
     } catch (Exception e) {
       logger.error("getStatistics", e);
@@ -378,9 +384,9 @@ public class TipService {
   }
 
   public TipStatisticsGetDTO getStatisticsAll(String userName) {
+    TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
     try {
       User user = userRepository.findByMail(userName).get();
-      TipStatisticsGetDTO tipStatisticsGetDTO = new TipStatisticsGetDTO();
       tipStatisticsGetDTO.setMaxTipAmount(
           tipRepository.findFirstByUserOrderByAmountDesc(user).getAmount());
 
@@ -391,6 +397,13 @@ public class TipService {
           tipRepository.getSumAmountForEachMonth(user.getId()));
       tipStatisticsGetDTO.setNumberOfTips(tipRepository.getNumberOfTips(user.getId()));
 
+      return tipStatisticsGetDTO;
+    } catch (NullPointerException e) {
+      tipStatisticsGetDTO.setSumTipValueForEveryMonth(null);
+      tipStatisticsGetDTO.setAvgTipAmount(0.0);
+      tipStatisticsGetDTO.setMaxTipAmount(0);
+      tipStatisticsGetDTO.setMinTipAmount(0);
+      tipStatisticsGetDTO.setNumberOfTips(0);
       return tipStatisticsGetDTO;
     } catch (Exception e) {
       logger.error("getStatistics", e);

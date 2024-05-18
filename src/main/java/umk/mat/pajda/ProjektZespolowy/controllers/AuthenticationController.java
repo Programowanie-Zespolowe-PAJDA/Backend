@@ -12,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 import umk.mat.pajda.ProjektZespolowy.DTO.*;
 import umk.mat.pajda.ProjektZespolowy.entity.Token;
 import umk.mat.pajda.ProjektZespolowy.services.AuthenticationService;
@@ -92,27 +93,26 @@ public class AuthenticationController {
       summary = "GET - confirm account",
       description = "Following endpoint confirm account by verification Token")
   @Profile("prod")
-  public ResponseEntity<String> confirm(@RequestParam String token) {
+  public RedirectView confirm(@RequestParam String token) {
+    String redirectURL = "https://enapiwek.onrender.com/auth";
     Token confirmToken = tokenService.getToken(token);
     if (confirmToken == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .body("confirming failed - token not found");
+      return new RedirectView(redirectURL + "?isEmailConfirmed=false");
     }
     if (tokenService.isExpired(confirmToken)) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body("confirming failed - token is expired");
+      return new RedirectView(redirectURL + "?isEmailConfirmed=false");
     }
     if (confirmToken.getNewEmail() == null) {
       if (tokenService.confirm(confirmToken)) {
-        return ResponseEntity.status(HttpStatus.OK).body("confirming success");
+        return new RedirectView(redirectURL + "?isEmailConfirmed=true");
       } else {
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("confirming failed");
+        return new RedirectView(redirectURL + "?isEmailConfirmed=false");
       }
     } else {
       if (userService.setEmail(confirmToken)) {
-        return ResponseEntity.status(HttpStatus.OK).body("confirming success");
+        return new RedirectView(redirectURL + "?isEmailConfirmed=true");
       } else {
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("confirming failed");
+        return new RedirectView(redirectURL + "?isEmailConfirmed=false");
       }
     }
   }

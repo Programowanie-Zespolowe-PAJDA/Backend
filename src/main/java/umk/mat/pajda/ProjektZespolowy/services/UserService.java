@@ -145,17 +145,20 @@ public class UserService {
   public boolean patchEmailOfUser(UserPatchEmailDTO userPatchEmailDTO, String email) {
     try {
       User user = userRepository.findByMail(email).get();
+      String newEmail = userPatchEmailDTO.getMail();
+      if (userRepository.findByMail(newEmail).get() != null) {
+        return false;
+      }
       if ("prod".equals(activeProfile)) {
-        Token token =
-            tokenRepository.save(tokenService.updateToken(userPatchEmailDTO.getMail(), user));
+        Token token = tokenRepository.save(tokenService.updateToken(newEmail, user));
         emailService.send(
-            userPatchEmailDTO.getMail(),
+            newEmail,
             "Change your email",
             "Please click the following link to change your email.\n"
                 + "https://enapiwek-api.onrender.com/confirm?token="
                 + token.getToken());
       } else {
-        userRepository.save(userConverter.updateEmailOfEntity(userPatchEmailDTO, user));
+        userRepository.save(userConverter.updateEmailOfEntity(newEmail, user));
       }
     } catch (Exception e) {
       logger.error("patchEmailOfUser", e);

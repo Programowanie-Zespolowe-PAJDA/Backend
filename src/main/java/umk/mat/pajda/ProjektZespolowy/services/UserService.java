@@ -3,6 +3,7 @@ package umk.mat.pajda.ProjektZespolowy.services;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,7 +147,8 @@ public class UserService {
     try {
       User user = userRepository.findByMail(email).get();
       String newEmail = userPatchEmailDTO.getMail();
-      if (userRepository.findByMail(newEmail).get() != null) {
+      Optional<User> existsUser = userRepository.findByMail(newEmail);
+      if (existsUser.isPresent()) {
         return false;
       }
       if ("prod".equals(activeProfile)) {

@@ -32,6 +32,9 @@ public class ReviewConverter {
   }
 
   public Review createEntity(OpinionPostDTO opinionPostDTO, String id) {
+    if (opinionPostDTO.getClientName().length() == 0) {
+      opinionPostDTO.setClientName("Anonim");
+    }
     Review review = new Review();
     review.setId(id);
     review.setRating(opinionPostDTO.getRating());

@@ -19,9 +19,7 @@ import umk.mat.pajda.ProjektZespolowy.services.ReviewService;
 
 @RequestMapping("/review")
 @RestController
-@Tag(
-    name = "Review Endpoints",
-    description = "Controller for handling requests related to add/del/patch/read reviews")
+@Tag(name = "ReviewDataController", description = "Kontroler do obsługiwania recenzji")
 public class ReviewDataController {
 
   private final ReviewService reviewService;
@@ -34,8 +32,13 @@ public class ReviewDataController {
   @PatchMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "PATCH - modify \"Review\"",
-      description = "Following endpoint modifies a Review")
+      summary = "Modyfikowanie recenzji",
+      description =
+          "Ten endpoint odpowiada za modyfikacje istniejącej recenzji. Sprawdza takie rzeczy jak: \n"
+              + "- walidacje\n"
+              + "- czy istnieje recenzja o takim id\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, to nie jest modyfikowana recenzja.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.\n")
   public ResponseEntity<String> modReview(
       @Valid @RequestBody ReviewPatchDTO reviewPatchDTO,
       BindingResult bindingResult,
@@ -60,8 +63,10 @@ public class ReviewDataController {
   @DeleteMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "DELETE - delete \"Review\"",
-      description = "Following endpoint deletes a Review of id")
+      summary = "Usuwanie recenzji",
+      description =
+          "Ten endpoint odpowiada za usuwanie istniejącej recenzji. "
+              + "Wysyłany jest odpowiednia informacja wraz z statusem.")
   public ResponseEntity<String> delReview(@PathVariable String id) {
     if (reviewService.deleteSelectReview(id)) {
       return ResponseEntity.status(HttpStatus.OK).body("delete successful");
@@ -72,8 +77,8 @@ public class ReviewDataController {
 
   @GetMapping
   @Operation(
-      summary = "GET - get all \"Review\"",
-      description = "Following endpoint returns a Review")
+      summary = "Zwracanie istniejących recenzji",
+      description = "Ten endpoint zwraca listę wszystkich istniejących recenzji.")
   public ResponseEntity<List<ReviewGetDTO>> readReview() {
     return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews());
   }
@@ -81,8 +86,8 @@ public class ReviewDataController {
   @GetMapping("/owner")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "GET - get all owner \"Review\"",
-      description = "Following endpoint returns all owner reviews")
+      summary = "Zwracanie istniejących recenzji zalogowanego kelenera",
+      description = "Ten endpoint zwraca listę wszystkich recenzji dla zalogowanego kelenera.")
   public ResponseEntity<List<ReviewGetDTO>> readReview(
       @AuthenticationPrincipal UserDetails userDetails) {
 
@@ -92,8 +97,10 @@ public class ReviewDataController {
 
   @GetMapping("/{id}")
   @Operation(
-      summary = "GET - get \"Review\"",
-      description = "Following endpoint returns a Review of id")
+      summary = "Zwracanie danej recenzji",
+      description =
+          "Ten endpoint zwraca recenzje o danym id. Jeżeli takiej nie ma, to "
+              + "zostaje wysłany odpowiedni komunikat wraz z statusem.")
   public ResponseEntity<ReviewGetDTO> readReview(@PathVariable String id) {
     ReviewGetDTO reviewGetDTO = null;
     reviewGetDTO = reviewService.getReview(id);
@@ -107,8 +114,10 @@ public class ReviewDataController {
   @GetMapping("/owner/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "GET - get owner \"Review\"",
-      description = "Following endpoint returns a owner Review of id")
+      summary = "Zwracanie danej recenzji zalogowanego kelnera",
+      description =
+          "Ten endpoint zwraca recenzje o danym id dla zalogowanego kelnera. "
+              + "Jeżeli takiej nie ma, to zostaje wysłany odpowiedni komunikat wraz z statusem.")
   public ResponseEntity<ReviewGetDTO> readReview(
       @AuthenticationPrincipal UserDetails userDetails, @PathVariable String id) {
     ReviewGetDTO reviewGetDTO = null;
@@ -123,8 +132,8 @@ public class ReviewDataController {
   @GetMapping("/avgRating")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "GET - get avg rating of all \"Review\"",
-      description = "Following endpoint returns avg rating of all owner Reviews")
+      summary = "Zwracanie średniej oceny",
+      description = "Ten endpoint zwraca średnią ocenę dla zalogowanego kelnera.")
   public ResponseEntity<ReviewAvgRatingGetDTO> getAvgRating(
       @AuthenticationPrincipal UserDetails userDetails) {
     return ResponseEntity.status(HttpStatus.OK)
@@ -134,10 +143,9 @@ public class ReviewDataController {
   @GetMapping("/numberOfEachRating")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "GET - get number of each rating of all \"Review\"",
+      summary = "Zwracanie ilość ocen",
       description =
-          "Following endpoint returns number of each rating of all owner Reviews "
-              + "in form of a array from 0 to 10 rating")
+          "Ten endpoint zwraca listę ilości ocen od wartości 0 do wartości 10 dla zalogowanego kelnera.")
   public ResponseEntity<List<Integer>> getNumberOfEachRatings(
       @AuthenticationPrincipal UserDetails userDetails) {
     return ResponseEntity.status(HttpStatus.OK)

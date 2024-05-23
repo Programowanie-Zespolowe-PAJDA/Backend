@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Tag(
-    name = "Example Endpoint",
-    description = "Controller for handling ExampleEndpoint API requests")
+    name = "ExampleEndpointClass",
+    description = "Kontroler do sprawdzenia autoryzacji i autentykacji")
 public class ExampleEndpointClass {
 
   @GetMapping("/hello")
   @ResponseBody
-  @Operation(summary = "Get hellow", description = "Returns hellow")
+  @Operation(
+      summary = "Zwracanie \"hello\"",
+      description = "Ten endpoint zwraca \"hello\" dla każdego użytkownika,")
   public String sayHello() {
     return "hello";
   }
@@ -24,8 +26,8 @@ public class ExampleEndpointClass {
   @ResponseBody
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "Get \"admin\" message",
-      description = "Returns admin when you role is ADMIN")
+      summary = "Zwracanie \"admin\"",
+      description = "Ten endpoint zwraca  \"admin\" w przypadku gdy mamy role ADMIN")
   public String sayAdmin() {
     return "admin";
   }
@@ -34,8 +36,8 @@ public class ExampleEndpointClass {
   @SecurityRequirement(name = "Bearer Authentication")
   @ResponseBody
   @Operation(
-      summary = "Get \"authenticated\" message",
-      description = "Returns authenticated when you are authenticated")
+      summary = "Zwracanie \"authenticated\"",
+      description = "Ten endpoint zwraca \"authenticated\" w przypadku gdy jesteśmy zalogowani")
   public String sayAuthenticated() {
     return "authenticated";
   }

@@ -25,9 +25,7 @@ import umk.mat.pajda.ProjektZespolowy.services.TipService;
 
 @RequestMapping("/opinion")
 @RestController
-@Tag(
-    name = "Opinion Endpoints",
-    description = "Controller for handling requests related to add opinion")
+@Tag(name = "OpinionController", description = "Kontroler do obsługiwania opinii")
 public class OpinionController {
 
   @Value("${profile}")
@@ -53,8 +51,14 @@ public class OpinionController {
 
   @PostMapping
   @Operation(
-      summary = "POST - Add \"new Opinion\"",
-      description = "Following endpoint adds new Opinion")
+      summary = "Tworzenie nowej opinii",
+      description =
+          "Ten endpoint odpowiada za tworzenie nowej opinii. Sprawdza takie rzeczy jak: \n"
+              + "- walidacje\n"
+              + "- czy istnieje taki uzytkownik o danym id\n"
+              + "- czy mineło 10 minut od ostatniej wysłanej opinii dla tego kelner\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, to nie jest tworzona nowa opinia w bazie danych.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.\n")
   public ResponseEntity<String> addNewOpinion(
       @Valid @RequestBody OpinionPostDTO opinionPostDTO, BindingResult bindingResult)
       throws JsonProcessingException {
@@ -99,7 +103,9 @@ public class OpinionController {
 
   @GetMapping
   @SecurityRequirement(name = "Bearer Authentication")
-  @Operation(summary = "GET - get \"opinion\"", description = "Following endpoint get  Opinion")
+  @Operation(
+      summary = "Zwracanie opinii danego kelnera",
+      description = "Ten endpoint zwraca liste opinii kelenera, który jest zalogowany")
   public ResponseEntity<List<OpinionGetDTO>> getOpinions(
       @AuthenticationPrincipal UserDetails userDetails) {
     return ResponseEntity.status(HttpStatus.OK)

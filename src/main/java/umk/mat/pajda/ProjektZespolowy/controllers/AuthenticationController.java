@@ -20,7 +20,9 @@ import umk.mat.pajda.ProjektZespolowy.services.TokenService;
 import umk.mat.pajda.ProjektZespolowy.services.UserService;
 
 @RestController
-@Tag(name = "Authentication Endpoints", description = "Controller for login/register/refresh")
+@Tag(
+    name = "AuthenticationController",
+    description = "Kontroler dla logowania, rejestracji, odnowienia tokenu i potwierdzania")
 public class AuthenticationController {
 
   @Autowired(required = false)
@@ -36,7 +38,15 @@ public class AuthenticationController {
   }
 
   @PostMapping("/register")
-  @Operation(summary = "POST - Add \"new User\"", description = "Following endpoint adds new User")
+  @Operation(
+      summary = "Tworzenie nowego użytkownika",
+      description =
+          "Ten endpoint odpowiada za rejestracje użytkownika. Sprawdza takie rzeczy jak: \n"
+              + "- walidacja\n"
+              + "- czy nowe hasło oraz powtórzone hasło są takie same\n"
+              + "- czy istnieje już taki użytkownik\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, to użytkownik nie jest dodawany do bazy danych.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.")
   public ResponseEntity<String> register(
       @Valid @RequestBody RegisterDTO registerDTO, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
@@ -58,8 +68,16 @@ public class AuthenticationController {
 
   @PostMapping("/login")
   @Operation(
-      summary = "POST - get JWT token",
-      description = "Following endpoint return JWT Token By User details")
+      summary = "Logowanie użytkownika",
+      description =
+          "Ten endpoint odpowiada za logowanie użytkownika, zwracając token JWT na podstawie wysłanych danych. "
+              + "Sprawdza takie rzeczy jak: \n"
+              + "- czy konto zostało zweryfikowane\n"
+              + "- czy wprowadzone dane są poprawne\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, to token JWT nie zostaje zwrócony.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.\n"
+              + "W przypadku sukcesu dostajemy także refresh token, który umożliwa nam szybsze uzyskanie"
+              + " tokenu JWT w pózniejszym czasie.")
   public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
     try {
       return ResponseEntity.ok(authenticationService.login(loginDTO));
@@ -76,8 +94,11 @@ public class AuthenticationController {
 
   @PostMapping("/refresh")
   @Operation(
-      summary = "POST - get JWT token",
-      description = "Following endpoint return JWT Token by refresh Token")
+      summary = "Odnawianie tokenu JWT",
+      description =
+          "Ten endpoint odpowiada za generowanie nowego tokenu JWT na podstawie refresh tokenu."
+              + "Jeżeli jest prawidłowym tokenem to wysyła nowy token JWT.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.\n")
   public ResponseEntity<?> refresh(@RequestBody RefreshTokenDTO refreshTokenDTO) {
     try {
       return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenDTO));
@@ -90,8 +111,14 @@ public class AuthenticationController {
 
   @GetMapping("/confirm")
   @Operation(
-      summary = "GET - confirm account",
-      description = "Following endpoint confirm account by verification Token")
+      summary = "Potwierdzanie konta lub nowego emailu",
+      description =
+          "Ten endpoint odpowiada za potwierdzanie konta lub potwierdzanie zmiany emailu."
+              + " Sprawdza takie rzeczy jak: \n"
+              + "- czy wartość tokenu w parametrze nie jest nullem\n"
+              + "- czy token nie jest wygaśnięty\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, to nie jest ukończone potwierdzanie. \n"
+              + "W każdym przypadku zostajemy przekierowywani na stronę z odpowiednim komunikatem.")
   @Profile("prod")
   public RedirectView confirm(@RequestParam String token) {
     String redirectURL = "https://enapiwek.onrender.com/auth";

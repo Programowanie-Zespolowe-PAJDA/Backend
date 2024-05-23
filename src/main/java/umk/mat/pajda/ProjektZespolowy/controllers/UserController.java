@@ -18,9 +18,7 @@ import umk.mat.pajda.ProjektZespolowy.services.UserService;
 
 @RequestMapping("/user")
 @RestController
-@Tag(
-    name = "User Endpoints",
-    description = "Controller for handling requests related to add/del/patch/read users")
+@Tag(name = "UserController", description = "Kontroler do obsługiwania użytkownika")
 public class UserController {
 
   private final UserService userService;
@@ -32,8 +30,14 @@ public class UserController {
   @PatchMapping("/editInformations")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "PATCH - modify  \"User\" informations",
-      description = "Following endpoint edit User informations")
+      summary = "Modyfikowanie informacji użytkownika",
+      description =
+          "Ten endpoint odpowiada za modyfikacje informacji dla zalogowanego użytkownika. Sprawdza takie rzeczy jak: \n"
+              + "- walidacje\n"
+              + "- czy taki użytkownik istnieje\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, "
+              + "to nie następuje modyfikacja informacji użytkownika.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.\n")
   public ResponseEntity<String> modInformationsOfUser(
       @AuthenticationPrincipal UserDetails userDetails,
       @Valid @RequestBody UserPatchInformationsDTO userPatchInformationsDTO,
@@ -55,8 +59,16 @@ public class UserController {
   @PatchMapping("/editPassword")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "PATCH - modify  \"User\" password",
-      description = "Following endpoint edit User password")
+      summary = "Modyfikowanie hasła użytkownika",
+      description =
+          "Ten endpoint odpowiada za modyfikacje hasła dla zalogowanego użytkownika. Sprawdza takie rzeczy jak: \n"
+              + "- walidacje\n"
+              + "- czy taki użytkownik istnieje\n"
+              + "- czy wprowadzone stare hasło jest poprawne\n"
+              + "- czy nowe hasło i powtórzone hasło są takie same\n"
+              + "- czy stare hasło i nowe hasło są inne\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, to nie następuje modyfikacja hasła użytkownika.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.\n")
   public ResponseEntity<String> modPasswordOfUser(
       @AuthenticationPrincipal UserDetails userDetails,
       @Valid @RequestBody UserPatchPasswordDTO userPatchPasswordDTO,
@@ -89,8 +101,15 @@ public class UserController {
   @PatchMapping("/editEmail")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "PATCH - modify  \"User\" email",
-      description = "Following endpoint edit User email")
+      summary = "Modyfikowanie emailu",
+      description =
+          "Ten endpoint odpowiada za modyfikacje emailu dla zalogowanego użytkownika. Sprawdza takie rzeczy jak: \n"
+              + "- walidacje\n"
+              + "- czy taki użytkownik istnieje\n"
+              + "- czy nowy email i powtórzony email są takie sam\n"
+              + "- czy stary email i nowy email są inne\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, to nie następuje modyfikacja emailu użytkownika.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.\n")
   public ResponseEntity<String> modEmailOfUser(
       @AuthenticationPrincipal UserDetails userDetails,
       @Valid @RequestBody UserPatchEmailDTO userPatchEmailDTO,
@@ -119,8 +138,15 @@ public class UserController {
   @PatchMapping("/editBankAccountNumber")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "PATCH - modify  \"User\" bank account number",
-      description = "Following endpoint edits User bank account number")
+      summary = "Modyfikowanie numeru rachunku bankowego",
+      description =
+          "Ten endpoint odpowiada za modyfikacje numeru rachunku bankowego dla zalogowanego użytkownika. "
+              + "Sprawdza takie rzeczy jak: \n"
+              + "- walidacje\n"
+              + "- czy taki użytkownik istnieje\n\n"
+              + "Jeżeli któraś z tych rzeczy zakończy się błędem, to nie "
+              + "następuje modyfikacja numeru rachunku bankowego użytkownika.\n"
+              + "W każdym przypadku dostajemy stosowaną informację wraz z odpowiednim statusem.\n")
   public ResponseEntity<String> modBankAccountNumberOfUser(
       @AuthenticationPrincipal UserDetails userDetails,
       @Valid @RequestBody UserPatchBankAccountNumberDTO userPatchBankAccountNumberDTO,
@@ -143,8 +169,8 @@ public class UserController {
   @DeleteMapping
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "DELETE - delete \"Owner\"",
-      description = "Following endpoint deletes Owner")
+      summary = "Usuwanie użytkownika",
+      description = "Ten endpoint usuwa konto dla zalogowanego użytkownika.")
   public ResponseEntity<String> delUser(@AuthenticationPrincipal UserDetails userDetails) {
     if (userService.deleteSelectedUser(userDetails.getUsername())) {
       return ResponseEntity.status(HttpStatus.OK).body("delete successful");
@@ -156,8 +182,8 @@ public class UserController {
   @DeleteMapping("/{id}")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "DELETE - delete \"User\"",
-      description = "Following endpoint deletes a User of id")
+      summary = "Usuwanie danego użytkownika",
+      description = "Ten endpoint usuwa konto dla użytkownika o danym id.")
   public ResponseEntity<String> delUser(@PathVariable int id) {
     if (userService.deleteSelectedUser(id)) {
       return ResponseEntity.status(HttpStatus.OK).body("delete successful");
@@ -168,14 +194,18 @@ public class UserController {
 
   @GetMapping
   @SecurityRequirement(name = "Bearer Authentication")
-  @Operation(summary = "GET - get all \"User\"", description = "Following endpoint all Users")
+  @Operation(
+      summary = "Zwracanie użytkowników",
+      description = "Ten endpoint zwraca listę wszystkich użytkowników.")
   public ResponseEntity<List<UserGetDTO>> readUser() {
     return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers());
   }
 
   @GetMapping("/profile")
   @SecurityRequirement(name = "Bearer Authentication")
-  @Operation(summary = "GET - get \"Owner\"", description = "Following endpoint returns a Owner")
+  @Operation(
+      summary = "Zwracanie zalogowanego użytkownika",
+      description = "Ten endpoint zwraca zalogowanego użytkownika.")
   public ResponseEntity<UserGetDTO> readUser(@AuthenticationPrincipal UserDetails userDetails) {
     UserGetDTO returnData = userService.getUserDTO(userDetails.getUsername());
     if (returnData != null) {
@@ -187,8 +217,8 @@ public class UserController {
 
   @GetMapping("/{id}")
   @Operation(
-      summary = "GET - get \"User\"",
-      description = "Following endpoint returns a User of id")
+      summary = "Zwracanie danego użytkownika",
+      description = "Ten endpoint zwraca użytkownika o danym id.")
   public ResponseEntity<UserGetDTO> readUser(@PathVariable int id) {
     UserGetDTO returnData = userService.getUser(id);
     if (returnData != null) {

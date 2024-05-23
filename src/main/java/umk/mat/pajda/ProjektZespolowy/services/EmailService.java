@@ -34,7 +34,7 @@ public class EmailService {
     try {
       SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
       simpleMailMessage.setTo("enapiwek@gmail.com");
-      simpleMailMessage.setSubject("Report from " + reportDTO.getNick());
+      simpleMailMessage.setSubject("Zgłoszenie od " + reportDTO.getNick());
       simpleMailMessage.setText(reportDTO.getText());
       javaMailSender.send(simpleMailMessage);
     } catch (Exception e) {

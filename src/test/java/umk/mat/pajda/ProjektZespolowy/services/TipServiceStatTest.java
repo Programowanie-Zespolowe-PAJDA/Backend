@@ -3,7 +3,7 @@ package umk.mat.pajda.ProjektZespolowy.services;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
-import java.time.Month;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +45,21 @@ public class TipServiceStatTest {
   @Autowired private UserRepository userRepository;
 
   private static String currency = "PLN";
+
+  private final List<String> months =
+      List.of(
+          "STYCZEŃ",
+          "LUTY",
+          "MARZEC",
+          "KWIECIEŃ",
+          "MAJ",
+          "CZERWIEC",
+          "LIPIEC",
+          "SIERPIEŃ",
+          "WRZESIEŃ",
+          "PAŹDZIERNIK",
+          "LISTOPAD",
+          "GRUDZIEŃ");
 
   @BeforeEach
   public void init() {
@@ -140,8 +155,8 @@ public class TipServiceStatTest {
         tipService.getStatistics(
             userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(
-        Month.of(LocalDateTime.now().getMonthValue())
-            .toString()
+        months
+            .get(LocalDateTime.now().getMonthValue() - 1)
             .equals(tipStatisticsGetDTO.getSumTipValueForEveryMonth().get(0).getMonth()));
   }
 
@@ -161,8 +176,8 @@ public class TipServiceStatTest {
         tipService.getStatistics(
             userRepository.findByMail("test@gmail.com").get().getMail(), currency);
     assertTrue(
-        Month.of(LocalDateTime.now().minusMonths(13).getMonthValue())
-            .toString()
+        months
+            .get(LocalDateTime.now().minusMonths(13).getMonthValue() - 1)
             .equals(tipStatisticsGetDTO.getSumTipValueForEveryMonth().get(2).getMonth()));
   }
 

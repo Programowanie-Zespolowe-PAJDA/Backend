@@ -1,6 +1,7 @@
 package umk.mat.pajda.ProjektZespolowy.DTO;
 
-import java.time.Month;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import lombok.*;
 
 @Setter
@@ -12,9 +13,25 @@ public class TipMonthDTO {
   private String month;
   private String year;
 
+  @JsonIgnore
+  private final List<String> months =
+      List.of(
+          "STYCZEŃ",
+          "LUTY",
+          "MARZEC",
+          "KWIECIEŃ",
+          "MAJ",
+          "CZERWIEC",
+          "LIPIEC",
+          "SIERPIEŃ",
+          "WRZESIEŃ",
+          "PAŹDZIERNIK",
+          "LISTOPAD",
+          "GRUDZIEŃ");
+
   public TipMonthDTO(Long amount, Integer month, Integer year) {
     this.amount = amount;
-    this.month = Month.of(month).toString();
+    this.month = months.get(month - 1);
     this.year = String.valueOf(year);
   }
 }

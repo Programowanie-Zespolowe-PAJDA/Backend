@@ -69,8 +69,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Token token = tokenRepository.save(tokenService.createToken(user));
         emailService.send(
             user.getMail(),
-            "Verify your email",
-            "Thanks for creating account. \n Please click the following link to activate your account.\n"
+            "Zweryfikuj email",
+            "Dziękujemy za stworzenie konta.\nKlikniij na poniższy link, aby aktywować konto.\n"
                 + "https://enapiwek-api.onrender.com/confirm?token="
                 + token.getToken());
       }

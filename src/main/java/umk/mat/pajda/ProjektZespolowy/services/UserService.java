@@ -155,8 +155,8 @@ public class UserService {
         Token token = tokenRepository.save(tokenService.updateToken(newEmail, user));
         emailService.send(
             newEmail,
-            "Change your email",
-            "Please click the following link to change your email.\n"
+            "Potwierdzenie zmiany emailu",
+            "Kliknij poniższy link, aby potwierdzić dany email.\n"
                 + "https://enapiwek-api.onrender.com/confirm?token="
                 + token.getToken());
       } else {

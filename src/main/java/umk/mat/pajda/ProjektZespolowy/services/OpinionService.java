@@ -54,7 +54,11 @@ public class OpinionService {
       Tip tip = review.getTip();
       list.add(
           new OpinionGetDTO(
-              tip.getRealAmount(), tip.getCurrency(), review.getComment(), review.getClientName()));
+              review.getRating(),
+              tip.getRealAmount(),
+              tip.getCurrency(),
+              review.getComment(),
+              review.getClientName()));
     }
     return list;
   }

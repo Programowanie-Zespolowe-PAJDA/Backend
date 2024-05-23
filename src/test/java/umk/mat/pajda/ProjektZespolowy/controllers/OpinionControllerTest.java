@@ -141,7 +141,7 @@ public class OpinionControllerTest {
   @Test
   @WithMockUser(roles = "ADMIN")
   public void shouldStatusOkWhenGetOpinionsTest() throws Exception {
-    List<OpinionGetDTO> list = List.of(new OpinionGetDTO(500, "USD", "komentarz", "klient"));
+    List<OpinionGetDTO> list = List.of(new OpinionGetDTO(5, 500, "USD", "komentarz", "klient"));
 
     Mockito.when(opinionService.getOpinions(any(String.class))).thenReturn(list);
     MvcResult mvcResult =
@@ -154,7 +154,7 @@ public class OpinionControllerTest {
             .andReturn();
 
     Assertions.assertEquals(
-        "[{\"amount\":500,\"currency\":\"USD\",\"comment\":\"komentarz\",\"clientName\":\"klient\"}]",
+        "[{\"rating\":5,\"amount\":500,\"currency\":\"USD\",\"comment\":\"komentarz\",\"clientName\":\"klient\"}]",
         mvcResult.getResponse().getContentAsString());
   }
 }

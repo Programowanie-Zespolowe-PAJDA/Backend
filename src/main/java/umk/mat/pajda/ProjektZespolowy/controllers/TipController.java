@@ -20,7 +20,7 @@ import umk.mat.pajda.ProjektZespolowy.services.TipService;
 
 @RestController
 @RequestMapping("/tip")
-@Tag(name = "Tip Endpoints", description = "Controller for handling requests related to tips")
+@Tag(name = "TipController", description = "Kontroler do obsługiwania napiwków")
 public class TipController {
 
   private final TipService tipService;
@@ -38,9 +38,12 @@ public class TipController {
   @GetMapping("/stats")
   @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
-      summary = "GET - get \"tip statistics\"",
+      summary = "Zwracanie statystyk",
       description =
-          "Following endpoint returns tip statistics of user for all(NULL) and for specific currency")
+          "Ten endpoint zwraca statystki dotyczące napiwków dla zalogowanego kelnera."
+              + " Są one zwracane w zależności od parametru currency, "
+              + "który mówi nam które statystyki mają być zwracane w zależności od waluty.\n"
+              + "Sprawdza czy taka waluta jest dostępna, jeżeli wszystko jest w porządku to wysyła statystki.")
   public ResponseEntity<TipStatisticsGetDTO> getTipStatistics(
       @RequestParam String currency, @AuthenticationPrincipal UserDetails userDetails) {
     if (!list.contains(currency)) {
@@ -60,6 +63,14 @@ public class TipController {
   }
 
   @PostMapping
+  @Operation(
+      summary = "Dodawanie napiwku",
+      description =
+          "Ten endpoint jest przeznaczony dla PayU, który przesyła informacje o statusie zamówienia."
+              + " Następnie jest dodawany napiwek w bazie danych oraz zostaje "
+              + "dokonana wpłata na konto kelnera.\n"
+              + "Na początku dane są weryfikowane czy pochodzą od PayU. "
+              + "Następnie sprawdza czy status zamówienia jest odpowiedni.")
   public ResponseEntity<String> addTip(
       @RequestBody String requestBody, @RequestHeader("OpenPayu-Signature") String header)
       throws NoSuchAlgorithmException, JsonProcessingException, InterruptedException {

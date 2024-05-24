@@ -15,7 +15,7 @@ import umk.mat.pajda.ProjektZespolowy.services.EmailService;
 
 @RestController
 @RequestMapping("/reports")
-@Tag(name = "Report Endpoint", description = "Controller for sending reports")
+@Tag(name = "ReportController", description = "Kontroler dla wysyłania zgłoszeń")
 public class ReportController {
 
   private final EmailService emailService;
@@ -25,7 +25,11 @@ public class ReportController {
   }
 
   @PostMapping
-  @Operation(summary = "POST - send \"Report\"", description = "Following endpoint send report")
+  @Operation(
+      summary = "Wysyłanie zgłoszenia",
+      description =
+          "Ten endpoint wysyła zgłoszenie od użytkownika. Sprawdza walidacje. "
+              + "Jeżeli wszystko jest dobrze to zgłoszenie zostaje wysłane na enapiwek@gmail.com")
   public ResponseEntity<String> sendReport(
       @RequestBody @Valid ReportDTO reportDTO, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {

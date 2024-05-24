@@ -35,8 +35,8 @@ public class ScheduleTask {
         userRepository.delete(user);
         emailService.send(
             user.getMail(),
-            "Registration canceled",
-            "The email verification link has expired, therefore the registration has been canceled.");
+            "Rejestracja anulowana",
+            "Link do aktywacji konta wygasł, więc rejestracja została anulowana.");
       }
     }
   }

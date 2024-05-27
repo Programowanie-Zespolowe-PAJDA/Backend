@@ -14,11 +14,11 @@ import org.springframework.web.client.RestTemplate;
 @OpenAPIDefinition(
     info =
         @Info(
-            title = "Kellner app",
+            title = "Enapiwek",
             description =
-                "An application that allows the waiter to receive tips electronically "
-                    + "and assess his skills. Backend API Documentation ",
-            version = "v0.5"))
+                "Aplikacja pozwala na wysłanie napiwków kelnerom"
+                    + " poprzez kod QR. Dokumentacja API Backendu.",
+            version = "v1"))
 public class ProjektZespolowyApplication {
 
   @Bean

@@ -83,12 +83,12 @@ public class AuthenticationController {
       return ResponseEntity.ok(authenticationService.login(loginDTO));
     } catch (DisabledException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body("login failed - account is not confirm");
+          .body("Email nie został jeszcze potwierdzony!");
     } catch (BadCredentialsException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body("login failed - login or password incorrect");
+          .body("Email lub hasło są niepoprawne");
     } catch (IllegalArgumentException e) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("login failed");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Logowanie nieudane");
     }
   }
 

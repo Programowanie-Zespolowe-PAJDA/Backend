@@ -85,8 +85,7 @@ public class AuthenticationController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body("Email nie został jeszcze potwierdzony!");
     } catch (BadCredentialsException e) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body("Email lub hasło są niepoprawne");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email lub hasło są niepoprawne");
     } catch (IllegalArgumentException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Logowanie nieudane");
     }

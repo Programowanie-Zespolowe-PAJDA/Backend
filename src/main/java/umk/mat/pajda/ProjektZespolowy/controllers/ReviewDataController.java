@@ -76,6 +76,7 @@ public class ReviewDataController {
   }
 
   @GetMapping
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "Zwracanie istniejących recenzji",
       description = "Ten endpoint zwraca listę wszystkich istniejących recenzji.")
@@ -96,6 +97,7 @@ public class ReviewDataController {
   }
 
   @GetMapping("/{id}")
+  @SecurityRequirement(name = "Bearer Authentication")
   @Operation(
       summary = "Zwracanie danej recenzji",
       description =
